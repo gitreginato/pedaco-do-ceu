@@ -1127,10 +1127,12 @@ export class PedacoDoCeuStudio {
       if (el) el.addEventListener('change', (e) => { 
         this.store.state[prop] = e.target.value; 
         this.renderer.requestRender();
-        if (prop.startsWith('font')) {
-          const fontStr = e.target.value.replace(/'/g, '');
-          if (document.fonts) {
-            document.fonts.load(`16px ${fontStr}`).then(() => this.renderer.requestRender());
+        if (prop.startsWith('font') && e.target.value) {
+          const primaryFont = e.target.value.split(',')[0].replace(/['"]/g, '').trim();
+          if (primaryFont && document.fonts && document.fonts.load) {
+            try {
+              document.fonts.load(`16px "${primaryFont}"`).then(() => this.renderer.requestRender()).catch(() => {});
+            } catch (_) {}
           }
         }
       });
@@ -1413,7 +1415,9 @@ export class PedacoDoCeuStudio {
   syncUI() {
     const s = this.store.state;
     const setVal = (id, val) => { const el = document.getElementById(id); if (el && val !== undefined) el.value = val; };
+    const setCheck = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
 
+    // 1. Textos dos 8 Slots
     setVal('titleInput', s.title);
     setVal('subtitleInput', s.subtitle);
     setVal('descriptionInput', s.description);
@@ -1421,8 +1425,9 @@ export class PedacoDoCeuStudio {
     setVal('highlightInput', s.highlightText);
     setVal('ctaInput', s.ctaText);
     setVal('badgeInput', s.badgeText);
+    setVal('headerTextInput', s.headerText);
 
-    // Cores
+    // 2. Cores de Todos os Elementos
     setVal('colorTitleInput', s.colorTitle);
     setVal('colorTitleGlowInput', s.colorTitleGlow);
     setVal('colorSubtitleInput', s.colorSubtitle);
@@ -1432,6 +1437,7 @@ export class PedacoDoCeuStudio {
     setVal('colorTagInput', s.colorTag);
     setVal('colorBadgeInput', s.colorBadge);
     setVal('colorCtaInput', s.colorCta);
+    setVal('colorHeaderInput', s.colorHeader);
     setVal('colorPatternInput', s.colorPattern);
     setVal('colorCornersInput', s.colorCorners);
     setVal('colorDividersInput', s.colorDividers);
@@ -1439,41 +1445,61 @@ export class PedacoDoCeuStudio {
     setVal('gradientSecondaryInput', s.gradientSecondary);
     setVal('gradientDarknessInput', s.gradientDarkness);
 
-    // Selects
-    setVal('fontTitleSelect', s.fontTitle);
-    setVal('weightTitleSelect', s.weightTitle);
-    setVal('fontSubtitleSelect', s.fontSubtitle);
-    setVal('styleSubtitleSelect', s.styleSubtitle);
-    setVal('fontDescSelect', s.fontDesc);
+    // 3. Selects de Fontes & Pesos dos 8 Slots
+    setVal('fontTitleSelect', s.fontTitle || "'Cinzel Decorative', serif");
+    setVal('weightTitleSelect', s.weightTitle || "700");
+    setVal('fontSubtitleSelect', s.fontSubtitle || "'Cormorant Garamond', serif");
+    setVal('styleSubtitleSelect', s.styleSubtitle || "italic 500");
+    setVal('fontDescSelect', s.fontDesc || "'Montserrat', sans-serif");
+    setVal('weightDescSelect', s.weightDesc || "300");
     setVal('fontHighlightSelect', s.fontHighlight || "'Montserrat', sans-serif");
+    setVal('weightHighlightSelect', s.weightHighlight || "600");
     setVal('fontCtaSelect', s.fontCta || "'Cinzel', serif");
     setVal('weightCtaSelect', s.weightCta || "600");
-    setVal('sacredPatternSelect', s.sacredPattern);
+    setVal('fontHeaderSelect', s.fontHeader || "'Cinzel', serif");
+    setVal('weightHeaderSelect', s.weightHeader || "600");
+    setVal('fontBadgeSelect', s.fontBadge || "'Cinzel', serif");
+    setVal('weightBadgeSelect', s.weightBadge || "700");
+    setVal('fontTagSelect', s.fontTag || "'Cinzel', serif");
+    setVal('weightTagSelect', s.weightTag || "700");
+    setVal('sacredPatternSelect', s.sacredPattern || "flowerOfLife");
 
-    // Sliders
-    setVal('sizeTitleRange', s.sizeTitle);
+    // 4. Sliders de Tipografia & Espaçamento dos 8 Slots
+    setVal('sizeTitleRange', s.sizeTitle || 54);
     const sizeTitleVal = document.getElementById('sizeTitleVal');
-    if (sizeTitleVal) sizeTitleVal.textContent = s.sizeTitle + 'px';
+    if (sizeTitleVal) sizeTitleVal.textContent = (s.sizeTitle || 54) + 'px';
 
-    setVal('spacingTitleRange', s.spacingTitle);
+    setVal('spacingTitleRange', s.spacingTitle !== undefined ? s.spacingTitle : 1);
     const spacingTitleVal = document.getElementById('spacingTitleVal');
-    if (spacingTitleVal) spacingTitleVal.textContent = s.spacingTitle + 'px';
+    if (spacingTitleVal) spacingTitleVal.textContent = (s.spacingTitle !== undefined ? s.spacingTitle : 1) + 'px';
 
-    setVal('glowTitleRange', s.glowTitle);
+    setVal('glowTitleRange', s.glowTitle !== undefined ? s.glowTitle : 0);
     const glowTitleVal = document.getElementById('glowTitleVal');
-    if (glowTitleVal) glowTitleVal.textContent = s.glowTitle + 'px';
+    if (glowTitleVal) glowTitleVal.textContent = (s.glowTitle !== undefined ? s.glowTitle : 0) + 'px';
 
-    setVal('sizeSubtitleRange', s.sizeSubtitle);
+    setVal('sizeSubtitleRange', s.sizeSubtitle || 26);
     const sizeSubVal = document.getElementById('sizeSubtitleVal');
-    if (sizeSubVal) sizeSubVal.textContent = s.sizeSubtitle + 'px';
+    if (sizeSubVal) sizeSubVal.textContent = (s.sizeSubtitle || 26) + 'px';
 
-    setVal('sizeDescRange', s.sizeDesc);
+    setVal('spacingSubtitleRange', s.spacingSubtitle !== undefined ? s.spacingSubtitle : 0);
+    const spacingSubVal = document.getElementById('spacingSubtitleVal');
+    if (spacingSubVal) spacingSubVal.textContent = (s.spacingSubtitle !== undefined ? s.spacingSubtitle : 0) + 'px';
+
+    setVal('sizeDescRange', s.sizeDesc || 18);
     const sizeDescVal = document.getElementById('sizeDescVal');
-    if (sizeDescVal) sizeDescVal.textContent = s.sizeDesc + 'px';
+    if (sizeDescVal) sizeDescVal.textContent = (s.sizeDesc || 18) + 'px';
+
+    setVal('lineHeightDescRange', (s.lineHeightDesc || 1.4) * 10);
+    const lhVal = document.getElementById('lineHeightDescVal');
+    if (lhVal) lhVal.textContent = (s.lineHeightDesc || 1.4).toFixed(1) + 'x';
 
     setVal('sizeHighlightRange', s.sizeHighlight || 14);
     const sizeHighVal = document.getElementById('sizeHighlightVal');
     if (sizeHighVal) sizeHighVal.textContent = (s.sizeHighlight || 14) + 'px';
+
+    setVal('spacingHighlightRange', s.spacingHighlight !== undefined ? s.spacingHighlight : 1);
+    const spacingHighVal = document.getElementById('spacingHighlightVal');
+    if (spacingHighVal) spacingHighVal.textContent = (s.spacingHighlight !== undefined ? s.spacingHighlight : 1) + 'px';
 
     setVal('sizeCtaRange', s.sizeCta || 14);
     const sizeCtaVal = document.getElementById('sizeCtaVal');
@@ -1483,45 +1509,46 @@ export class PedacoDoCeuStudio {
     const spacingCtaVal = document.getElementById('spacingCtaVal');
     if (spacingCtaVal) spacingCtaVal.textContent = (s.spacingCta !== undefined ? s.spacingCta : 1) + 'px';
 
-    setVal('paddingTopRange', s.paddingTop);
+    setVal('sizeHeaderRange', s.sizeHeader || 12);
+    const sizeHeaderVal = document.getElementById('sizeHeaderVal');
+    if (sizeHeaderVal) sizeHeaderVal.textContent = (s.sizeHeader || 12) + 'px';
+
+    setVal('spacingHeaderRange', s.spacingHeader !== undefined ? s.spacingHeader : 2);
+    const spacingHeaderVal = document.getElementById('spacingHeaderVal');
+    if (spacingHeaderVal) spacingHeaderVal.textContent = (s.spacingHeader !== undefined ? s.spacingHeader : 2) + 'px';
+
+    setVal('sizeBadgeRange', s.sizeBadge || 12);
+    const sizeBadgeVal = document.getElementById('sizeBadgeVal');
+    if (sizeBadgeVal) sizeBadgeVal.textContent = (s.sizeBadge || 12) + 'px';
+
+    setVal('spacingBadgeRange', s.spacingBadge !== undefined ? s.spacingBadge : 1);
+    const spacingBadgeVal = document.getElementById('spacingBadgeVal');
+    if (spacingBadgeVal) spacingBadgeVal.textContent = (s.spacingBadge !== undefined ? s.spacingBadge : 1) + 'px';
+
+    setVal('sizeTagRange', s.sizeTag || 14);
+    const sizeTagVal = document.getElementById('sizeTagVal');
+    if (sizeTagVal) sizeTagVal.textContent = (s.sizeTag || 14) + 'px';
+
+    setVal('spacingTagRange', s.spacingTag !== undefined ? s.spacingTag : 2);
+    const spacingTagVal = document.getElementById('spacingTagVal');
+    if (spacingTagVal) spacingTagVal.textContent = (s.spacingTag !== undefined ? s.spacingTag : 2) + 'px';
+
+    // 5. Sliders de Refino & Dimensões do Layout
+    setVal('paddingTopRange', s.paddingTop !== undefined ? s.paddingTop : 90);
     const pTopVal = document.getElementById('paddingTopVal');
-    if (pTopVal) pTopVal.textContent = s.paddingTop + 'px';
+    if (pTopVal) pTopVal.textContent = (s.paddingTop !== undefined ? s.paddingTop : 90) + 'px';
 
-    setVal('blockGapRange', s.blockGap);
+    setVal('blockGapRange', s.blockGap !== undefined ? s.blockGap : 20);
     const bgVal = document.getElementById('blockGapVal');
-    if (bgVal) bgVal.textContent = s.blockGap + 'px';
+    if (bgVal) bgVal.textContent = (s.blockGap !== undefined ? s.blockGap : 20) + 'px';
 
-    setVal('paddingSideRange', s.paddingSide);
+    setVal('paddingSideRange', s.paddingSide !== undefined ? s.paddingSide : 60);
     const pSideVal = document.getElementById('paddingSideVal');
-    if (pSideVal) pSideVal.textContent = s.paddingSide + 'px';
+    if (pSideVal) pSideVal.textContent = (s.paddingSide !== undefined ? s.paddingSide : 60) + 'px';
 
-    setVal('globalLineGapRange', s.globalLineGap);
+    setVal('globalLineGapRange', s.globalLineGap !== undefined ? s.globalLineGap : 12);
     const glgVal = document.getElementById('globalLineGapVal');
-    if (glgVal) glgVal.textContent = s.globalLineGap + 'px';
-
-    setVal('gradientIntensityRange', (s.gradientIntensity || 0.88) * 100);
-    const giVal = document.getElementById('gradientIntensityVal');
-    if (giVal) giVal.textContent = Math.round((s.gradientIntensity || 0.88) * 100) + '%';
-
-    setVal('boxOpacityRange', (s.boxOpacity || 0.95) * 100);
-    const boVal = document.getElementById('boxOpacityVal');
-    if (boVal) boVal.textContent = Math.round((s.boxOpacity || 0.95) * 100) + '%';
-
-    setVal('lineHeightDescRange', (s.lineHeightDesc || 1.4) * 10);
-    const lhVal = document.getElementById('lineHeightDescVal');
-    if (lhVal) lhVal.textContent = (s.lineHeightDesc || 1.4).toFixed(1) + 'x';
-    
-    setVal('imgZoomRange', (s.imgZoom || 1) * 100);
-    const zoomVal = document.getElementById('imgZoomVal');
-    if (zoomVal) zoomVal.textContent = (s.imgZoom || 1).toFixed(1) + 'x';
-
-    setVal('imgPanXRange', s.imgPanX || 0);
-    const panXVal = document.getElementById('imgPanXVal');
-    if (panXVal) panXVal.textContent = (s.imgPanX || 0) + 'px';
-
-    setVal('imgPanYRange', s.imgPanY || 0);
-    const panYVal = document.getElementById('imgPanYVal');
-    if (panYVal) panYVal.textContent = (s.imgPanY || 0) + 'px';
+    if (glgVal) glgVal.textContent = (s.globalLineGap !== undefined ? s.globalLineGap : 12) + 'px';
 
     setVal('splitRatioRange', Math.round((s.splitRatio !== undefined ? s.splitRatio : 0.60) * 100));
     const srVal = document.getElementById('splitRatioVal');
@@ -1535,16 +1562,37 @@ export class PedacoDoCeuStudio {
     const crVal = document.getElementById('cardRadiusVal');
     if (crVal) crVal.textContent = (s.cardRadius !== undefined ? s.cardRadius : 18) + 'px';
 
-    setVal('patternOpacityRange', (s.patternOpacity || 0.15) * 100);
+    // 6. Sliders de Efeitos Visuais & Foto
+    setVal('gradientIntensityRange', (s.gradientIntensity || 0.88) * 100);
+    const giVal = document.getElementById('gradientIntensityVal');
+    if (giVal) giVal.textContent = Math.round((s.gradientIntensity || 0.88) * 100) + '%';
+
+    setVal('boxOpacityRange', (s.boxOpacity || 0.95) * 100);
+    const boVal = document.getElementById('boxOpacityVal');
+    if (boVal) boVal.textContent = Math.round((s.boxOpacity || 0.95) * 100) + '%';
+
+    setVal('patternOpacityRange', (s.patternOpacity !== undefined ? s.patternOpacity : 0.35) * 100);
     const poVal = document.getElementById('patternOpacityVal');
-    if (poVal) poVal.textContent = Math.round((s.patternOpacity || 0.15) * 100) + '%';
+    if (poVal) poVal.textContent = Math.round((s.patternOpacity !== undefined ? s.patternOpacity : 0.35) * 100) + '%';
 
     setVal('bgImageOpacityRange', (s.bgImageOpacity || 0.6) * 100);
     const bgOpVal = document.getElementById('bgImageOpacityVal');
     if (bgOpVal) bgOpVal.textContent = Math.round((s.bgImageOpacity || 0.6) * 100) + '%';
 
-    // Checkboxes
-    const setCheck = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
+    setVal('imgZoomRange', (s.imgZoom || 1) * 100);
+    const zoomVal = document.getElementById('imgZoomVal');
+    if (zoomVal) zoomVal.textContent = (s.imgZoom || 1).toFixed(1) + 'x';
+
+    setVal('imgPanXRange', s.imgPanX || 0);
+    const panXVal = document.getElementById('imgPanXVal');
+    if (panXVal) panXVal.textContent = (s.imgPanX || 0) + 'px';
+
+    setVal('imgPanYRange', s.imgPanY || 0);
+    const panYVal = document.getElementById('imgPanYVal');
+    if (panYVal) panYVal.textContent = (s.imgPanY || 0) + 'px';
+
+    // 7. Checkboxes
+    setCheck('showHeaderCheck', s.showHeader);
     setCheck('showBadgeCheck', s.showBadge);
     setCheck('showCornersCheck', s.showBaroqueCorners);
     setCheck('showHighlightBoxCheck', s.showHighlightBox);
@@ -1552,7 +1600,7 @@ export class PedacoDoCeuStudio {
     setCheck('imgFlipHCheck', s.imgFlipH);
     setCheck('imgFlipVCheck', s.imgFlipV);
 
-    // Sincronização dos Botões Segmentados (Formato, Layout, Alinhamento, Enquadramento, Estilo de Fundo)
+    // 8. Botões Segmentados (Formato, Layout, Alinhamento, Enquadramento, Estilo de Fundo)
     document.querySelectorAll('[data-format]').forEach(btn => {
       btn.classList.toggle('active', btn.getAttribute('data-format') === s.format);
     });
@@ -1789,6 +1837,6 @@ export class PedacoDoCeuStudio {
 // Inicializa quando o DOM estiver pronto
 if (typeof document !== 'undefined') {
   document.addEventListener('DOMContentLoaded', () => {
-    window.pedacoStudio = new PedacoDoCeuStudio();
+    window.pedacoStudio = window.studioApp = new PedacoDoCeuStudio();
   });
 }

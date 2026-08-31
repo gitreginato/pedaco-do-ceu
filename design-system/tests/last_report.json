@@ -1,7 +1,7 @@
 {
-  "date": "2026-08-31T20:52:54.535Z",
-  "totalDurationSeconds": 81.72,
-  "totalPassed": 144,
+  "date": "2026-08-31T21:08:13.800Z",
+  "totalDurationSeconds": 83.33,
+  "totalPassed": 153,
   "totalFailed": 0,
   "suites": [
     {
@@ -494,15 +494,15 @@
           "pass": true
         },
         {
-          "name": "Performance sob stress: média de 12.44ms por mutação/render (< 50ms CPU mode)",
+          "name": "Performance sob stress: média de 14.42ms por mutação/render (< 50ms CPU mode)",
           "pass": true
         },
         {
-          "name": "Frame Budget: tempo médio de renderização = 12.25ms (< 60ms modo CPU software)",
+          "name": "Frame Budget: tempo médio de renderização = 14.51ms (< 60ms modo CPU software)",
           "pass": true
         },
         {
-          "name": "Frame Budget: latência p95 = 16.70ms (< 120ms)",
+          "name": "Frame Budget: latência p95 = 21.30ms (< 120ms)",
           "pass": true
         },
         {
@@ -648,6 +648,49 @@
         }
       ],
       "passed": 6,
+      "failed": 0
+    },
+    {
+      "name": "Validação Massiva de Todas as Configurações (Playwright)",
+      "tests": [
+        {
+          "name": "Slot 1: HeaderText atualizado",
+          "pass": true
+        },
+        {
+          "name": "Slot 2: BadgeText atualizado",
+          "pass": true
+        },
+        {
+          "name": "Slot 3: CategoryTag atualizado",
+          "pass": true
+        },
+        {
+          "name": "Slot 4: Title atualizado",
+          "pass": true
+        },
+        {
+          "name": "Slot 5: Subtitle atualizado",
+          "pass": true
+        },
+        {
+          "name": "Slot 6: Description atualizado",
+          "pass": true
+        },
+        {
+          "name": "Slot 7: HighlightText atualizado",
+          "pass": true
+        },
+        {
+          "name": "Slot 8: CtaText atualizado",
+          "pass": true
+        },
+        {
+          "name": "Exportação 2K: largura e altura 2160px renderizadas com perfeição",
+          "pass": true
+        }
+      ],
+      "passed": 9,
       "failed": 0
     }
   ],

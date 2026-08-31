@@ -733,22 +733,27 @@
     const scale = iteration > 0 ? Math.pow(0.9, iteration) : 1;
     const gap = Math.round((state.blockGap || 20) * scale);
     const lineGapExtra = (state.globalLineGap || 12) * scale;
-    let currentY = zone.y + (state.paddingTop !== void 0 ? state.paddingTop * scale : 20);
-    const maxTitleSize = Math.round(Math.min(state.sizeTitle || 46, zone.h * 0.16) * scale);
-    const subSize = Math.round(Math.min(state.sizeSubtitle || 20, maxTitleSize * 0.65) * scale);
-    const descSize = Math.round(Math.min(state.sizeDesc || 16, zone.h * 0.08) * scale);
+    let currentY = zone.y + Math.max(10, Math.round(((state.paddingTop || 40) - 30) * scale));
+    const titleSize = Math.round((state.sizeTitle || 46) * scale);
+    const subSize = Math.round((state.sizeSubtitle || 24) * scale);
+    const descSize = Math.round((state.sizeDesc || 16) * scale);
+    const tagSize = Math.round((state.sizeTag || 14) * scale);
+    const badgeSize = Math.round((state.sizeBadge || 12) * scale);
+    const highlightSize = Math.round((state.sizeHighlight || 14) * scale);
+    const ctaSize = Math.round((state.sizeCta || 14) * scale);
     if (state.showBadge && state.badgeText) {
       blocks.push({
         type: "badge",
         text: state.badgeText,
         x: centerX,
         y: currentY,
+        size: badgeSize,
         align: "center",
         color: state.colorBadge,
         colorBorder: state.colorBadge,
         maxWidth
       });
-      currentY += 34 + gap;
+      currentY += Math.round(badgeSize * 2.4) + gap;
     }
     if (state.categoryTag) {
       blocks.push({
@@ -756,23 +761,26 @@
         text: state.categoryTag.toUpperCase(),
         x: getX(),
         y: currentY,
+        size: tagSize,
         align,
-        font: `${state.weightTag || 700} ${Math.round((state.sizeTag || 14) * scale)}px ${state.fontTag || "'Cinzel', serif"}`,
+        font: `${state.weightTag || 700} ${tagSize}px ${state.fontTag || "'Cinzel', serif"}`,
         color: state.colorTag,
         letterSpacing: state.spacingTag !== void 0 ? state.spacingTag : 2,
         maxWidth
       });
-      currentY += Math.round(16 * scale) + Math.round(gap * 0.8) + Math.round(maxTitleSize * 0.82);
+      currentY += Math.round(tagSize * 1.5) + gap + Math.round(titleSize * 0.82);
     } else {
-      currentY += Math.round(maxTitleSize * 0.82);
+      currentY += Math.round(titleSize * 0.82);
     }
-    const titleFont = `${state.weightTitle || 700} ${maxTitleSize}px ${state.fontTitle || "'Cinzel Decorative', serif"}`;
-    const titleMetrics = measureWrappedText(ctx, state.title, maxTitleSize, maxWidth, state.fontTitle || "'Cinzel Decorative', serif");
+    const titleFontFamily = state.fontTitle || "'Cinzel Decorative', 'Cinzel', serif";
+    const titleFont = `${state.weightTitle || 700} ${titleSize}px ${titleFontFamily}`;
+    const titleMetrics = measureWrappedText(ctx, state.title, titleSize, maxWidth, titleFontFamily);
     blocks.push({
       type: "title",
       text: state.title,
+      size: titleSize,
       lines: titleMetrics.lines,
-      lineHeight: maxTitleSize * 1.1 + lineGapExtra * 0.3,
+      lineHeight: titleSize * 1.12 + lineGapExtra * 0.3,
       x: getX(),
       y: currentY,
       align,
@@ -783,12 +791,14 @@
       letterSpacing: state.spacingTitle,
       maxWidth
     });
-    currentY += (titleMetrics.lines.length - 1) * (maxTitleSize * 1.1 + lineGapExtra * 0.3) + Math.round(gap * 0.5) + Math.round(subSize * 0.75);
-    const subFont = `${state.styleSubtitle || "italic 500"} ${subSize}px ${state.fontSubtitle || "'Cormorant Garamond', serif"}`;
-    const subMetrics = measureWrappedText(ctx, state.subtitle, subSize, maxWidth, state.fontSubtitle || "'Cormorant Garamond', serif");
+    currentY += (titleMetrics.lines.length - 1) * (titleSize * 1.12 + lineGapExtra * 0.3) + Math.round(gap * 0.5) + Math.round(subSize * 0.75);
+    const subFontFamily = state.fontSubtitle || "'Cormorant Garamond', serif";
+    const subFont = `${state.styleSubtitle || "italic 500"} ${subSize}px ${subFontFamily}`;
+    const subMetrics = measureWrappedText(ctx, state.subtitle, subSize, maxWidth, subFontFamily);
     blocks.push({
       type: "subtitle",
       text: state.subtitle,
+      size: subSize,
       lines: subMetrics.lines,
       lineHeight: subSize * 1.25 + lineGapExtra * 0.2,
       x: getX(),
@@ -811,13 +821,15 @@
     if (state.description) {
       const descFontFamily = state.fontDesc || "'Montserrat', sans-serif";
       const descFont = `${state.weightDesc || 300} ${descSize}px ${descFontFamily}`;
+      const descLineH = state.lineHeightDesc ? Math.round(descSize * state.lineHeightDesc) + lineGapExtra * 0.15 : Math.round(descSize * 1.5) + lineGapExtra * 0.15;
       const descMetrics = measureWrappedText(ctx, state.description, descSize, maxWidth, descFontFamily);
       currentY += Math.round(descSize * 0.85);
       blocks.push({
         type: "description",
         text: state.description,
+        size: descSize,
         lines: descMetrics.lines,
-        lineHeight: descSize * (state.lineHeightDesc || 1.6) + lineGapExtra * 0.15,
+        lineHeight: descLineH,
         x: getX(),
         y: currentY,
         align,
@@ -825,12 +837,13 @@
         color: state.colorDesc,
         maxWidth
       });
-      currentY += (descMetrics.lines.length - 1) * (descSize * (state.lineHeightDesc || 1.6) + lineGapExtra * 0.15) + gap;
+      currentY += (descMetrics.lines.length - 1) * descLineH + gap;
     }
     if (state.showHighlightBox && state.highlightText) {
       blocks.push({
         type: "highlight",
         text: state.highlightText,
+        size: highlightSize,
         x: leftX,
         y: currentY,
         width: maxWidth,
@@ -841,21 +854,22 @@
       });
       currentY += 46 + gap;
     }
-    if (state.ctaText) {
+    if (state.ctaText && state.ctaText.trim() !== "") {
       const ctaY = Math.max(currentY + gap, zone.y + zone.h - 25);
       blocks.push({
         type: "cta",
         text: state.ctaText,
+        size: ctaSize,
         x: getX(),
         y: ctaY,
         align,
-        font: `${state.weightCta || 600} ${Math.round((state.sizeCta || 13) * scale)}px ${state.fontCta || "'Cinzel', serif"}`,
-        color: state.colorCta,
+        font: `${state.weightCta || 600} ${ctaSize}px ${state.fontCta || "'Cinzel', serif"}`,
+        color: state.colorCta || state.colorTitle,
         letterSpacing: state.spacingCta !== void 0 ? state.spacingCta : 1.5,
         maxWidth
       });
     }
-    if (currentY > zone.y + zone.h - 10 && iteration < 3) {
+    if (currentY > zone.y + zone.h + 20 && iteration < 3) {
       return calculateTextBlocks(ctx, state, zone, canvasW, canvasH, iteration + 1);
     }
     return blocks;
@@ -1134,34 +1148,14 @@
     draw(ctx, width, height, state) {
       const patternKey = state.sacredPattern;
       if (!patternKey || patternKey === "none") return;
+      const zones = calculateZones(width, height, state.layout, state);
       let cx = width / 2;
       let cy = height / 2;
       let radius = Math.min(width, height) * 0.38;
-      if (state.layout === "right") {
-        const splitX = Math.round(width * 0.6);
-        cx = splitX + (width - splitX) / 2;
-        cy = height / 2;
-        radius = (width - splitX) * 0.48;
-      } else if (state.layout === "left") {
-        const splitX = Math.round(width * 0.4);
-        cx = splitX / 2;
-        cy = height / 2;
-        radius = splitX * 0.48;
-      } else if (state.layout === "bottom") {
-        const cardH = state.format.startsWith("9:16") ? Math.round(height * 0.4) : Math.round(height * 0.44);
-        cx = width / 2;
-        cy = height - cardH / 2;
-        radius = Math.min(width * 0.35, cardH * 0.42);
-      } else if (state.layout === "top") {
-        const barH = Math.round(height * 0.38);
-        cx = width / 2;
-        cy = barH / 2;
-        radius = barH * 0.45;
-      } else if (state.layout === "center") {
-        const cardW = Math.min(width * 0.86, 740);
-        cx = width / 2;
-        cy = height / 2;
-        radius = cardW * 0.38;
+      if (zones && zones.text) {
+        cx = zones.text.x + zones.text.w / 2;
+        cy = zones.text.y + zones.text.h / 2;
+        radius = Math.min(zones.text.w * 0.44, zones.text.h * 0.44);
       }
       const strokeColor = state.colorPattern || state.colorDividers || "#d4af37";
       const opacity = state.patternOpacity !== void 0 ? state.patternOpacity : 0.35;
@@ -1540,6 +1534,22 @@
       const lineGapExtra = state.globalLineGap || 12;
       let curY = state.paddingTop || 90;
       const tagX = this.getAlignX(colX, innerW, state.align);
+      if (state.showHeader && state.headerText) {
+        const align = state.align || "center";
+        const headerX = align === "left" ? colX : align === "right" ? colX + innerW : colX + innerW / 2;
+        ctx.save();
+        ctx.textAlign = align;
+        ctx.fillStyle = state.colorHeader || "#d4af37";
+        ctx.font = `${state.weightHeader || 600} ${state.sizeHeader || 12}px ${state.fontHeader || "'Cinzel', serif"}`;
+        ctx.letterSpacing = `${state.spacingHeader !== void 0 ? state.spacingHeader : 2}px`;
+        ctx.fillText((state.headerText || "").toUpperCase(), headerX, Math.max(28, curY - 36));
+        ctx.letterSpacing = "0px";
+        ctx.restore();
+      }
+      if (state.showBadge && state.badgeText) {
+        curY = this.drawBadgePill(ctx, tagX, curY, state.badgeText, state.align === "center", state);
+        curY += gap * 0.4;
+      }
       if (state.categoryTag) {
         ctx.save();
         ctx.textAlign = state.align;
@@ -1579,7 +1589,7 @@
         ctx.fillStyle = state.colorSubtitle;
         const subFont = state.fontSubtitle || "'Cormorant Garamond', serif";
         const subSize = state.sizeSubtitle || 24;
-        const subStyle = state.styleSubtitle || "italic";
+        const subStyle = state.styleSubtitle || "italic 500";
         ctx.font = `${subStyle} ${subSize}px ${subFont}`;
         ctx.letterSpacing = `${state.spacingSubtitle !== void 0 ? state.spacingSubtitle : 0}px`;
         curY = this.drawWrappedText(ctx, state.subtitle, tagX, curY, innerW, Math.round(subSize * 1.25) + lineGapExtra);
@@ -1587,7 +1597,7 @@
         ctx.restore();
         curY += gap;
       }
-      this.drawCelestialDivider(ctx, colX, curY, innerW, state.colorDividers);
+      this.drawCelestialDivider(ctx, colX + innerW / 2, curY, Math.min(80, innerW * 0.4), state.colorDividers);
       curY += 26;
       if (state.description) {
         ctx.save();
@@ -1602,7 +1612,7 @@
         ctx.restore();
         curY += gap + 6;
       }
-      if (state.highlightText) {
+      if (state.showHighlightBox && state.highlightText) {
         curY = this.drawHighlightBox(ctx, colX, curY, innerW, state.highlightText, state);
         curY += gap;
       }
@@ -3608,10 +3618,14 @@
         if (el) el.addEventListener("change", (e) => {
           this.store.state[prop] = e.target.value;
           this.renderer.requestRender();
-          if (prop.startsWith("font")) {
-            const fontStr = e.target.value.replace(/'/g, "");
-            if (document.fonts) {
-              document.fonts.load(`16px ${fontStr}`).then(() => this.renderer.requestRender());
+          if (prop.startsWith("font") && e.target.value) {
+            const primaryFont = e.target.value.split(",")[0].replace(/['"]/g, "").trim();
+            if (primaryFont && document.fonts && document.fonts.load) {
+              try {
+                document.fonts.load(`16px "${primaryFont}"`).then(() => this.renderer.requestRender()).catch(() => {
+                });
+              } catch (_) {
+              }
             }
           }
         });
@@ -3858,6 +3872,10 @@
         const el = document.getElementById(id);
         if (el && val !== void 0) el.value = val;
       };
+      const setCheck = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.checked = !!val;
+      };
       setVal("titleInput", s.title);
       setVal("subtitleInput", s.subtitle);
       setVal("descriptionInput", s.description);
@@ -3865,6 +3883,7 @@
       setVal("highlightInput", s.highlightText);
       setVal("ctaInput", s.ctaText);
       setVal("badgeInput", s.badgeText);
+      setVal("headerTextInput", s.headerText);
       setVal("colorTitleInput", s.colorTitle);
       setVal("colorTitleGlowInput", s.colorTitleGlow);
       setVal("colorSubtitleInput", s.colorSubtitle);
@@ -3874,75 +3893,93 @@
       setVal("colorTagInput", s.colorTag);
       setVal("colorBadgeInput", s.colorBadge);
       setVal("colorCtaInput", s.colorCta);
+      setVal("colorHeaderInput", s.colorHeader);
       setVal("colorPatternInput", s.colorPattern);
       setVal("colorCornersInput", s.colorCorners);
       setVal("colorDividersInput", s.colorDividers);
       setVal("gradientPrimaryInput", s.gradientPrimary);
       setVal("gradientSecondaryInput", s.gradientSecondary);
       setVal("gradientDarknessInput", s.gradientDarkness);
-      setVal("fontTitleSelect", s.fontTitle);
-      setVal("weightTitleSelect", s.weightTitle);
-      setVal("fontSubtitleSelect", s.fontSubtitle);
-      setVal("styleSubtitleSelect", s.styleSubtitle);
-      setVal("fontDescSelect", s.fontDesc);
+      setVal("fontTitleSelect", s.fontTitle || "'Cinzel Decorative', serif");
+      setVal("weightTitleSelect", s.weightTitle || "700");
+      setVal("fontSubtitleSelect", s.fontSubtitle || "'Cormorant Garamond', serif");
+      setVal("styleSubtitleSelect", s.styleSubtitle || "italic 500");
+      setVal("fontDescSelect", s.fontDesc || "'Montserrat', sans-serif");
+      setVal("weightDescSelect", s.weightDesc || "300");
       setVal("fontHighlightSelect", s.fontHighlight || "'Montserrat', sans-serif");
+      setVal("weightHighlightSelect", s.weightHighlight || "600");
       setVal("fontCtaSelect", s.fontCta || "'Cinzel', serif");
       setVal("weightCtaSelect", s.weightCta || "600");
-      setVal("sacredPatternSelect", s.sacredPattern);
-      setVal("sizeTitleRange", s.sizeTitle);
+      setVal("fontHeaderSelect", s.fontHeader || "'Cinzel', serif");
+      setVal("weightHeaderSelect", s.weightHeader || "600");
+      setVal("fontBadgeSelect", s.fontBadge || "'Cinzel', serif");
+      setVal("weightBadgeSelect", s.weightBadge || "700");
+      setVal("fontTagSelect", s.fontTag || "'Cinzel', serif");
+      setVal("weightTagSelect", s.weightTag || "700");
+      setVal("sacredPatternSelect", s.sacredPattern || "flowerOfLife");
+      setVal("sizeTitleRange", s.sizeTitle || 54);
       const sizeTitleVal = document.getElementById("sizeTitleVal");
-      if (sizeTitleVal) sizeTitleVal.textContent = s.sizeTitle + "px";
-      setVal("spacingTitleRange", s.spacingTitle);
+      if (sizeTitleVal) sizeTitleVal.textContent = (s.sizeTitle || 54) + "px";
+      setVal("spacingTitleRange", s.spacingTitle !== void 0 ? s.spacingTitle : 1);
       const spacingTitleVal = document.getElementById("spacingTitleVal");
-      if (spacingTitleVal) spacingTitleVal.textContent = s.spacingTitle + "px";
-      setVal("glowTitleRange", s.glowTitle);
+      if (spacingTitleVal) spacingTitleVal.textContent = (s.spacingTitle !== void 0 ? s.spacingTitle : 1) + "px";
+      setVal("glowTitleRange", s.glowTitle !== void 0 ? s.glowTitle : 0);
       const glowTitleVal = document.getElementById("glowTitleVal");
-      if (glowTitleVal) glowTitleVal.textContent = s.glowTitle + "px";
-      setVal("sizeSubtitleRange", s.sizeSubtitle);
+      if (glowTitleVal) glowTitleVal.textContent = (s.glowTitle !== void 0 ? s.glowTitle : 0) + "px";
+      setVal("sizeSubtitleRange", s.sizeSubtitle || 26);
       const sizeSubVal = document.getElementById("sizeSubtitleVal");
-      if (sizeSubVal) sizeSubVal.textContent = s.sizeSubtitle + "px";
-      setVal("sizeDescRange", s.sizeDesc);
+      if (sizeSubVal) sizeSubVal.textContent = (s.sizeSubtitle || 26) + "px";
+      setVal("spacingSubtitleRange", s.spacingSubtitle !== void 0 ? s.spacingSubtitle : 0);
+      const spacingSubVal = document.getElementById("spacingSubtitleVal");
+      if (spacingSubVal) spacingSubVal.textContent = (s.spacingSubtitle !== void 0 ? s.spacingSubtitle : 0) + "px";
+      setVal("sizeDescRange", s.sizeDesc || 18);
       const sizeDescVal = document.getElementById("sizeDescVal");
-      if (sizeDescVal) sizeDescVal.textContent = s.sizeDesc + "px";
+      if (sizeDescVal) sizeDescVal.textContent = (s.sizeDesc || 18) + "px";
+      setVal("lineHeightDescRange", (s.lineHeightDesc || 1.4) * 10);
+      const lhVal = document.getElementById("lineHeightDescVal");
+      if (lhVal) lhVal.textContent = (s.lineHeightDesc || 1.4).toFixed(1) + "x";
       setVal("sizeHighlightRange", s.sizeHighlight || 14);
       const sizeHighVal = document.getElementById("sizeHighlightVal");
       if (sizeHighVal) sizeHighVal.textContent = (s.sizeHighlight || 14) + "px";
+      setVal("spacingHighlightRange", s.spacingHighlight !== void 0 ? s.spacingHighlight : 1);
+      const spacingHighVal = document.getElementById("spacingHighlightVal");
+      if (spacingHighVal) spacingHighVal.textContent = (s.spacingHighlight !== void 0 ? s.spacingHighlight : 1) + "px";
       setVal("sizeCtaRange", s.sizeCta || 14);
       const sizeCtaVal = document.getElementById("sizeCtaVal");
       if (sizeCtaVal) sizeCtaVal.textContent = (s.sizeCta || 14) + "px";
       setVal("spacingCtaRange", s.spacingCta !== void 0 ? s.spacingCta : 1);
       const spacingCtaVal = document.getElementById("spacingCtaVal");
       if (spacingCtaVal) spacingCtaVal.textContent = (s.spacingCta !== void 0 ? s.spacingCta : 1) + "px";
-      setVal("paddingTopRange", s.paddingTop);
+      setVal("sizeHeaderRange", s.sizeHeader || 12);
+      const sizeHeaderVal = document.getElementById("sizeHeaderVal");
+      if (sizeHeaderVal) sizeHeaderVal.textContent = (s.sizeHeader || 12) + "px";
+      setVal("spacingHeaderRange", s.spacingHeader !== void 0 ? s.spacingHeader : 2);
+      const spacingHeaderVal = document.getElementById("spacingHeaderVal");
+      if (spacingHeaderVal) spacingHeaderVal.textContent = (s.spacingHeader !== void 0 ? s.spacingHeader : 2) + "px";
+      setVal("sizeBadgeRange", s.sizeBadge || 12);
+      const sizeBadgeVal = document.getElementById("sizeBadgeVal");
+      if (sizeBadgeVal) sizeBadgeVal.textContent = (s.sizeBadge || 12) + "px";
+      setVal("spacingBadgeRange", s.spacingBadge !== void 0 ? s.spacingBadge : 1);
+      const spacingBadgeVal = document.getElementById("spacingBadgeVal");
+      if (spacingBadgeVal) spacingBadgeVal.textContent = (s.spacingBadge !== void 0 ? s.spacingBadge : 1) + "px";
+      setVal("sizeTagRange", s.sizeTag || 14);
+      const sizeTagVal = document.getElementById("sizeTagVal");
+      if (sizeTagVal) sizeTagVal.textContent = (s.sizeTag || 14) + "px";
+      setVal("spacingTagRange", s.spacingTag !== void 0 ? s.spacingTag : 2);
+      const spacingTagVal = document.getElementById("spacingTagVal");
+      if (spacingTagVal) spacingTagVal.textContent = (s.spacingTag !== void 0 ? s.spacingTag : 2) + "px";
+      setVal("paddingTopRange", s.paddingTop !== void 0 ? s.paddingTop : 90);
       const pTopVal = document.getElementById("paddingTopVal");
-      if (pTopVal) pTopVal.textContent = s.paddingTop + "px";
-      setVal("blockGapRange", s.blockGap);
+      if (pTopVal) pTopVal.textContent = (s.paddingTop !== void 0 ? s.paddingTop : 90) + "px";
+      setVal("blockGapRange", s.blockGap !== void 0 ? s.blockGap : 20);
       const bgVal = document.getElementById("blockGapVal");
-      if (bgVal) bgVal.textContent = s.blockGap + "px";
-      setVal("paddingSideRange", s.paddingSide);
+      if (bgVal) bgVal.textContent = (s.blockGap !== void 0 ? s.blockGap : 20) + "px";
+      setVal("paddingSideRange", s.paddingSide !== void 0 ? s.paddingSide : 60);
       const pSideVal = document.getElementById("paddingSideVal");
-      if (pSideVal) pSideVal.textContent = s.paddingSide + "px";
-      setVal("globalLineGapRange", s.globalLineGap);
+      if (pSideVal) pSideVal.textContent = (s.paddingSide !== void 0 ? s.paddingSide : 60) + "px";
+      setVal("globalLineGapRange", s.globalLineGap !== void 0 ? s.globalLineGap : 12);
       const glgVal = document.getElementById("globalLineGapVal");
-      if (glgVal) glgVal.textContent = s.globalLineGap + "px";
-      setVal("gradientIntensityRange", (s.gradientIntensity || 0.88) * 100);
-      const giVal = document.getElementById("gradientIntensityVal");
-      if (giVal) giVal.textContent = Math.round((s.gradientIntensity || 0.88) * 100) + "%";
-      setVal("boxOpacityRange", (s.boxOpacity || 0.95) * 100);
-      const boVal = document.getElementById("boxOpacityVal");
-      if (boVal) boVal.textContent = Math.round((s.boxOpacity || 0.95) * 100) + "%";
-      setVal("lineHeightDescRange", (s.lineHeightDesc || 1.4) * 10);
-      const lhVal = document.getElementById("lineHeightDescVal");
-      if (lhVal) lhVal.textContent = (s.lineHeightDesc || 1.4).toFixed(1) + "x";
-      setVal("imgZoomRange", (s.imgZoom || 1) * 100);
-      const zoomVal = document.getElementById("imgZoomVal");
-      if (zoomVal) zoomVal.textContent = (s.imgZoom || 1).toFixed(1) + "x";
-      setVal("imgPanXRange", s.imgPanX || 0);
-      const panXVal = document.getElementById("imgPanXVal");
-      if (panXVal) panXVal.textContent = (s.imgPanX || 0) + "px";
-      setVal("imgPanYRange", s.imgPanY || 0);
-      const panYVal = document.getElementById("imgPanYVal");
-      if (panYVal) panYVal.textContent = (s.imgPanY || 0) + "px";
+      if (glgVal) glgVal.textContent = (s.globalLineGap !== void 0 ? s.globalLineGap : 12) + "px";
       setVal("splitRatioRange", Math.round((s.splitRatio !== void 0 ? s.splitRatio : 0.6) * 100));
       const srVal = document.getElementById("splitRatioVal");
       if (srVal) srVal.textContent = Math.round((s.splitRatio !== void 0 ? s.splitRatio : 0.6) * 100) + "%";
@@ -3952,16 +3989,28 @@
       setVal("cardRadiusRange", s.cardRadius !== void 0 ? s.cardRadius : 18);
       const crVal = document.getElementById("cardRadiusVal");
       if (crVal) crVal.textContent = (s.cardRadius !== void 0 ? s.cardRadius : 18) + "px";
-      setVal("patternOpacityRange", (s.patternOpacity || 0.15) * 100);
+      setVal("gradientIntensityRange", (s.gradientIntensity || 0.88) * 100);
+      const giVal = document.getElementById("gradientIntensityVal");
+      if (giVal) giVal.textContent = Math.round((s.gradientIntensity || 0.88) * 100) + "%";
+      setVal("boxOpacityRange", (s.boxOpacity || 0.95) * 100);
+      const boVal = document.getElementById("boxOpacityVal");
+      if (boVal) boVal.textContent = Math.round((s.boxOpacity || 0.95) * 100) + "%";
+      setVal("patternOpacityRange", (s.patternOpacity !== void 0 ? s.patternOpacity : 0.35) * 100);
       const poVal = document.getElementById("patternOpacityVal");
-      if (poVal) poVal.textContent = Math.round((s.patternOpacity || 0.15) * 100) + "%";
+      if (poVal) poVal.textContent = Math.round((s.patternOpacity !== void 0 ? s.patternOpacity : 0.35) * 100) + "%";
       setVal("bgImageOpacityRange", (s.bgImageOpacity || 0.6) * 100);
       const bgOpVal = document.getElementById("bgImageOpacityVal");
       if (bgOpVal) bgOpVal.textContent = Math.round((s.bgImageOpacity || 0.6) * 100) + "%";
-      const setCheck = (id, val) => {
-        const el = document.getElementById(id);
-        if (el) el.checked = !!val;
-      };
+      setVal("imgZoomRange", (s.imgZoom || 1) * 100);
+      const zoomVal = document.getElementById("imgZoomVal");
+      if (zoomVal) zoomVal.textContent = (s.imgZoom || 1).toFixed(1) + "x";
+      setVal("imgPanXRange", s.imgPanX || 0);
+      const panXVal = document.getElementById("imgPanXVal");
+      if (panXVal) panXVal.textContent = (s.imgPanX || 0) + "px";
+      setVal("imgPanYRange", s.imgPanY || 0);
+      const panYVal = document.getElementById("imgPanYVal");
+      if (panYVal) panYVal.textContent = (s.imgPanY || 0) + "px";
+      setCheck("showHeaderCheck", s.showHeader);
       setCheck("showBadgeCheck", s.showBadge);
       setCheck("showCornersCheck", s.showBaroqueCorners);
       setCheck("showHighlightBoxCheck", s.showHighlightBox);
@@ -4192,7 +4241,7 @@
   };
   if (typeof document !== "undefined") {
     document.addEventListener("DOMContentLoaded", () => {
-      window.pedacoStudio = new PedacoDoCeuStudio();
+      window.pedacoStudio = window.studioApp = new PedacoDoCeuStudio();
     });
   }
 })();

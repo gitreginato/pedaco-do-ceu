@@ -222,6 +222,46 @@ async function suiteLayoutRefinementPlaywright(page, results) {
   results.push(suite);
 }
 
+async function suiteMassiveSettingsValidation(page, results) {
+  const suite = { name: 'Validação Massiva de Todas as Configurações (Playwright)', tests: [], passed: 0, failed: 0 };
+  function assert(name, condition) {
+    if (condition) { suite.passed++; suite.tests.push({ name, pass: true }); }
+    else { suite.failed++; suite.tests.push({ name, pass: false }); }
+  }
+
+  // 1. Textos e Cores de todos os Slots
+  await page.click('button[data-target="tab-textos"]');
+  await page.waitForTimeout(50);
+  await page.$eval('#headerTextInput', el => { el.value = '✦ LOJA SAGRADA ✦'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.$eval('#badgeInput', el => { el.value = 'SELO MÍSTICO'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.$eval('#categoryTagInput', el => { el.value = 'PROTEÇÃO DIVINA'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.$eval('#titleInput', el => { el.value = 'Pirâmide de Orgonite'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.$eval('#subtitleInput', el => { el.value = 'Harmonização & Cura'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.$eval('#descriptionInput', el => { el.value = 'Canalizadora de energia positiva.'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.$eval('#highlightInput', el => { el.value = '✦ Transmuta energias densas'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.$eval('#ctaInput', el => { el.value = 'Visite nossa loja'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.waitForTimeout(100);
+
+  const s = await page.evaluate(() => window.pedacoStudio.store.state);
+  assert('Slot 1: HeaderText atualizado', s.headerText === '✦ LOJA SAGRADA ✦');
+  assert('Slot 2: BadgeText atualizado', s.badgeText === 'SELO MÍSTICO');
+  assert('Slot 3: CategoryTag atualizado', s.categoryTag === 'PROTEÇÃO DIVINA');
+  assert('Slot 4: Title atualizado', s.title === 'Pirâmide de Orgonite');
+  assert('Slot 5: Subtitle atualizado', s.subtitle === 'Harmonização & Cura');
+  assert('Slot 6: Description atualizado', s.description === 'Canalizadora de energia positiva.');
+  assert('Slot 7: HighlightText atualizado', s.highlightText === '✦ Transmuta energias densas');
+  assert('Slot 8: CtaText atualizado', s.ctaText === 'Visite nossa loja');
+
+  // 2. Exportação em Alta Resolução 2K
+  const offscreen = await page.evaluate(async () => {
+    const canvas = await window.pedacoStudio.renderer.renderHighRes(2);
+    return { width: canvas ? canvas.width : 0, height: canvas ? canvas.height : 0 };
+  });
+  assert('Exportação 2K: largura e altura 2160px renderizadas com perfeição', offscreen.width >= 2160 && offscreen.height >= 2160);
+
+  results.push(suite);
+}
+
 // =========================================================
 // RUNNER MESTRE CONSOLIDADO
 // =========================================================
@@ -292,6 +332,7 @@ async function suiteLayoutRefinementPlaywright(page, results) {
   await suiteExport(page, uiResults);
   await suiteLayoutEsquerdoSDD_TDD_ODD(page, uiResults);
   await suiteLayoutRefinementPlaywright(page, uiResults);
+  await suiteMassiveSettingsValidation(page, uiResults);
   for (const s of uiResults) {
     allSuites.push(s);
   }

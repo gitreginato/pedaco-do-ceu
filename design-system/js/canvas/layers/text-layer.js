@@ -75,7 +75,28 @@ export class TextLayer extends BaseLayer {
     let curY = state.paddingTop || 90;
     const tagX = this.getAlignX(colX, innerW, state.align);
 
-    // 1. Tag de Categoria
+    // 0. Header Superior Global (se ativo)
+    if (state.showHeader && state.headerText) {
+      const align = state.align || 'center';
+      const headerX = align === 'left' ? colX :
+                      align === 'right' ? (colX + innerW) : (colX + innerW / 2);
+      ctx.save();
+      ctx.textAlign = align;
+      ctx.fillStyle = state.colorHeader || '#d4af37';
+      ctx.font = `${state.weightHeader || 600} ${state.sizeHeader || 12}px ${state.fontHeader || "'Cinzel', serif"}`;
+      ctx.letterSpacing = `${state.spacingHeader !== undefined ? state.spacingHeader : 2}px`;
+      ctx.fillText((state.headerText || '').toUpperCase(), headerX, Math.max(28, curY - 36));
+      ctx.letterSpacing = '0px';
+      ctx.restore();
+    }
+
+    // 1. Selo Místico Superior (Badge Pill)
+    if (state.showBadge && state.badgeText) {
+      curY = this.drawBadgePill(ctx, tagX, curY, state.badgeText, state.align === 'center', state);
+      curY += gap * 0.4;
+    }
+
+    // 2. Tag de Categoria
     if (state.categoryTag) {
       ctx.save();
       ctx.textAlign = state.align;
@@ -91,7 +112,7 @@ export class TextLayer extends BaseLayer {
       curY += Math.round(tSize * 1.5) + gap;
     }
 
-    // 2. Título Principal
+    // 3. Título Principal
     if (state.title) {
       ctx.save();
       ctx.textAlign = state.align;
@@ -112,14 +133,14 @@ export class TextLayer extends BaseLayer {
       curY += gap;
     }
 
-    // 3. Subtítulo Poético
+    // 4. Subtítulo Poético
     if (state.subtitle) {
       ctx.save();
       ctx.textAlign = state.align;
       ctx.fillStyle = state.colorSubtitle;
       const subFont = state.fontSubtitle || "'Cormorant Garamond', serif";
       const subSize = state.sizeSubtitle || 24;
-      const subStyle = state.styleSubtitle || "italic";
+      const subStyle = state.styleSubtitle || "italic 500";
       ctx.font = `${subStyle} ${subSize}px ${subFont}`;
       ctx.letterSpacing = `${state.spacingSubtitle !== undefined ? state.spacingSubtitle : 0}px`;
       curY = this.drawWrappedText(ctx, state.subtitle, tagX, curY, innerW, Math.round(subSize * 1.25) + lineGapExtra);
@@ -128,11 +149,11 @@ export class TextLayer extends BaseLayer {
       curY += gap;
     }
 
-    // Divisor Sagrado Místico
-    this.drawCelestialDivider(ctx, colX, curY, innerW, state.colorDividers);
+    // Divisor Sagrado Místico (perfeitamente centralizado na coluna)
+    this.drawCelestialDivider(ctx, colX + innerW / 2, curY, Math.min(80, innerW * 0.4), state.colorDividers);
     curY += 26;
 
-    // 4. Descrição do Produto
+    // 5. Descrição do Produto
     if (state.description) {
       ctx.save();
       ctx.textAlign = state.align;
@@ -147,13 +168,13 @@ export class TextLayer extends BaseLayer {
       curY += gap + 6;
     }
 
-    // 5. Destaque Vibracional
-    if (state.highlightText) {
+    // 6. Destaque Vibracional
+    if (state.showHighlightBox && state.highlightText) {
       curY = this.drawHighlightBox(ctx, colX, curY, innerW, state.highlightText, state);
       curY += gap;
     }
 
-    // 6. Chamada para Ação / CTA
+    // 7. Chamada para Ação / CTA
     if (state.ctaText && state.ctaText.trim() !== '') {
       const ctaY = Math.max(curY + 10, H - 55);
       ctx.save();

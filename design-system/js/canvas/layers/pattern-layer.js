@@ -1,5 +1,6 @@
 // Camada de Geometria Sagrada Vetorial Procedural em Alta Definição - Pedaço do Céu Studio v2.0
 import { BaseLayer } from './base.js';
+import { calculateZones } from '../layout-engine.js';
 
 export class PatternLayer extends BaseLayer {
   constructor() {
@@ -10,35 +11,15 @@ export class PatternLayer extends BaseLayer {
     const patternKey = state.sacredPattern;
     if (!patternKey || patternKey === 'none') return;
 
+    const zones = calculateZones(width, height, state.layout, state);
     let cx = width / 2;
     let cy = height / 2;
     let radius = Math.min(width, height) * 0.38;
 
-    if (state.layout === 'right') {
-      const splitX = Math.round(width * 0.60);
-      cx = splitX + (width - splitX) / 2;
-      cy = height / 2;
-      radius = (width - splitX) * 0.48;
-    } else if (state.layout === 'left') {
-      const splitX = Math.round(width * 0.40);
-      cx = splitX / 2;
-      cy = height / 2;
-      radius = splitX * 0.48;
-    } else if (state.layout === 'bottom') {
-      const cardH = state.format.startsWith('9:16') ? Math.round(height * 0.40) : Math.round(height * 0.44);
-      cx = width / 2;
-      cy = height - cardH / 2;
-      radius = Math.min(width * 0.35, cardH * 0.42);
-    } else if (state.layout === 'top') {
-      const barH = Math.round(height * 0.38);
-      cx = width / 2;
-      cy = barH / 2;
-      radius = barH * 0.45;
-    } else if (state.layout === 'center') {
-      const cardW = Math.min(width * 0.86, 740);
-      cx = width / 2;
-      cy = height / 2;
-      radius = cardW * 0.38;
+    if (zones && zones.text) {
+      cx = zones.text.x + zones.text.w / 2;
+      cy = zones.text.y + zones.text.h / 2;
+      radius = Math.min(zones.text.w * 0.44, zones.text.h * 0.44);
     }
 
     const strokeColor = state.colorPattern || state.colorDividers || '#d4af37';

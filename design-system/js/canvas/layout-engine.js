@@ -155,16 +155,20 @@ export function calculateTextBlocks(ctx, state, zone, canvasW, canvasH, iteratio
     return centerX;
   };
 
-  // Escala dinâmica se houver overflow
+  // Escala dinâmica se houver overflow severo
   const scale = iteration > 0 ? Math.pow(0.9, iteration) : 1.0;
   const gap = Math.round((state.blockGap || 20) * scale);
   const lineGapExtra = (state.globalLineGap || 12) * scale;
-  let currentY = zone.y + (state.paddingTop !== undefined ? state.paddingTop * scale : 20);
+  let currentY = zone.y + Math.max(10, Math.round(((state.paddingTop || 40) - 30) * scale));
 
-  // Tamanhos de fonte proporcionais
-  const maxTitleSize = Math.round(Math.min(state.sizeTitle || 46, zone.h * 0.16) * scale);
-  const subSize = Math.round(Math.min(state.sizeSubtitle || 20, maxTitleSize * 0.65) * scale);
-  const descSize = Math.round(Math.min(state.sizeDesc || 16, zone.h * 0.08) * scale);
+  // Tamanhos de fonte respeitando o controle do usuário
+  const titleSize = Math.round((state.sizeTitle || 46) * scale);
+  const subSize = Math.round((state.sizeSubtitle || 24) * scale);
+  const descSize = Math.round((state.sizeDesc || 16) * scale);
+  const tagSize = Math.round((state.sizeTag || 14) * scale);
+  const badgeSize = Math.round((state.sizeBadge || 12) * scale);
+  const highlightSize = Math.round((state.sizeHighlight || 14) * scale);
+  const ctaSize = Math.round((state.sizeCta || 14) * scale);
 
   // 1. Badge (Selo Superior)
   if (state.showBadge && state.badgeText) {
@@ -173,12 +177,13 @@ export function calculateTextBlocks(ctx, state, zone, canvasW, canvasH, iteratio
       text: state.badgeText,
       x: centerX,
       y: currentY,
+      size: badgeSize,
       align: 'center',
       color: state.colorBadge,
       colorBorder: state.colorBadge,
       maxWidth: maxWidth
     });
-    currentY += 34 + gap;
+    currentY += Math.round(badgeSize * 2.4) + gap;
   }
 
   // 2. Tag / Categoria
@@ -188,26 +193,29 @@ export function calculateTextBlocks(ctx, state, zone, canvasW, canvasH, iteratio
       text: state.categoryTag.toUpperCase(),
       x: getX(),
       y: currentY,
+      size: tagSize,
       align: align,
-      font: `${state.weightTag || 700} ${Math.round((state.sizeTag || 14) * scale)}px ${state.fontTag || "'Cinzel', serif"}`,
+      font: `${state.weightTag || 700} ${tagSize}px ${state.fontTag || "'Cinzel', serif"}`,
       color: state.colorTag,
       letterSpacing: state.spacingTag !== undefined ? state.spacingTag : 2,
       maxWidth: maxWidth
     });
-    currentY += Math.round(16 * scale) + Math.round(gap * 0.8) + Math.round(maxTitleSize * 0.82);
+    currentY += Math.round(tagSize * 1.5) + gap + Math.round(titleSize * 0.82);
   } else {
-    currentY += Math.round(maxTitleSize * 0.82);
+    currentY += Math.round(titleSize * 0.82);
   }
 
   // 3. Título Principal
-  const titleFont = `${state.weightTitle || 700} ${maxTitleSize}px ${state.fontTitle || "'Cinzel Decorative', serif"}`;
-  const titleMetrics = measureWrappedText(ctx, state.title, maxTitleSize, maxWidth, state.fontTitle || "'Cinzel Decorative', serif");
+  const titleFontFamily = state.fontTitle || "'Cinzel Decorative', 'Cinzel', serif";
+  const titleFont = `${state.weightTitle || 700} ${titleSize}px ${titleFontFamily}`;
+  const titleMetrics = measureWrappedText(ctx, state.title, titleSize, maxWidth, titleFontFamily);
   
   blocks.push({
     type: 'title',
     text: state.title,
+    size: titleSize,
     lines: titleMetrics.lines,
-    lineHeight: maxTitleSize * 1.10 + lineGapExtra * 0.3,
+    lineHeight: titleSize * 1.12 + lineGapExtra * 0.3,
     x: getX(),
     y: currentY,
     align: align,
@@ -218,15 +226,17 @@ export function calculateTextBlocks(ctx, state, zone, canvasW, canvasH, iteratio
     letterSpacing: state.spacingTitle,
     maxWidth: maxWidth
   });
-  currentY += ((titleMetrics.lines.length - 1) * (maxTitleSize * 1.10 + lineGapExtra * 0.3)) + Math.round(gap * 0.5) + Math.round(subSize * 0.75);
+  currentY += ((titleMetrics.lines.length - 1) * (titleSize * 1.12 + lineGapExtra * 0.3)) + Math.round(gap * 0.5) + Math.round(subSize * 0.75);
 
   // 4. Subtítulo
-  const subFont = `${state.styleSubtitle || 'italic 500'} ${subSize}px ${state.fontSubtitle || "'Cormorant Garamond', serif"}`;
-  const subMetrics = measureWrappedText(ctx, state.subtitle, subSize, maxWidth, state.fontSubtitle || "'Cormorant Garamond', serif");
+  const subFontFamily = state.fontSubtitle || "'Cormorant Garamond', serif";
+  const subFont = `${state.styleSubtitle || 'italic 500'} ${subSize}px ${subFontFamily}`;
+  const subMetrics = measureWrappedText(ctx, state.subtitle, subSize, maxWidth, subFontFamily);
 
   blocks.push({
     type: 'subtitle',
     text: state.subtitle,
+    size: subSize,
     lines: subMetrics.lines,
     lineHeight: subSize * 1.25 + lineGapExtra * 0.2,
     x: getX(),
@@ -253,14 +263,16 @@ export function calculateTextBlocks(ctx, state, zone, canvasW, canvasH, iteratio
   if (state.description) {
     const descFontFamily = state.fontDesc || "'Montserrat', sans-serif";
     const descFont = `${state.weightDesc || 300} ${descSize}px ${descFontFamily}`;
+    const descLineH = state.lineHeightDesc ? Math.round(descSize * state.lineHeightDesc) + lineGapExtra * 0.15 : Math.round(descSize * 1.5) + lineGapExtra * 0.15;
     const descMetrics = measureWrappedText(ctx, state.description, descSize, maxWidth, descFontFamily);
     currentY += Math.round(descSize * 0.85);
 
     blocks.push({
       type: 'description',
       text: state.description,
+      size: descSize,
       lines: descMetrics.lines,
-      lineHeight: descSize * (state.lineHeightDesc || 1.6) + lineGapExtra * 0.15,
+      lineHeight: descLineH,
       x: getX(),
       y: currentY,
       align: align,
@@ -268,7 +280,7 @@ export function calculateTextBlocks(ctx, state, zone, canvasW, canvasH, iteratio
       color: state.colorDesc,
       maxWidth: maxWidth
     });
-    currentY += ((descMetrics.lines.length - 1) * (descSize * (state.lineHeightDesc || 1.6) + lineGapExtra * 0.15)) + gap;
+    currentY += ((descMetrics.lines.length - 1) * descLineH) + gap;
   }
 
   // 7. Highlight / Afirmação Sagrada
@@ -276,6 +288,7 @@ export function calculateTextBlocks(ctx, state, zone, canvasW, canvasH, iteratio
     blocks.push({
       type: 'highlight',
       text: state.highlightText,
+      size: highlightSize,
       x: leftX,
       y: currentY,
       width: maxWidth,
@@ -288,23 +301,24 @@ export function calculateTextBlocks(ctx, state, zone, canvasW, canvasH, iteratio
   }
 
   // 8. CTA / Assinatura (ancorado com safe area)
-  if (state.ctaText) {
+  if (state.ctaText && state.ctaText.trim() !== '') {
     const ctaY = Math.max(currentY + gap, zone.y + zone.h - 25);
     blocks.push({
       type: 'cta',
       text: state.ctaText,
+      size: ctaSize,
       x: getX(),
       y: ctaY,
       align: align,
-      font: `${state.weightCta || 600} ${Math.round((state.sizeCta || 13) * scale)}px ${state.fontCta || "'Cinzel', serif"}`,
-      color: state.colorCta,
+      font: `${state.weightCta || 600} ${ctaSize}px ${state.fontCta || "'Cinzel', serif"}`,
+      color: state.colorCta || state.colorTitle,
       letterSpacing: state.spacingCta !== undefined ? state.spacingCta : 1.5,
       maxWidth: maxWidth
     });
   }
 
-  // Text Fit Mode: se o conteúdo estourar a altura da zona segura, reduz recursivamente até 3 vezes
-  if (currentY > zone.y + zone.h - 10 && iteration < 3) {
+  // Text Fit Mode: se o conteúdo estourar excessivamente a altura da zona segura, reduz recursivamente até 3 vezes
+  if (currentY > zone.y + zone.h + 20 && iteration < 3) {
     return calculateTextBlocks(ctx, state, zone, canvasW, canvasH, iteration + 1);
   }
 
