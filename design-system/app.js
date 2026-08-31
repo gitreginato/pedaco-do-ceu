@@ -411,6 +411,25 @@
   var GradientLayer = class extends BaseLayer {
     constructor() {
       super("gradient", 10);
+      this.stars = this.generateDeterministicStars(90);
+    }
+    generateDeterministicStars(count) {
+      const stars = [];
+      let seed = 432;
+      const pseudoRandom = () => {
+        seed = (seed * 9301 + 49297) % 233280;
+        return seed / 233280;
+      };
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          xRatio: pseudoRandom(),
+          yRatio: pseudoRandom(),
+          radius: 0.6 + pseudoRandom() * 1.6,
+          alpha: 0.15 + pseudoRandom() * 0.45,
+          isCross: pseudoRandom() > 0.82
+        });
+      }
+      return stars;
     }
     draw(ctx, width, height, state) {
       if (state.bgImageObj) {
@@ -419,14 +438,60 @@
         ctx.fillStyle = hexToRgba(state.gradientDarkness, 1 - (state.bgImageOpacity || 0.6));
         ctx.fillRect(0, 0, width, height);
         ctx.restore();
-      } else {
-        const grad = ctx.createLinearGradient(0, 0, width, height);
-        grad.addColorStop(0, state.gradientPrimary);
-        grad.addColorStop(0.5, state.gradientSecondary);
-        grad.addColorStop(1, state.gradientDarkness);
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, width, height);
+        return;
       }
+      const intensity = state.gradientIntensity || 0.88;
+      const cPrimary = state.gradientPrimary || "#00381c";
+      const cSecondary = state.gradientSecondary || "#008542";
+      const cDarkness = state.gradientDarkness || "#050c07";
+      const cGold = state.colorDividers || "#d4af37";
+      ctx.fillStyle = cDarkness;
+      ctx.fillRect(0, 0, width, height);
+      const focalX = state.layout === "right" ? width * 0.35 : state.layout === "left" ? width * 0.65 : width * 0.5;
+      const focalY = state.layout === "bottom" ? height * 0.35 : state.layout === "top" ? height * 0.65 : height * 0.45;
+      const focalRadius = Math.max(width, height) * 0.85;
+      const radialGrad = ctx.createRadialGradient(focalX, focalY, 20, focalX, focalY, focalRadius);
+      radialGrad.addColorStop(0, hexToRgba(cSecondary, 0.95 * intensity));
+      radialGrad.addColorStop(0.35, hexToRgba(cPrimary, 0.85 * intensity));
+      radialGrad.addColorStop(0.75, hexToRgba(cDarkness, 0.92 * intensity));
+      radialGrad.addColorStop(1, hexToRgba("#010402", 0.98));
+      ctx.fillStyle = radialGrad;
+      ctx.fillRect(0, 0, width, height);
+      const celestialBeam = ctx.createRadialGradient(width * 0.5, 0, 10, width * 0.5, 0, height * 0.7);
+      celestialBeam.addColorStop(0, hexToRgba(cGold, 0.22 * intensity));
+      celestialBeam.addColorStop(0.3, hexToRgba(cSecondary, 0.12 * intensity));
+      celestialBeam.addColorStop(0.7, "rgba(0, 0, 0, 0)");
+      celestialBeam.addColorStop(1, "rgba(0, 0, 0, 0)");
+      ctx.fillStyle = celestialBeam;
+      ctx.fillRect(0, 0, width, height);
+      const cornerVignette = ctx.createRadialGradient(width / 2, height / 2, Math.min(width, height) * 0.45, width / 2, height / 2, Math.max(width, height) * 0.75);
+      cornerVignette.addColorStop(0, "rgba(0, 0, 0, 0)");
+      cornerVignette.addColorStop(0.6, "rgba(0, 0, 0, 0.25)");
+      cornerVignette.addColorStop(1, "rgba(0, 0, 0, 0.75)");
+      ctx.fillStyle = cornerVignette;
+      ctx.fillRect(0, 0, width, height);
+      ctx.save();
+      this.stars.forEach((star) => {
+        const sx = star.xRatio * width;
+        const sy = star.yRatio * height;
+        ctx.fillStyle = hexToRgba(cGold, star.alpha * intensity * 0.85);
+        if (star.isCross) {
+          ctx.strokeStyle = hexToRgba(cGold, star.alpha * intensity * 0.9);
+          ctx.lineWidth = 0.8;
+          const len = star.radius * 2.2;
+          ctx.beginPath();
+          ctx.moveTo(sx - len, sy);
+          ctx.lineTo(sx + len, sy);
+          ctx.moveTo(sx, sy - len);
+          ctx.lineTo(sx, sy + len);
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(sx, sy, star.radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+      ctx.restore();
     }
   };
 
@@ -950,53 +1015,343 @@
   var PatternLayer = class extends BaseLayer {
     constructor() {
       super("pattern", 30);
-      this.pathCache = /* @__PURE__ */ new Map();
-    }
-    getPath(svgString) {
-      if (!this.pathCache.has(svgString)) {
-        this.pathCache.set(svgString, new Path2D(svgString));
-      }
-      return this.pathCache.get(svgString);
     }
     draw(ctx, width, height, state) {
-      if (!state.sacredPattern || state.sacredPattern === "none" || !window.PEDACO_DO_CEU_SVGS) return;
-      const svgString = window.PEDACO_DO_CEU_SVGS[state.sacredPattern];
-      if (!svgString) return;
+      const patternKey = state.sacredPattern;
+      if (!patternKey || patternKey === "none") return;
       let cx = width / 2;
       let cy = height / 2;
-      let size = Math.min(width, height) * 0.75;
+      let radius = Math.min(width, height) * 0.38;
       if (state.layout === "right") {
         const splitX = Math.round(width * 0.6);
-        cx = width - (width - splitX) / 2;
+        cx = splitX + (width - splitX) / 2;
         cy = height / 2;
-        size = (width - splitX) * 0.95;
+        radius = (width - splitX) * 0.48;
+      } else if (state.layout === "left") {
+        const splitX = Math.round(width * 0.4);
+        cx = splitX / 2;
+        cy = height / 2;
+        radius = splitX * 0.48;
       } else if (state.layout === "bottom") {
         const cardH = state.format.startsWith("9:16") ? Math.round(height * 0.4) : Math.round(height * 0.44);
         cx = width / 2;
         cy = height - cardH / 2;
-        size = Math.min(width * 0.7, cardH * 0.8);
+        radius = Math.min(width * 0.35, cardH * 0.42);
       } else if (state.layout === "top") {
         const barH = Math.round(height * 0.38);
         cx = width / 2;
         cy = barH / 2;
-        size = barH * 0.9;
+        radius = barH * 0.45;
       } else if (state.layout === "center") {
         const cardW = Math.min(width * 0.86, 740);
         cx = width / 2;
         cy = height / 2;
-        size = cardW * 0.8;
+        radius = cardW * 0.38;
+      }
+      const strokeColor = state.colorPattern || state.colorDividers || "#d4af37";
+      const opacity = state.patternOpacity !== void 0 ? state.patternOpacity : 0.35;
+      if (opacity <= 0.01) return;
+      ctx.save();
+      ctx.globalAlpha = opacity;
+      ctx.strokeStyle = strokeColor;
+      ctx.fillStyle = strokeColor;
+      ctx.lineWidth = 1.2;
+      ctx.shadowColor = strokeColor;
+      ctx.shadowBlur = 6;
+      switch (patternKey) {
+        case "flowerOfLife":
+          this.drawFlowerOfLife(ctx, cx, cy, radius);
+          break;
+        case "metatronCube":
+          this.drawMetatronCube(ctx, cx, cy, radius);
+          break;
+        case "sriYantra":
+          this.drawSriYantra(ctx, cx, cy, radius);
+          break;
+        case "lunarMandala":
+          this.drawLunarMandala(ctx, cx, cy, radius);
+          break;
+        case "logoPattern":
+          this.drawLogoPattern(ctx, cx, cy, radius);
+          break;
+        case "seedOfLife":
+          this.drawSeedOfLife(ctx, cx, cy, radius);
+          break;
+        case "merkaba":
+          this.drawMerkaba(ctx, cx, cy, radius);
+          break;
+        case "torus":
+          this.drawTorus(ctx, cx, cy, radius);
+          break;
+        default:
+          this.drawFlowerOfLife(ctx, cx, cy, radius);
+      }
+      ctx.restore();
+    }
+    // 1. Flor da Vida (Flower of Life)
+    drawFlowerOfLife(ctx, cx, cy, R) {
+      const step = R * 0.32;
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI * 2);
+      ctx.arc(cx, cy, R * 1.04, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.save();
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.arc(cx, cy, R * 0.96, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+      ctx.beginPath();
+      ctx.arc(cx, cy, step, 0, Math.PI * 2);
+      ctx.stroke();
+      for (let i = 0; i < 6; i++) {
+        const angle = i * 60 * (Math.PI / 180);
+        const x = cx + step * Math.cos(angle);
+        const y = cy + step * Math.sin(angle);
+        ctx.beginPath();
+        ctx.arc(x, y, step, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      for (let i = 0; i < 6; i++) {
+        const angle = i * 60 * (Math.PI / 180);
+        const x = cx + 2 * step * Math.cos(angle);
+        const y = cy + 2 * step * Math.sin(angle);
+        ctx.beginPath();
+        ctx.arc(x, y, step, 0, Math.PI * 2);
+        ctx.stroke();
+        const angle2 = (i * 60 + 30) * (Math.PI / 180);
+        const dist = Math.sqrt(3) * step;
+        const x2 = cx + dist * Math.cos(angle2);
+        const y2 = cy + dist * Math.sin(angle2);
+        ctx.beginPath();
+        ctx.arc(x2, y2, step, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+    // 2. Cubo de Metatron (Metatron's Cube)
+    drawMetatronCube(ctx, cx, cy, R) {
+      const nodes = [];
+      const rNode = R * 0.12;
+      nodes.push({ x: cx, y: cy });
+      const rInner = R * 0.45;
+      for (let i = 0; i < 6; i++) {
+        const angle = (i * 60 - 30) * (Math.PI / 180);
+        nodes.push({ x: cx + rInner * Math.cos(angle), y: cy + rInner * Math.sin(angle) });
+      }
+      const rOuter = R * 0.85;
+      for (let i = 0; i < 6; i++) {
+        const angle = (i * 60 - 30) * (Math.PI / 180);
+        nodes.push({ x: cx + rOuter * Math.cos(angle), y: cy + rOuter * Math.sin(angle) });
       }
       ctx.save();
-      ctx.globalAlpha = state.patternOpacity !== void 0 ? state.patternOpacity : 0.35;
-      const p = this.getPath(svgString);
-      ctx.translate(cx, cy);
-      const scale = size / 200;
-      ctx.scale(scale, scale);
-      ctx.translate(-100, -100);
-      ctx.strokeStyle = state.colorDividers || "#d4af37";
-      ctx.lineWidth = 1;
-      ctx.stroke(p);
+      ctx.lineWidth = 0.9;
+      ctx.beginPath();
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+        }
+      }
+      ctx.stroke();
       ctx.restore();
+      ctx.save();
+      ctx.lineWidth = 1.4;
+      nodes.forEach((n) => {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, rNode, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+      ctx.restore();
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI * 2);
+      ctx.arc(cx, cy, R * 1.04, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    // 3. Sri Yantra Sagrado
+    drawSriYantra(ctx, cx, cy, R) {
+      const bSize = R * 0.98;
+      ctx.strokeRect(cx - bSize, cy - bSize, bSize * 2, bSize * 2);
+      ctx.strokeRect(cx - bSize * 0.95, cy - bSize * 0.95, bSize * 1.9, bSize * 1.9);
+      ctx.beginPath();
+      ctx.arc(cx, cy, R * 0.88, 0, Math.PI * 2);
+      ctx.arc(cx, cy, R * 0.82, 0, Math.PI * 2);
+      ctx.stroke();
+      for (let i = 0; i < 16; i++) {
+        const angle = i * 22.5 * (Math.PI / 180);
+        const px = cx + R * 0.85 * Math.cos(angle);
+        const py = cy + R * 0.85 * Math.sin(angle);
+        ctx.beginPath();
+        ctx.arc(px, py, R * 0.08, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.arc(cx, cy, R * 0.68, 0, Math.PI * 2);
+      ctx.stroke();
+      for (let i = 0; i < 8; i++) {
+        const angle = i * 45 * (Math.PI / 180);
+        const px = cx + R * 0.68 * Math.cos(angle);
+        const py = cy + R * 0.68 * Math.sin(angle);
+        ctx.beginPath();
+        ctx.arc(px, py, R * 0.1, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      const drawTri = (topY, bottomY, leftX, rightX, pointUp) => {
+        ctx.beginPath();
+        if (pointUp) {
+          ctx.moveTo(cx, topY);
+          ctx.lineTo(rightX, bottomY);
+          ctx.lineTo(leftX, bottomY);
+        } else {
+          ctx.moveTo(cx, bottomY);
+          ctx.lineTo(rightX, topY);
+          ctx.lineTo(leftX, topY);
+        }
+        ctx.closePath();
+        ctx.stroke();
+      };
+      const s = R * 0.55;
+      drawTri(cy - s * 0.95, cy + s * 0.7, cx - s * 0.85, cx + s * 0.85, true);
+      drawTri(cy - s * 0.65, cy + s * 0.95, cx - s * 0.82, cx + s * 0.82, false);
+      drawTri(cy - s * 0.8, cy + s * 0.5, cx - s * 0.7, cx + s * 0.7, true);
+      drawTri(cy - s * 0.45, cy + s * 0.8, cx - s * 0.68, cx + s * 0.68, false);
+      drawTri(cy - s * 0.6, cy + s * 0.35, cx - s * 0.55, cx + s * 0.55, true);
+      drawTri(cy - s * 0.3, cy + s * 0.6, cx - s * 0.52, cx + s * 0.52, false);
+      drawTri(cy - s * 0.4, cy + s * 0.2, cx - s * 0.38, cx + s * 0.38, true);
+      drawTri(cy - s * 0.15, cy + s * 0.42, cx - s * 0.36, cx + s * 0.36, false);
+      drawTri(cy - s * 0.05, cy + s * 0.25, cx - s * 0.22, cx + s * 0.22, false);
+      ctx.beginPath();
+      ctx.arc(cx, cy, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    // 4. Mandala Lunar & Estelar Cósmica
+    drawLunarMandala(ctx, cx, cy, R) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, R * 0.98, 0, Math.PI * 2);
+      ctx.arc(cx, cy, R * 0.92, 0, Math.PI * 2);
+      ctx.arc(cx, cy, R * 0.65, 0, Math.PI * 2);
+      ctx.arc(cx, cy, R * 0.38, 0, Math.PI * 2);
+      ctx.stroke();
+      for (let i = 0; i < 24; i++) {
+        const angle = i * 15 * (Math.PI / 180);
+        const isMajor = i % 2 === 0;
+        const r1 = isMajor ? R * 0.68 : R * 0.74;
+        const r2 = isMajor ? R * 0.9 : R * 0.88;
+        ctx.beginPath();
+        ctx.moveTo(cx + r1 * Math.cos(angle), cy + r1 * Math.sin(angle));
+        ctx.lineTo(cx + r2 * Math.cos(angle), cy + r2 * Math.sin(angle));
+        ctx.stroke();
+      }
+      for (let i = 0; i < 8; i++) {
+        const angle = i * 45 * (Math.PI / 180);
+        const lx = cx + R * 0.52 * Math.cos(angle);
+        const ly = cy + R * 0.52 * Math.sin(angle);
+        const moonR = R * 0.07;
+        ctx.beginPath();
+        ctx.arc(lx, ly, moonR, 0, Math.PI * 2);
+        ctx.stroke();
+        if (i % 2 !== 0) {
+          ctx.beginPath();
+          ctx.arc(lx + moonR * 0.35, ly, moonR * 0.85, -Math.PI / 2, Math.PI / 2);
+          ctx.stroke();
+        }
+      }
+      this.drawStar(ctx, cx, cy, 12, R * 0.28, R * 0.14);
+    }
+    // 5. Símbolo da Marca Pedaço do Céu (Lua + 3 Estrelas)
+    drawLogoPattern(ctx, cx, cy, R) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, R * 0.98, 0, Math.PI * 2);
+      ctx.arc(cx, cy, R * 0.94, 0, Math.PI * 2);
+      ctx.stroke();
+      for (let i = 0; i < 36; i++) {
+        const angle = i * 10 * (Math.PI / 180);
+        const r1 = i % 3 === 0 ? R * 0.8 : R * 0.86;
+        const r2 = R * 0.92;
+        ctx.beginPath();
+        ctx.moveTo(cx + r1 * Math.cos(angle), cy + r1 * Math.sin(angle));
+        ctx.lineTo(cx + r2 * Math.cos(angle), cy + r2 * Math.sin(angle));
+        ctx.stroke();
+      }
+      ctx.save();
+      ctx.beginPath();
+      const moonR = R * 0.48;
+      ctx.arc(cx - moonR * 0.1, cy, moonR, -Math.PI * 0.65, Math.PI * 0.65, false);
+      ctx.arc(cx + moonR * 0.35, cy, moonR * 0.82, Math.PI * 0.55, -Math.PI * 0.55, true);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      this.drawStar(ctx, cx + R * 0.22, cy - R * 0.26, 8, R * 0.12, R * 0.05, true);
+      this.drawStar(ctx, cx + R * 0.35, cy, 8, R * 0.15, R * 0.06, true);
+      this.drawStar(ctx, cx + R * 0.22, cy + R * 0.26, 8, R * 0.12, R * 0.05, true);
+    }
+    // 6. Semente da Vida (Seed of Life)
+    drawSeedOfLife(ctx, cx, cy, R) {
+      const step = R * 0.45;
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI * 2);
+      ctx.arc(cx, cy, R * 1.05, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(cx, cy, step, 0, Math.PI * 2);
+      for (let i = 0; i < 6; i++) {
+        const angle = i * 60 * (Math.PI / 180);
+        ctx.arc(cx + step * Math.cos(angle), cy + step * Math.sin(angle), step, 0, Math.PI * 2);
+      }
+      ctx.stroke();
+    }
+    // 7. Veículo de Luz Merkaba
+    drawMerkaba(ctx, cx, cy, R) {
+      this.drawStar(ctx, cx, cy, 6, R * 0.85, R * 0.45);
+      this.drawStar(ctx, cx, cy, 6, R * 0.65, R * 0.32);
+      ctx.beginPath();
+      ctx.arc(cx, cy, R * 0.95, 0, Math.PI * 2);
+      ctx.arc(cx, cy, R * 0.22, 0, Math.PI * 2);
+      ctx.stroke();
+      for (let i = 0; i < 6; i++) {
+        const angle = i * 60 * (Math.PI / 180);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + R * 0.85 * Math.cos(angle), cy + R * 0.85 * Math.sin(angle));
+        ctx.stroke();
+      }
+    }
+    // 8. Toro Cósmico (Torus Energy Field)
+    drawTorus(ctx, cx, cy, R) {
+      const rings = 12;
+      for (let i = 0; i < rings; i++) {
+        const angle = i * (360 / rings) * (Math.PI / 180);
+        const ox = cx + R * 0.35 * Math.cos(angle);
+        const oy = cy + R * 0.35 * Math.sin(angle);
+        ctx.beginPath();
+        ctx.arc(ox, oy, R * 0.55, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+      ctx.arc(cx, cy, R * 0.95, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    // Helper para desenhar estrelas de N pontas
+    drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius, fill = false) {
+      let rot = Math.PI / 2 * 3;
+      let x = cx;
+      let y = cy;
+      const step = Math.PI / spikes;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - outerRadius);
+      for (let i = 0; i < spikes; i++) {
+        x = cx + Math.cos(rot) * outerRadius;
+        y = cy + Math.sin(rot) * outerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+        x = cx + Math.cos(rot) * innerRadius;
+        y = cy + Math.sin(rot) * innerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+      }
+      ctx.lineTo(cx, cy - outerRadius);
+      ctx.closePath();
+      if (fill) ctx.fill();
+      ctx.stroke();
     }
   };
 
@@ -1535,10 +1890,13 @@
       this.store = store;
       this.snapper = new SnappingManager(15);
       this.isDragging = false;
+      this.dragMode = null;
       this.dragTarget = null;
       this.startPointer = { x: 0, y: 0 };
       this.initialPaddingTop = 100;
       this.initialPaddingSide = 20;
+      this.initialPanX = 0;
+      this.initialPanY = 0;
       this.initEvents();
     }
     initEvents() {
@@ -1546,6 +1904,7 @@
       window.addEventListener("pointermove", this.onPointerMove.bind(this));
       window.addEventListener("pointerup", this.onPointerUp.bind(this));
       window.addEventListener("pointercancel", this.onPointerUp.bind(this));
+      this.canvas.addEventListener("wheel", this.onWheel.bind(this), { passive: false });
     }
     getCanvasCoordinates(e) {
       const rect = this.canvas.getBoundingClientRect();
@@ -1559,57 +1918,95 @@
     onPointerDown(e) {
       const coords = this.getCanvasCoordinates(e);
       const textLayer = this.renderer.getTextLayer();
-      if (!textLayer) return;
-      const hit = textLayer.boundingBoxes.find(
-        (b) => coords.x >= b.x && coords.x <= b.x + b.w && coords.y >= b.y && coords.y <= b.y + b.h
-      );
+      let hit = null;
+      if (textLayer && textLayer.boundingBoxes) {
+        hit = textLayer.boundingBoxes.find(
+          (b) => coords.x >= b.x && coords.x <= b.x + b.w && coords.y >= b.y && coords.y <= b.y + b.h
+        );
+      }
+      this.isDragging = true;
+      this.startPointer = coords;
       if (hit) {
-        this.isDragging = true;
+        this.dragMode = "text";
         this.dragTarget = hit;
-        this.startPointer = coords;
-        this.initialPaddingTop = this.store.state.paddingTop || 100;
-        this.initialPaddingSide = this.store.state.paddingSide || 20;
-        this.canvas.classList.add("cursor-grabbing");
+        this.initialPaddingTop = this.store.state.paddingTop || 90;
+        this.initialPaddingSide = this.store.state.paddingSide || 60;
+        this.canvas.style.cursor = "grabbing";
+      } else {
+        this.dragMode = "image";
+        this.dragTarget = null;
+        this.initialPanX = this.store.state.imgPanX || 0;
+        this.initialPanY = this.store.state.imgPanY || 0;
+        this.canvas.style.cursor = "move";
       }
     }
     onPointerMove(e) {
       if (!this.isDragging) {
         const coords2 = this.getCanvasCoordinates(e);
         const textLayer = this.renderer.getTextLayer();
-        if (textLayer) {
-          const hover = textLayer.boundingBoxes.some(
+        if (textLayer && textLayer.boundingBoxes) {
+          const hoverText = textLayer.boundingBoxes.some(
             (b) => coords2.x >= b.x && coords2.x <= b.x + b.w && coords2.y >= b.y && coords2.y <= b.y + b.h
           );
-          this.canvas.style.cursor = hover ? "grab" : "default";
+          this.canvas.style.cursor = hoverText ? "grab" : this.store.state.imgObj ? "move" : "default";
         }
         return;
       }
       const coords = this.getCanvasCoordinates(e);
-      const deltaY = coords.y - this.startPointer.y;
       const deltaX = coords.x - this.startPointer.x;
-      const W = this.store.state.width || 1080;
-      const H = this.store.state.height || 1080;
-      let newTop = Math.max(40, Math.min(220, this.initialPaddingTop + deltaY));
-      let newSide = Math.max(10, Math.min(80, this.initialPaddingSide - deltaX));
-      const snapped = this.snapper.applySnapping(coords.x, newTop, W, H);
-      this.renderer.setSnappingGuide(snapped.guide);
-      this.store.state.paddingTop = Math.round(snapped.y);
-      this.store.state.paddingSide = Math.round(newSide);
-      const topSlider = document.getElementById("paddingTopRange");
-      const topVal = document.getElementById("paddingTopVal");
-      if (topSlider) topSlider.value = this.store.state.paddingTop;
-      if (topVal) topVal.textContent = this.store.state.paddingTop + "px";
-      const sideSlider = document.getElementById("paddingSideRange");
-      const sideVal = document.getElementById("paddingSideVal");
-      if (sideSlider) sideSlider.value = this.store.state.paddingSide;
-      if (sideVal) sideVal.textContent = this.store.state.paddingSide + "px";
+      const deltaY = coords.y - this.startPointer.y;
+      if (this.dragMode === "text") {
+        const W = this.store.state.width || 1080;
+        const H = this.store.state.height || 1080;
+        let newTop = Math.max(20, Math.min(220, this.initialPaddingTop + deltaY));
+        let newSide = Math.max(10, Math.min(120, this.initialPaddingSide - deltaX));
+        const snapped = this.snapper.applySnapping(coords.x, newTop, W, H);
+        this.renderer.setSnappingGuide(snapped.guide);
+        this.store.state.paddingTop = Math.round(snapped.y);
+        this.store.state.paddingSide = Math.round(newSide);
+        const topSlider = document.getElementById("paddingTopRange");
+        const topVal = document.getElementById("paddingTopVal");
+        if (topSlider) topSlider.value = this.store.state.paddingTop;
+        if (topVal) topVal.textContent = this.store.state.paddingTop + "px";
+        const sideSlider = document.getElementById("paddingSideRange");
+        const sideVal = document.getElementById("paddingSideVal");
+        if (sideSlider) sideSlider.value = this.store.state.paddingSide;
+        if (sideVal) sideVal.textContent = this.store.state.paddingSide + "px";
+      } else if (this.dragMode === "image") {
+        let newPanX = Math.round(Math.max(-400, Math.min(400, this.initialPanX + deltaX)));
+        let newPanY = Math.round(Math.max(-400, Math.min(400, this.initialPanY + deltaY)));
+        this.store.state.imgPanX = newPanX;
+        this.store.state.imgPanY = newPanY;
+        const panXSlider = document.getElementById("imgPanXRange");
+        const panXVal = document.getElementById("imgPanXVal");
+        if (panXSlider) panXSlider.value = newPanX;
+        if (panXVal) panXVal.textContent = newPanX + "px";
+        const panYSlider = document.getElementById("imgPanYRange");
+        const panYVal = document.getElementById("imgPanYVal");
+        if (panYSlider) panYSlider.value = newPanY;
+        if (panYVal) panYVal.textContent = newPanY + "px";
+      }
+    }
+    onWheel(e) {
+      if (!this.store.state.imgObj) return;
+      e.preventDefault();
+      const zoomStep = e.deltaY < 0 ? 0.05 : -0.05;
+      let currentZoom = this.store.state.imgZoom || 1;
+      let newZoom = Math.max(0.8, Math.min(2.5, currentZoom + zoomStep));
+      newZoom = Math.round(newZoom * 100) / 100;
+      this.store.state.imgZoom = newZoom;
+      const zoomSlider = document.getElementById("imgZoomRange");
+      const zoomVal = document.getElementById("imgZoomVal");
+      if (zoomSlider) zoomSlider.value = Math.round(newZoom * 100);
+      if (zoomVal) zoomVal.textContent = newZoom.toFixed(1) + "x";
     }
     onPointerUp() {
       if (this.isDragging) {
         this.isDragging = false;
+        this.dragMode = null;
         this.dragTarget = null;
         this.renderer.setSnappingGuide(null);
-        this.canvas.classList.remove("cursor-grabbing");
+        this.canvas.style.cursor = "default";
       }
     }
   };
@@ -2628,9 +3025,19 @@
         const el = document.getElementById(id);
         if (el) {
           el.addEventListener("input", (e) => {
-            this.store.state[prop] = transformFn(parseFloat(e.target.value));
+            const rawVal = parseFloat(e.target.value);
+            this.store.state[prop] = transformFn(rawVal);
             const disp = document.getElementById(valId);
-            if (disp) disp.textContent = (this.store.state[prop] * (unit === "x" ? 1 : 1)).toFixed(unit === "x" ? 1 : 0) + unit;
+            if (disp) {
+              if (unit === "%") {
+                disp.textContent = Math.round(rawVal) + "%";
+              } else if (unit === "x") {
+                disp.textContent = (rawVal / 100).toFixed(1) + "x";
+              } else {
+                disp.textContent = rawVal + unit;
+              }
+            }
+            if (prop.startsWith("gradient")) this.updateGradientLivePreview();
           });
         }
       };

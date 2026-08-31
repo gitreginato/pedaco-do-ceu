@@ -974,14 +974,24 @@ export class PedacoDoCeuStudio {
       });
     });
 
-    // Sliders de Foto
+    // Sliders de Foto & Efeitos
     const bindRangeHelper = (id, prop, transformFn, valId, unit = '') => {
       const el = document.getElementById(id);
       if (el) {
         el.addEventListener('input', (e) => {
-          this.store.state[prop] = transformFn(parseFloat(e.target.value));
+          const rawVal = parseFloat(e.target.value);
+          this.store.state[prop] = transformFn(rawVal);
           const disp = document.getElementById(valId);
-          if (disp) disp.textContent = (this.store.state[prop] * (unit === 'x' ? 1 : 1)).toFixed(unit === 'x' ? 1 : 0) + unit;
+          if (disp) {
+            if (unit === '%') {
+              disp.textContent = Math.round(rawVal) + '%';
+            } else if (unit === 'x') {
+              disp.textContent = (rawVal / 100).toFixed(1) + 'x';
+            } else {
+              disp.textContent = rawVal + unit;
+            }
+          }
+          if (prop.startsWith('gradient')) this.updateGradientLivePreview();
         });
       }
     };
