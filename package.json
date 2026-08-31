@@ -5,6 +5,8 @@
   "main": "design-system/app.js",
   "type": "module",
   "scripts": {
+    "start": "node scripts/serve.mjs",
+    "dev": "node scripts/serve.mjs",
     "build": "esbuild design-system/js/app.js --bundle --outfile=design-system/app.js --format=iife --platform=browser",
     "test": "node design-system/tests/run_all.mjs",
     "generate": "node scripts/generate_posts.mjs"

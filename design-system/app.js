@@ -201,20 +201,20 @@
     }
     getExportDataURL(format = "image/png", quality = 1) {
       try {
-        if (this.dpr === 1) {
-          return this.canvas.toDataURL(format, quality);
-        }
-        const exportCanvas = document.createElement("canvas");
-        exportCanvas.width = this.targetWidth;
-        exportCanvas.height = this.targetHeight;
-        const expCtx = exportCanvas.getContext("2d", { alpha: false });
-        expCtx.imageSmoothingEnabled = true;
-        expCtx.imageSmoothingQuality = "high";
-        expCtx.drawImage(this.canvas, 0, 0, this.targetWidth, this.targetHeight);
-        return exportCanvas.toDataURL(format, quality);
+        return this.canvas.toDataURL(format, quality);
       } catch (err) {
-        console.warn("Exporta\xE7\xE3o toDataURL protegida contra canvas tainted no protocolo file://:", err.message);
-        return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+        console.warn("Alerta de seguran\xE7a CORS no protocolo file://:", err.message);
+        try {
+          const fallbackCanvas = document.createElement("canvas");
+          fallbackCanvas.width = this.targetWidth;
+          fallbackCanvas.height = this.targetHeight;
+          const ctx = fallbackCanvas.getContext("2d");
+          ctx.fillStyle = "#050c07";
+          ctx.fillRect(0, 0, this.targetWidth, this.targetHeight);
+          return fallbackCanvas.toDataURL(format, quality);
+        } catch (e) {
+          return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+        }
       }
     }
     async getExportBlob(format = "image/png", quality = 1) {
@@ -1832,10 +1832,16 @@
       return this.layers.find((l) => l.name === "text");
     }
     exportImage(filename = "pedaco-do-ceu-post.png") {
+      const dataUrl = this.highDPICanvas.getExportDataURL("image/png", 1);
+      if (!dataUrl) return;
       const link = document.createElement("a");
       link.download = filename;
-      link.href = this.highDPICanvas.getExportDataURL("image/png", 1);
+      link.href = dataUrl;
+      document.body.appendChild(link);
       link.click();
+      setTimeout(() => {
+        if (link.parentNode) link.parentNode.removeChild(link);
+      }, 100);
     }
   };
 
@@ -2046,7 +2052,10 @@
   };
 
   // design-system/js/ui/a11y.js
-  var A11yManager = class {
+  var A11yManager = class _A11yManager {
+    announce(message) {
+      _A11yManager.announce(message);
+    }
     static announce(message) {
       let region = document.getElementById("a11yStatus");
       if (!region) {
@@ -2788,6 +2797,9 @@
     }
     loadImage(src, callback) {
       const img = new Image();
+      if (typeof window !== "undefined" && window.location && window.location.protocol.startsWith("http")) {
+        img.crossOrigin = "anonymous";
+      }
       img.onload = () => {
         this.store.state.imgObj = img;
         const orig = document.getElementById("originalPhotoImg");
@@ -3431,8 +3443,12 @@
       const link = document.createElement("a");
       link.download = actualFilename;
       link.href = URL.createObjectURL(blob);
+      document.body.appendChild(link);
       link.click();
-      setTimeout(() => URL.revokeObjectURL(link.href), 1e3);
+      setTimeout(() => {
+        URL.revokeObjectURL(link.href);
+        if (link.parentNode) link.parentNode.removeChild(link);
+      }, 1e3);
     }
   };
   if (typeof document !== "undefined") {

@@ -146,9 +146,15 @@ export class Renderer {
   }
 
   exportImage(filename = 'pedaco-do-ceu-post.png') {
+    const dataUrl = this.highDPICanvas.getExportDataURL('image/png', 1.0);
+    if (!dataUrl) return;
     const link = document.createElement('a');
     link.download = filename;
-    link.href = this.highDPICanvas.getExportDataURL('image/png', 1.0);
+    link.href = dataUrl;
+    document.body.appendChild(link);
     link.click();
+    setTimeout(() => {
+      if (link.parentNode) link.parentNode.removeChild(link);
+    }, 100);
   }
 }

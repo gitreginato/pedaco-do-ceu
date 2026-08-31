@@ -1,5 +1,9 @@
 // Gerenciador de Acessibilidade (A11y) & ARIA - Pedaço do Céu Studio v2.0
 export class A11yManager {
+  announce(message) {
+    A11yManager.announce(message);
+  }
+
   static announce(message) {
     let region = document.getElementById('a11yStatus');
     if (!region) {

@@ -39,21 +39,20 @@ export class HighDPICanvas {
 
   getExportDataURL(format = 'image/png', quality = 1.0) {
     try {
-      if (this.dpr === 1) {
-        return this.canvas.toDataURL(format, quality);
-      }
-      
-      const exportCanvas = document.createElement('canvas');
-      exportCanvas.width = this.targetWidth;
-      exportCanvas.height = this.targetHeight;
-      const expCtx = exportCanvas.getContext('2d', { alpha: false });
-      expCtx.imageSmoothingEnabled = true;
-      expCtx.imageSmoothingQuality = 'high';
-      expCtx.drawImage(this.canvas, 0, 0, this.targetWidth, this.targetHeight);
-      return exportCanvas.toDataURL(format, quality);
+      return this.canvas.toDataURL(format, quality);
     } catch (err) {
-      console.warn('Exportação toDataURL protegida contra canvas tainted no protocolo file://:', err.message);
-      return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+      console.warn('Alerta de segurança CORS no protocolo file://:', err.message);
+      try {
+        const fallbackCanvas = document.createElement('canvas');
+        fallbackCanvas.width = this.targetWidth;
+        fallbackCanvas.height = this.targetHeight;
+        const ctx = fallbackCanvas.getContext('2d');
+        ctx.fillStyle = '#050c07';
+        ctx.fillRect(0, 0, this.targetWidth, this.targetHeight);
+        return fallbackCanvas.toDataURL(format, quality);
+      } catch (e) {
+        return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+      }
     }
   }
 

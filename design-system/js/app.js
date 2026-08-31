@@ -709,6 +709,9 @@ export class PedacoDoCeuStudio {
 
   loadImage(src, callback) {
     const img = new Image();
+    if (typeof window !== 'undefined' && window.location && window.location.protocol.startsWith('http')) {
+      img.crossOrigin = 'anonymous';
+    }
     img.onload = () => {
       this.store.state.imgObj = img;
       const orig = document.getElementById('originalPhotoImg');
@@ -1429,8 +1432,12 @@ export class PedacoDoCeuStudio {
     const link = document.createElement('a');
     link.download = actualFilename;
     link.href = URL.createObjectURL(blob);
+    document.body.appendChild(link);
     link.click();
-    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+    setTimeout(() => {
+      URL.revokeObjectURL(link.href);
+      if (link.parentNode) link.parentNode.removeChild(link);
+    }, 1000);
   }
 }
 
