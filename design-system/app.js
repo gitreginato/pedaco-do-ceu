@@ -1477,15 +1477,17 @@
       if (state.showHighlightBox && state.highlightText) {
         curY = this.drawHighlightBox(ctx, colX, curY, innerW, state.highlightText, state);
       }
-      const ctaY = Math.max(curY + gap, H - 70);
-      ctx.save();
-      ctx.fillStyle = state.colorCta || "#d4af37";
-      ctx.font = `${state.weightCta || 600} ${state.sizeCta || 14}px ${state.fontCta || "'Cinzel', serif"}`;
-      ctx.textAlign = state.align || "center";
-      ctx.letterSpacing = `${state.spacingCta !== void 0 ? state.spacingCta : 1}px`;
-      ctx.fillText(state.ctaText || "Visite nossa loja \u2022 Peda\xE7o do C\xE9u", tagX, ctaY);
-      ctx.letterSpacing = "0px";
-      ctx.restore();
+      if (state.ctaText) {
+        const ctaY = Math.max(curY + gap, H - 70);
+        ctx.save();
+        ctx.fillStyle = state.colorCta || "#d4af37";
+        ctx.font = `${state.weightCta || 600} ${state.sizeCta || 14}px ${state.fontCta || "'Cinzel', serif"}`;
+        ctx.textAlign = state.align || "center";
+        ctx.letterSpacing = `${state.spacingCta !== void 0 ? state.spacingCta : 1}px`;
+        ctx.fillText(state.ctaText, tagX, ctaY);
+        ctx.letterSpacing = "0px";
+        ctx.restore();
+      }
     }
     drawBottomCardBackground(ctx, zone, state) {
       const opacity = state.boxOpacity !== void 0 ? state.boxOpacity : 0.95;

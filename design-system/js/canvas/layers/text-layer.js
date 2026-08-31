@@ -141,15 +141,17 @@ export class TextLayer extends BaseLayer {
     }
 
     // CTA / Rodapé
-    const ctaY = Math.max(curY + gap, H - 70);
-    ctx.save();
-    ctx.fillStyle = state.colorCta || '#d4af37';
-    ctx.font = `${state.weightCta || 600} ${state.sizeCta || 14}px ${state.fontCta || "'Cinzel', serif"}`;
-    ctx.textAlign = state.align || 'center';
-    ctx.letterSpacing = `${state.spacingCta !== undefined ? state.spacingCta : 1}px`;
-    ctx.fillText(state.ctaText || 'Visite nossa loja • Pedaço do Céu', tagX, ctaY);
-    ctx.letterSpacing = '0px';
-    ctx.restore();
+    if (state.ctaText) {
+      const ctaY = Math.max(curY + gap, H - 70);
+      ctx.save();
+      ctx.fillStyle = state.colorCta || '#d4af37';
+      ctx.font = `${state.weightCta || 600} ${state.sizeCta || 14}px ${state.fontCta || "'Cinzel', serif"}`;
+      ctx.textAlign = state.align || 'center';
+      ctx.letterSpacing = `${state.spacingCta !== undefined ? state.spacingCta : 1}px`;
+      ctx.fillText(state.ctaText, tagX, ctaY);
+      ctx.letterSpacing = '0px';
+      ctx.restore();
+    }
   }
 
   drawBottomCardBackground(ctx, zone, state) {
