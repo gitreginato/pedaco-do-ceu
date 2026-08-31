@@ -31,7 +31,15 @@ const server = http.createServer((req, res) => {
     reqPath = '/design-system/index.html';
   }
 
-  const filePath = path.join(rootDir, reqPath);
+  let filePath = path.join(rootDir, reqPath);
+
+  // Se não existir diretamente na raiz, procura dentro do subdiretório design-system
+  if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+    const fallbackPath = path.join(rootDir, 'design-system', reqPath.replace(/^\//, ''));
+    if (fs.existsSync(fallbackPath) && fs.statSync(fallbackPath).isFile()) {
+      filePath = fallbackPath;
+    }
+  }
 
   // Prevenção contra Directory Traversal
   if (!filePath.startsWith(rootDir)) {
