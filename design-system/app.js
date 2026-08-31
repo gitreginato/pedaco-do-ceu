@@ -664,9 +664,9 @@
         x: getX(),
         y: currentY,
         align,
-        font: `700 ${Math.round(14 * scale)}px 'Cinzel', serif`,
+        font: `${state.weightTag || 700} ${Math.round((state.sizeTag || 14) * scale)}px ${state.fontTag || "'Cinzel', serif"}`,
         color: state.colorTag,
-        letterSpacing: 2,
+        letterSpacing: state.spacingTag !== void 0 ? state.spacingTag : 2,
         maxWidth
       });
       currentY += Math.round(16 * scale) + Math.round(gap * 0.8) + Math.round(maxTitleSize * 0.82);
@@ -703,6 +703,7 @@
       align,
       font: subFont,
       color: state.colorSubtitle,
+      letterSpacing: state.spacingSubtitle !== void 0 ? state.spacingSubtitle : 0,
       maxWidth
     });
     currentY += (subMetrics.lines.length - 1) * (subSize * 1.25 + lineGapExtra * 0.2) + Math.round(gap * 0.8);
@@ -715,8 +716,8 @@
     });
     currentY += Math.round(gap * 0.8);
     if (state.description) {
-      const descFontFamily = state.fontDesc || '"Montserrat", sans-serif';
-      const descFont = `300 ${descSize}px ${descFontFamily}`;
+      const descFontFamily = state.fontDesc || "'Montserrat', sans-serif";
+      const descFont = `${state.weightDesc || 300} ${descSize}px ${descFontFamily}`;
       const descMetrics = measureWrappedText(ctx, state.description, descSize, maxWidth, descFontFamily);
       currentY += Math.round(descSize * 0.85);
       blocks.push({
@@ -755,9 +756,9 @@
         x: getX(),
         y: ctaY,
         align,
-        font: `600 ${Math.round(13 * scale)}px 'Cinzel', serif`,
+        font: `${state.weightCta || 600} ${Math.round((state.sizeCta || 13) * scale)}px ${state.fontCta || "'Cinzel', serif"}`,
         color: state.colorCta,
-        letterSpacing: 1.5,
+        letterSpacing: state.spacingCta !== void 0 ? state.spacingCta : 1.5,
         maxWidth
       });
     }
@@ -1389,6 +1390,18 @@
       } else if (state.layout === "top") {
         this.drawTopCardBackground(ctx, zones.text, state);
       }
+      if (state.showHeader && state.headerText) {
+        const align = state.align || "center";
+        const headerX = align === "left" ? state.paddingSide || 60 : align === "right" ? width - (state.paddingSide || 60) : width / 2;
+        ctx.save();
+        ctx.textAlign = align;
+        ctx.fillStyle = state.colorHeader || "#d4af37";
+        ctx.font = `${state.weightHeader || 600} ${state.sizeHeader || 12}px ${state.fontHeader || "'Cinzel', serif"}`;
+        ctx.letterSpacing = `${state.spacingHeader !== void 0 ? state.spacingHeader : 2}px`;
+        ctx.fillText((state.headerText || "").toUpperCase(), headerX, 28);
+        ctx.letterSpacing = "0px";
+        ctx.restore();
+      }
       const safeZone = applySafeArea(zones.text, state.format);
       const blocks = calculateTextBlocks(ctx, state, safeZone, width, height);
       this.renderCalibratedBlocks(ctx, blocks, state);
@@ -1400,22 +1413,36 @@
       const innerW = textW - (state.paddingSide || 20) * 2;
       const gap = state.blockGap || 22;
       const lineGapExtra = state.globalLineGap || 12;
+      const tagX = this.getAlignX(colX, innerW, state.align);
       let curY = state.paddingTop || 100;
+      if (state.showHeader && state.headerText) {
+        ctx.save();
+        ctx.textAlign = state.align || "center";
+        ctx.fillStyle = state.colorHeader || "#d4af37";
+        ctx.font = `${state.weightHeader || 600} ${state.sizeHeader || 12}px ${state.fontHeader || "'Cinzel', serif"}`;
+        ctx.letterSpacing = `${state.spacingHeader !== void 0 ? state.spacingHeader : 2}px`;
+        ctx.fillText((state.headerText || "").toUpperCase(), tagX, curY);
+        ctx.letterSpacing = "0px";
+        ctx.restore();
+        curY += Math.round((state.sizeHeader || 12) * 1.5) + Math.round(gap * 0.4);
+      }
       if (state.showBadge && state.badgeText) {
         curY = this.drawBadgePill(ctx, colX + innerW / 2, curY, state.badgeText, true, state);
       }
       if (state.categoryTag) {
+        ctx.save();
         ctx.textAlign = state.align || "center";
         ctx.fillStyle = state.colorTag || "#d4af37";
-        ctx.font = `700 15px "Cinzel", serif`;
-        ctx.letterSpacing = "1.5px";
-        const tagX2 = this.getAlignX(colX, innerW, state.align);
-        ctx.fillText((state.categoryTag || "").toUpperCase(), tagX2, curY);
+        ctx.font = `${state.weightTag || 700} ${state.sizeTag || 15}px ${state.fontTag || "'Cinzel', serif"}`;
+        ctx.letterSpacing = `${state.spacingTag !== void 0 ? state.spacingTag : 1.5}px`;
+        ctx.fillText((state.categoryTag || "").toUpperCase(), tagX, curY);
         ctx.letterSpacing = "0px";
+        ctx.restore();
         curY += Math.round(gap * 0.8) + Math.round((state.sizeTitle || 46) * 0.85);
       } else {
         curY += Math.round((state.sizeTitle || 46) * 0.85);
       }
+      ctx.save();
       ctx.fillStyle = state.colorTitle || "#f8f9fa";
       ctx.font = `${state.weightTitle || 700} ${state.sizeTitle || 46}px ${state.fontTitle || "'Cinzel Decorative', serif"}`;
       ctx.letterSpacing = `${state.spacingTitle || 1}px`;
@@ -1423,33 +1450,42 @@
         ctx.shadowColor = state.colorTitleGlow || "#d4af37";
         ctx.shadowBlur = state.glowTitle;
       }
-      const tagX = this.getAlignX(colX, innerW, state.align);
+      ctx.textAlign = state.align || "center";
       const titleStartY = curY;
       curY = this.drawWrappedText(ctx, state.title, tagX, curY, innerW, (state.sizeTitle || 46) * 1.1 + lineGapExtra * 0.3);
-      ctx.shadowColor = "transparent";
-      ctx.shadowBlur = 0;
-      ctx.letterSpacing = "0px";
+      ctx.restore();
       this.boundingBoxes.push({ id: "title", x: colX, y: titleStartY - 10, w: innerW, h: curY - titleStartY + 10 });
       curY += Math.round(gap * 0.5) + Math.round((state.sizeSubtitle || 20) * 0.7);
+      ctx.save();
       ctx.fillStyle = state.colorSubtitle || "#eadcb9";
       ctx.font = `${state.styleSubtitle || "italic 500"} ${state.sizeSubtitle || 20}px ${state.fontSubtitle || "'Cormorant Garamond', serif"}`;
+      ctx.textAlign = state.align || "center";
+      ctx.letterSpacing = `${state.spacingSubtitle !== void 0 ? state.spacingSubtitle : 0}px`;
       curY = this.drawWrappedText(ctx, state.subtitle, tagX, curY, innerW, (state.sizeSubtitle || 20) * 1.25 + lineGapExtra * 0.2);
+      ctx.letterSpacing = "0px";
+      ctx.restore();
       curY += Math.round(gap * 0.8);
       this.drawCelestialDivider(ctx, colX + innerW / 2, curY, 60, state.colorDividers || "#d4af37");
       curY += Math.round(gap * 0.8) + Math.round((state.sizeDesc || 16) * 0.85);
+      ctx.save();
       ctx.fillStyle = state.colorDesc || "#f8f9fa";
-      ctx.font = `300 ${state.sizeDesc || 16}px ${state.fontDesc || '"Montserrat", sans-serif'}`;
+      ctx.font = `${state.weightDesc || 300} ${state.sizeDesc || 16}px ${state.fontDesc || "'Montserrat', sans-serif"}`;
+      ctx.textAlign = state.align || "center";
       curY = this.drawWrappedText(ctx, state.description, tagX, curY, innerW, (state.sizeDesc || 16) * (state.lineHeightDesc || 1.6) + lineGapExtra * 0.15);
+      ctx.restore();
       curY += gap;
       if (state.showHighlightBox && state.highlightText) {
         curY = this.drawHighlightBox(ctx, colX, curY, innerW, state.highlightText, state);
       }
       const ctaY = Math.max(curY + gap, H - 70);
+      ctx.save();
       ctx.fillStyle = state.colorCta || "#d4af37";
       ctx.font = `${state.weightCta || 600} ${state.sizeCta || 14}px ${state.fontCta || "'Cinzel', serif"}`;
+      ctx.textAlign = state.align || "center";
       ctx.letterSpacing = `${state.spacingCta !== void 0 ? state.spacingCta : 1}px`;
       ctx.fillText(state.ctaText || "Visite nossa loja \u2022 Peda\xE7o do C\xE9u", tagX, ctaY);
       ctx.letterSpacing = "0px";
+      ctx.restore();
     }
     drawBottomCardBackground(ctx, zone, state) {
       const opacity = state.boxOpacity !== void 0 ? state.boxOpacity : 0.95;
@@ -1537,11 +1573,13 @@
           ctx.textAlign = b.align;
           ctx.fillStyle = b.color;
           ctx.font = b.font;
+          ctx.letterSpacing = `${b.letterSpacing !== void 0 ? b.letterSpacing : 0}px`;
           let sY = b.y;
           for (const line of b.lines) {
             ctx.fillText(line, b.x, sY);
             sY += b.lineHeight;
           }
+          ctx.letterSpacing = "0px";
           ctx.restore();
         } else if (b.type === "divider") {
           this.drawCelestialDivider(ctx, b.x, b.y, b.width, b.color);
@@ -1596,11 +1634,14 @@
     drawBadgePill(ctx, x, y, text, centered, state) {
       if (!text) return y;
       ctx.save();
-      ctx.font = `700 12px "Cinzel", serif`;
+      const bFont = state.fontBadge || "'Cinzel', serif";
+      const bSize = state.sizeBadge || 12;
+      const bWeight = state.weightBadge || 700;
+      ctx.font = `${bWeight} ${bSize}px ${bFont}`;
       const textWidth = ctx.measureText(text.toUpperCase()).width;
       const padX = 16;
       const badgeW = textWidth + padX * 2;
-      const badgeH = 28;
+      const badgeH = Math.round(bSize * 2.4);
       const startX = centered ? x - badgeW / 2 : x;
       ctx.fillStyle = hexToRgba(state.gradientPrimary || "#00381c", 0.85);
       this.roundRect(ctx, startX, y, badgeW, badgeH, 14, true, false);
@@ -1608,9 +1649,10 @@
       ctx.lineWidth = 1.2;
       this.roundRect(ctx, startX, y, badgeW, badgeH, 14, false, true);
       ctx.fillStyle = state.colorBadge || "#f5d77f";
-      ctx.letterSpacing = "1px";
+      ctx.letterSpacing = `${state.spacingBadge !== void 0 ? state.spacingBadge : 1}px`;
       ctx.textAlign = "center";
-      ctx.fillText(text.toUpperCase(), startX + badgeW / 2, y + 18);
+      ctx.fillText(text.toUpperCase(), startX + badgeW / 2, y + Math.round(bSize * 1.6));
+      ctx.letterSpacing = "0px";
       ctx.restore();
       return y + badgeH + 16;
     }
@@ -1620,8 +1662,9 @@
       const hFont = state.fontHighlight || "'Montserrat', sans-serif";
       const hSize = state.sizeHighlight || 14;
       const hWeight = state.weightHighlight || 600;
+      const hSpacing = state.spacingHighlight !== void 0 ? state.spacingHighlight : 0.6;
       ctx.font = `${hWeight} ${hSize}px ${hFont}`;
-      ctx.letterSpacing = "0.6px";
+      ctx.letterSpacing = `${hSpacing}px`;
       const words = text.split(" ");
       let line = "";
       const lines = [];
@@ -2745,16 +2788,37 @@
     fontSubtitle: PHOTO_CATALOG[0].fontSubtitle,
     styleSubtitle: PHOTO_CATALOG[0].styleSubtitle,
     sizeSubtitle: 26,
+    spacingSubtitle: 0,
     fontDesc: "'Montserrat', sans-serif",
+    weightDesc: "300",
     sizeDesc: 18,
     lineHeightDesc: PHOTO_CATALOG[0].lineHeightDesc,
     fontHighlight: "'Montserrat', sans-serif",
     weightHighlight: "600",
     sizeHighlight: 14,
+    spacingHighlight: 1,
     fontCta: "'Cinzel', serif",
     weightCta: "600",
     sizeCta: 14,
     spacingCta: 1,
+    // Header / Cabeçalho da Loja
+    headerText: "Peda\xE7o do C\xE9u \u2022 S\xE3o Lu\xEDs (MA)",
+    fontHeader: "'Cinzel', serif",
+    weightHeader: "600",
+    sizeHeader: 12,
+    spacingHeader: 2,
+    colorHeader: "#d4af37",
+    showHeader: true,
+    // Badge / Selo
+    fontBadge: "'Cinzel', serif",
+    weightBadge: "700",
+    sizeBadge: 12,
+    spacingBadge: 1,
+    // Tag / Categoria
+    fontTag: "'Cinzel', serif",
+    weightTag: "700",
+    sizeTag: 14,
+    spacingTag: 2,
     colorTitle: PHOTO_CATALOG[0].colorTitle,
     colorSubtitle: PHOTO_CATALOG[0].colorSubtitle,
     colorDesc: PHOTO_CATALOG[0].colorDesc,
@@ -2940,7 +3004,7 @@
           });
         }
       };
-      ["title", "subtitle", "description", "categoryTag", "highlightText", "ctaText", "badgeText"].forEach((key) => {
+      ["title", "subtitle", "description", "categoryTag", "highlightText", "ctaText", "badgeText", "headerText"].forEach((key) => {
         let id = key + "Input";
         if (key === "categoryTag") id = "categoryTagInput";
         if (key === "highlightText") id = "highlightInput";
@@ -2966,14 +3030,23 @@
         "gradientDarkness"
       ];
       colors.forEach((key) => bindInput(key + "Input", key));
+      bindInput("colorHeaderInput", "colorHeader");
       bindInput("sizeTitleRange", "sizeTitle", true);
       bindInput("spacingTitleRange", "spacingTitle", true);
       bindInput("glowTitleRange", "glowTitle", true);
       bindInput("sizeSubtitleRange", "sizeSubtitle", true);
+      bindInput("spacingSubtitleRange", "spacingSubtitle", true);
       bindInput("sizeDescRange", "sizeDesc", true);
       bindInput("sizeHighlightRange", "sizeHighlight", true);
+      bindInput("spacingHighlightRange", "spacingHighlight", true);
       bindInput("sizeCtaRange", "sizeCta", true);
       bindInput("spacingCtaRange", "spacingCta", true);
+      bindInput("sizeHeaderRange", "sizeHeader", true);
+      bindInput("spacingHeaderRange", "spacingHeader", true);
+      bindInput("sizeBadgeRange", "sizeBadge", true);
+      bindInput("spacingBadgeRange", "spacingBadge", true);
+      bindInput("sizeTagRange", "sizeTag", true);
+      bindInput("spacingTagRange", "spacingTag", true);
       bindInput("paddingTopRange", "paddingTop", true);
       bindInput("blockGapRange", "blockGap", true);
       bindInput("paddingSideRange", "paddingSide", true);
@@ -2986,13 +3059,38 @@
           if (lhVal) lhVal.textContent = this.store.state.lineHeightDesc.toFixed(1) + "x";
         });
       }
-      ["fontTitleSelect", "weightTitleSelect", "fontSubtitleSelect", "styleSubtitleSelect", "fontDescSelect", "fontHighlightSelect", "fontCtaSelect", "weightCtaSelect", "sacredPatternSelect"].forEach((id) => {
+      const showHeaderCheck = document.getElementById("showHeaderCheck");
+      if (showHeaderCheck) {
+        showHeaderCheck.addEventListener("change", (e) => {
+          this.store.state.showHeader = e.target.checked;
+          this.renderer.requestRender();
+        });
+      }
+      [
+        "fontTitleSelect",
+        "weightTitleSelect",
+        "fontSubtitleSelect",
+        "styleSubtitleSelect",
+        "fontDescSelect",
+        "weightDescSelect",
+        "fontHighlightSelect",
+        "weightHighlightSelect",
+        "fontCtaSelect",
+        "weightCtaSelect",
+        "fontHeaderSelect",
+        "weightHeaderSelect",
+        "fontBadgeSelect",
+        "weightBadgeSelect",
+        "fontTagSelect",
+        "weightTagSelect",
+        "sacredPatternSelect"
+      ].forEach((id) => {
         const el = document.getElementById(id);
         const prop = id.replace("Select", "");
         if (el) el.addEventListener("change", (e) => {
           this.store.state[prop] = e.target.value;
           this.renderer.requestRender();
-          if (prop.includes("font") || prop.includes("fontTitle") || prop.includes("fontCta") || prop.includes("fontHighlight")) {
+          if (prop.startsWith("font")) {
             const fontStr = e.target.value.replace(/'/g, "");
             if (document.fonts) {
               document.fonts.load(`16px ${fontStr}`).then(() => this.renderer.requestRender());

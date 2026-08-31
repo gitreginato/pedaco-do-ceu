@@ -66,7 +66,7 @@ const FILE_URL = `file://${path.resolve(__dirname, '../index.html')}`;
 
   let failed = 0;
   
-  console.log('\n--- TEXT INPUTS ---');
+  console.log('\n--- TEXT INPUTS - TODOS OS 8 SLOTS ---');
   if (!await testInput('#titleInput', 'Novo Titulo', 'title')) failed++;
   if (!await testInput('#subtitleInput', 'Novo Sub', 'subtitle')) failed++;
   if (!await testInput('#descriptionInput', 'Nova desc', 'description')) failed++;
@@ -74,6 +74,7 @@ const FILE_URL = `file://${path.resolve(__dirname, '../index.html')}`;
   if (!await testInput('#categoryTagInput', 'Nova Tag', 'categoryTag')) failed++;
   if (!await testInput('#ctaInput', 'Novo CTA', 'ctaText')) failed++;
   if (!await testInput('#badgeInput', 'Novo Badge', 'badgeText')) failed++;
+  if (!await testInput('#headerTextInput', 'Pedaço do Céu Test', 'headerText')) failed++;
 
   console.log('\n--- COLOR INPUTS ---');
   if (!await testInput('#colorTitleInput', '#123456', 'colorTitle')) failed++;
@@ -88,19 +89,28 @@ const FILE_URL = `file://${path.resolve(__dirname, '../index.html')}`;
   if (!await testInput('#colorPatternInput', '#888888', 'colorPattern')) failed++;
   if (!await testInput('#colorCornersInput', '#999999', 'colorCorners')) failed++;
   if (!await testInput('#colorDividersInput', '#aaaaaa', 'colorDividers')) failed++;
-  if (!await testInput('#gradientPrimaryInput', '#bbbbbb', 'gradientPrimary')) failed++;
-  if (!await testInput('#gradientSecondaryInput', '#cccccc', 'gradientSecondary')) failed++;
-  if (!await testInput('#gradientDarknessInput', '#dddddd', 'gradientDarkness')) failed++;
+  if (!await testInput('#colorHeaderInput', '#bbbbbb', 'colorHeader')) failed++;
+  if (!await testInput('#gradientPrimaryInput', '#cccccc', 'gradientPrimary')) failed++;
+  if (!await testInput('#gradientSecondaryInput', '#dddddd', 'gradientSecondary')) failed++;
+  if (!await testInput('#gradientDarknessInput', '#eeeeee', 'gradientDarkness')) failed++;
 
-  console.log('\n--- RANGE SLIDERS (DIRECT NUMBERS) ---');
+  console.log('\n--- RANGE SLIDERS - TODOS OS 8 SLOTS ---');
   if (!await testInput('#sizeTitleRange', '50', 'sizeTitle', true)) failed++;
   if (!await testInput('#spacingTitleRange', '5', 'spacingTitle', true)) failed++;
   if (!await testInput('#glowTitleRange', '15', 'glowTitle', true)) failed++;
   if (!await testInput('#sizeSubtitleRange', '20', 'sizeSubtitle', true)) failed++;
+  if (!await testInput('#spacingSubtitleRange', '2', 'spacingSubtitle', true)) failed++;
   if (!await testInput('#sizeDescRange', '25', 'sizeDesc', true)) failed++;
   if (!await testInput('#sizeHighlightRange', '16', 'sizeHighlight', true)) failed++;
+  if (!await testInput('#spacingHighlightRange', '2', 'spacingHighlight', true)) failed++;
   if (!await testInput('#sizeCtaRange', '18', 'sizeCta', true)) failed++;
   if (!await testInput('#spacingCtaRange', '3', 'spacingCta', true)) failed++;
+  if (!await testInput('#sizeHeaderRange', '14', 'sizeHeader', true)) failed++;
+  if (!await testInput('#spacingHeaderRange', '3', 'spacingHeader', true)) failed++;
+  if (!await testInput('#sizeBadgeRange', '14', 'sizeBadge', true)) failed++;
+  if (!await testInput('#spacingBadgeRange', '2', 'spacingBadge', true)) failed++;
+  if (!await testInput('#sizeTagRange', '16', 'sizeTag', true)) failed++;
+  if (!await testInput('#spacingTagRange', '3', 'spacingTag', true)) failed++;
   if (!await testInput('#paddingTopRange', '30', 'paddingTop', true)) failed++;
   if (!await testInput('#blockGapRange', '35', 'blockGap', true)) failed++;
   if (!await testInput('#paddingSideRange', '40', 'paddingSide', true)) failed++;
@@ -144,20 +154,30 @@ const FILE_URL = `file://${path.resolve(__dirname, '../index.html')}`;
   if (v !== 1.6) { console.error(`❌ [ERROR] lineHeightDesc - Expected 1.6, got ${v}`); failed++; }
   else { console.log(`✅ [OK] lineHeightDesc -> ${v}`); }
 
-  console.log('\n--- SELECTS ---');
+  console.log('\n--- SELECTS - TODOS OS 8 SLOTS ---');
   if (!await testSelect('#fontTitleSelect', "'Cinzel', serif", 'fontTitle')) failed++;
   if (!await testSelect('#weightTitleSelect', '700', 'weightTitle')) failed++;
   if (!await testSelect('#fontSubtitleSelect', "'Cormorant Garamond', serif", 'fontSubtitle')) failed++;
   if (!await testSelect('#styleSubtitleSelect', 'normal 400', 'styleSubtitle')) failed++;
   if (!await testSelect('#fontDescSelect', "'Montserrat', sans-serif", 'fontDesc')) failed++;
+  if (!await testSelect('#weightDescSelect', '300', 'weightDesc')) failed++;
   if (!await testSelect('#fontHighlightSelect', "'Montserrat', sans-serif", 'fontHighlight')) failed++;
+  if (!await testSelect('#weightHighlightSelect', '600', 'weightHighlight')) failed++;
   if (!await testSelect('#fontCtaSelect', "'Cinzel', serif", 'fontCta')) failed++;
   if (!await testSelect('#weightCtaSelect', '600', 'weightCta')) failed++;
+  if (!await testSelect('#fontHeaderSelect', "'Cinzel', serif", 'fontHeader')) failed++;
+  if (!await testSelect('#weightHeaderSelect', '600', 'weightHeader')) failed++;
+  if (!await testSelect('#fontBadgeSelect', "'Cinzel', serif", 'fontBadge')) failed++;
+  if (!await testSelect('#weightBadgeSelect', '700', 'weightBadge')) failed++;
+  if (!await testSelect('#fontTagSelect', "'Cinzel', serif", 'fontTag')) failed++;
+  if (!await testSelect('#weightTagSelect', '700', 'weightTag')) failed++;
   if (!await testSelect('#sacredPatternSelect', 'flowerOfLife', 'sacredPattern')) failed++;
 
   console.log('\n--- CHECKBOXES ---');
   if (!await testCheckbox('#showBadgeCheck', false, 'showBadge')) failed++;
   if (!await testCheckbox('#showBadgeCheck', true, 'showBadge')) failed++;
+  if (!await testCheckbox('#showHeaderCheck', false, 'showHeader')) failed++;
+  if (!await testCheckbox('#showHeaderCheck', true, 'showHeader')) failed++;
   if (!await testCheckbox('#showCornersCheck', false, 'showBaroqueCorners')) failed++;
   if (!await testCheckbox('#showCornersCheck', true, 'showBaroqueCorners')) failed++;
   if (!await testCheckbox('#showHighlightBoxCheck', false, 'showHighlightBox')) failed++;

@@ -639,19 +639,43 @@ const INITIAL_STATE = {
   fontSubtitle: PHOTO_CATALOG[0].fontSubtitle,
   styleSubtitle: PHOTO_CATALOG[0].styleSubtitle,
   sizeSubtitle: 26,
+  spacingSubtitle: 0,
 
   fontDesc: "'Montserrat', sans-serif",
+  weightDesc: "300",
   sizeDesc: 18,
   lineHeightDesc: PHOTO_CATALOG[0].lineHeightDesc,
 
   fontHighlight: "'Montserrat', sans-serif",
   weightHighlight: "600",
   sizeHighlight: 14,
+  spacingHighlight: 1,
 
   fontCta: "'Cinzel', serif",
   weightCta: "600",
   sizeCta: 14,
   spacingCta: 1,
+
+  // Header / Cabeçalho da Loja
+  headerText: 'Pedaço do Céu • São Luís (MA)',
+  fontHeader: "'Cinzel', serif",
+  weightHeader: "600",
+  sizeHeader: 12,
+  spacingHeader: 2,
+  colorHeader: '#d4af37',
+  showHeader: true,
+
+  // Badge / Selo
+  fontBadge: "'Cinzel', serif",
+  weightBadge: "700",
+  sizeBadge: 12,
+  spacingBadge: 1,
+
+  // Tag / Categoria
+  fontTag: "'Cinzel', serif",
+  weightTag: "700",
+  sizeTag: 14,
+  spacingTag: 2,
 
   colorTitle: PHOTO_CATALOG[0].colorTitle,
   colorSubtitle: PHOTO_CATALOG[0].colorSubtitle,
@@ -878,7 +902,7 @@ export class PedacoDoCeuStudio {
     };
 
     // Textos e Cores
-    ['title', 'subtitle', 'description', 'categoryTag', 'highlightText', 'ctaText', 'badgeText'].forEach(key => {
+    ['title', 'subtitle', 'description', 'categoryTag', 'highlightText', 'ctaText', 'badgeText', 'headerText'].forEach(key => {
       let id = key + 'Input';
       if (key === 'categoryTag') id = 'categoryTagInput';
       if (key === 'highlightText') id = 'highlightInput';
@@ -894,15 +918,26 @@ export class PedacoDoCeuStudio {
     ];
     colors.forEach(key => bindInput(key + 'Input', key));
 
-    // Sliders de Tipografia com tamanhos ampliados
+    // Cor do header
+    bindInput('colorHeaderInput', 'colorHeader');
+
+    // Sliders de Tipografia - todos os 8 slots
     bindInput('sizeTitleRange', 'sizeTitle', true);
     bindInput('spacingTitleRange', 'spacingTitle', true);
     bindInput('glowTitleRange', 'glowTitle', true);
     bindInput('sizeSubtitleRange', 'sizeSubtitle', true);
+    bindInput('spacingSubtitleRange', 'spacingSubtitle', true);
     bindInput('sizeDescRange', 'sizeDesc', true);
     bindInput('sizeHighlightRange', 'sizeHighlight', true);
+    bindInput('spacingHighlightRange', 'spacingHighlight', true);
     bindInput('sizeCtaRange', 'sizeCta', true);
     bindInput('spacingCtaRange', 'spacingCta', true);
+    bindInput('sizeHeaderRange', 'sizeHeader', true);
+    bindInput('spacingHeaderRange', 'spacingHeader', true);
+    bindInput('sizeBadgeRange', 'sizeBadge', true);
+    bindInput('spacingBadgeRange', 'spacingBadge', true);
+    bindInput('sizeTagRange', 'sizeTag', true);
+    bindInput('spacingTagRange', 'spacingTag', true);
     bindInput('paddingTopRange', 'paddingTop', true);
     bindInput('blockGapRange', 'blockGap', true);
     bindInput('paddingSideRange', 'paddingSide', true);
@@ -917,15 +952,30 @@ export class PedacoDoCeuStudio {
       });
     }
 
-    // Selects de Família de Fonte Expandidos
-    ['fontTitleSelect', 'weightTitleSelect', 'fontSubtitleSelect', 'styleSubtitleSelect', 'fontDescSelect', 'fontHighlightSelect', 'fontCtaSelect', 'weightCtaSelect', 'sacredPatternSelect'].forEach(id => {
+    // Checkbox do Header
+    const showHeaderCheck = document.getElementById('showHeaderCheck');
+    if (showHeaderCheck) {
+      showHeaderCheck.addEventListener('change', (e) => {
+        this.store.state.showHeader = e.target.checked;
+        this.renderer.requestRender();
+      });
+    }
+
+    // Selects de Família de Fonte - todos os 8 slots
+    ['fontTitleSelect', 'weightTitleSelect', 'fontSubtitleSelect', 'styleSubtitleSelect',
+     'fontDescSelect', 'weightDescSelect',
+     'fontHighlightSelect', 'weightHighlightSelect',
+     'fontCtaSelect', 'weightCtaSelect',
+     'fontHeaderSelect', 'weightHeaderSelect',
+     'fontBadgeSelect', 'weightBadgeSelect',
+     'fontTagSelect', 'weightTagSelect',
+     'sacredPatternSelect'].forEach(id => {
       const el = document.getElementById(id);
       const prop = id.replace('Select', '');
       if (el) el.addEventListener('change', (e) => { 
         this.store.state[prop] = e.target.value; 
         this.renderer.requestRender();
-        // Garante que se a fonte web não foi baixada, ele força e re-renderiza
-        if (prop.includes('font') || prop.includes('fontTitle') || prop.includes('fontCta') || prop.includes('fontHighlight')) {
+        if (prop.startsWith('font')) {
           const fontStr = e.target.value.replace(/'/g, '');
           if (document.fonts) {
             document.fonts.load(`16px ${fontStr}`).then(() => this.renderer.requestRender());

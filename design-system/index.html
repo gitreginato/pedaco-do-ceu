@@ -148,38 +148,185 @@
             </div>
           </div>
 
-          <!-- Espaçamento & Entrelinha de Caixas -->
+          <!-- Espaçamento Global das Caixas -->
           <div class="control-section">
-            <div class="section-title"><span class="icon">📐</span> Espaçamento & Entrelinha das Caixas</div>
-
-            <div class="slider-group compact">
-              <label>Margem Top:</label>
-              <input type="range" id="paddingTopRange" min="20" max="220" value="90">
-              <span id="paddingTopVal" class="slider-val">90px</span>
+            <div class="section-title"><span class="icon">📐</span> Espaçamento Global das Caixas</div>
+            <div class="inner-grid-2">
+              <div class="slider-group compact">
+                <label>Margem Top:</label>
+                <input type="range" id="paddingTopRange" min="20" max="220" value="90">
+                <span id="paddingTopVal" class="slider-val">90px</span>
+              </div>
+              <div class="slider-group compact">
+                <label>Gap Blocos:</label>
+                <input type="range" id="blockGapRange" min="6" max="60" value="20">
+                <span id="blockGapVal" class="slider-val">20px</span>
+              </div>
             </div>
-
-            <div class="slider-group compact">
-              <label>Gap Blocos:</label>
-              <input type="range" id="blockGapRange" min="6" max="60" value="20">
-              <span id="blockGapVal" class="slider-val">20px</span>
-            </div>
-
-            <div class="slider-group compact">
-              <label>Margem Lateral:</label>
-              <input type="range" id="paddingSideRange" min="14" max="120" value="60">
-              <span id="paddingSideVal" class="slider-val">60px</span>
-            </div>
-
-            <div class="slider-group compact">
-              <label>Entrelinha Global:</label>
-              <input type="range" id="globalLineGapRange" min="4" max="30" value="12">
-              <span id="globalLineGapVal" class="slider-val">12px</span>
+            <div class="inner-grid-2">
+              <div class="slider-group compact">
+                <label>Margem Lateral:</label>
+                <input type="range" id="paddingSideRange" min="14" max="120" value="60">
+                <span id="paddingSideVal" class="slider-val">60px</span>
+              </div>
+              <div class="slider-group compact">
+                <label>Entrelinha Global:</label>
+                <input type="range" id="globalLineGapRange" min="4" max="30" value="12">
+                <span id="globalLineGapVal" class="slider-val">12px</span>
+              </div>
             </div>
           </div>
 
-          <!-- Título Principal -->
+          <!-- SLOT 1: Cabeçalho / Nome da Loja (Header) -->
           <div class="control-section">
-            <div class="section-title"><span class="icon">✦</span> Título Principal do Produto</div>
+            <div class="section-title"><span class="icon">🏛️</span> Slot 1 — Cabeçalho / Nome da Loja</div>
+            <div class="form-group">
+              <div class="input-with-color">
+                <div class="text-inputs">
+                  <label>Texto do Cabeçalho (Topo do post)</label>
+                  <input type="text" id="headerTextInput" class="form-control" placeholder="Ex: Pedaço do Céu • São Luís (MA)">
+                </div>
+                <input type="color" id="colorHeaderInput" value="#d4af37" class="color-input-small" title="Cor do Cabeçalho">
+              </div>
+            </div>
+            <div class="inner-grid-2">
+              <div class="form-group">
+                <label>Família da Fonte</label>
+                <select id="fontHeaderSelect" class="form-control">
+                  <option value="'Cinzel', serif">Cinzel (Romano Imperial)</option>
+                  <option value="'Marcellus', serif">Marcellus (Clássico Nobre)</option>
+                  <option value="'Cinzel Decorative', serif">Cinzel Decorative (Barroco)</option>
+                  <option value="'Montserrat', sans-serif">Montserrat (Moderno)</option>
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond (Místico)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Peso / Estilo</label>
+                <select id="weightHeaderSelect" class="form-control">
+                  <option value="600">Semibold (600)</option>
+                  <option value="700">Negrito (700)</option>
+                  <option value="400">Regular (400)</option>
+                  <option value="italic 600">Itálico Semibold</option>
+                </select>
+              </div>
+            </div>
+            <div class="inner-grid-2">
+              <div class="slider-group compact">
+                <label>Tamanho:</label>
+                <input type="range" id="sizeHeaderRange" min="9" max="24" value="12">
+                <span id="sizeHeaderVal" class="slider-val">12px</span>
+              </div>
+              <div class="slider-group compact">
+                <label>Espaçamento:</label>
+                <input type="range" id="spacingHeaderRange" min="0" max="12" value="2">
+                <span id="spacingHeaderVal" class="slider-val">2px</span>
+              </div>
+            </div>
+            <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 4px; margin-top: 4px;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="showHeaderCheck" checked> Exibir Cabeçalho
+              </label>
+            </div>
+          </div>
+
+          <!-- SLOT 2: Selo Místico Superior (Badge Pill) -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">💎</span> Slot 2 — Selo Místico Superior (Pill)</div>
+            <div class="form-group">
+              <div class="input-with-color">
+                <div class="text-inputs">
+                  <label>Texto do Selo</label>
+                  <input type="text" id="badgeInput" class="form-control" placeholder="Ex: Energia Pura">
+                </div>
+                <input type="color" id="colorBadgeInput" value="#f5d77f" class="color-input-small" title="Cor do Selo">
+              </div>
+            </div>
+            <div class="inner-grid-2">
+              <div class="form-group">
+                <label>Família da Fonte</label>
+                <select id="fontBadgeSelect" class="form-control">
+                  <option value="'Cinzel', serif">Cinzel (Romano Imperial)</option>
+                  <option value="'Montserrat', sans-serif">Montserrat (Moderno)</option>
+                  <option value="'Marcellus', serif">Marcellus (Clássico)</option>
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Peso</label>
+                <select id="weightBadgeSelect" class="form-control">
+                  <option value="700">Negrito (700)</option>
+                  <option value="600">Semibold (600)</option>
+                  <option value="400">Regular (400)</option>
+                </select>
+              </div>
+            </div>
+            <div class="inner-grid-2">
+              <div class="slider-group compact">
+                <label>Tamanho:</label>
+                <input type="range" id="sizeBadgeRange" min="9" max="22" value="12">
+                <span id="sizeBadgeVal" class="slider-val">12px</span>
+              </div>
+              <div class="slider-group compact">
+                <label>Espaçamento:</label>
+                <input type="range" id="spacingBadgeRange" min="0" max="8" value="1">
+                <span id="spacingBadgeVal" class="slider-val">1px</span>
+              </div>
+            </div>
+            <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 4px; margin-top: 4px;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="showBadgeCheck" checked> Exibir Selo
+              </label>
+            </div>
+          </div>
+
+          <!-- SLOT 3: Categoria / Tag -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">🏷️</span> Slot 3 — Categoria / Tag Superior</div>
+            <div class="form-group">
+              <div class="input-with-color">
+                <div class="text-inputs">
+                  <label>Texto da Categoria</label>
+                  <input type="text" id="categoryTagInput" class="form-control" placeholder="Ex: CURA & HARMONIA">
+                </div>
+                <input type="color" id="colorTagInput" value="#d4af37" class="color-input-small" title="Cor da Categoria">
+              </div>
+            </div>
+            <div class="inner-grid-2">
+              <div class="form-group">
+                <label>Família da Fonte</label>
+                <select id="fontTagSelect" class="form-control">
+                  <option value="'Cinzel', serif">Cinzel (Romano Imperial)</option>
+                  <option value="'Marcellus', serif">Marcellus (Clássico)</option>
+                  <option value="'Montserrat', sans-serif">Montserrat (Moderno)</option>
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Peso</label>
+                <select id="weightTagSelect" class="form-control">
+                  <option value="700">Negrito (700)</option>
+                  <option value="600">Semibold (600)</option>
+                  <option value="400">Regular (400)</option>
+                </select>
+              </div>
+            </div>
+            <div class="inner-grid-2">
+              <div class="slider-group compact">
+                <label>Tamanho:</label>
+                <input type="range" id="sizeTagRange" min="9" max="22" value="14">
+                <span id="sizeTagVal" class="slider-val">14px</span>
+              </div>
+              <div class="slider-group compact">
+                <label>Espaçamento:</label>
+                <input type="range" id="spacingTagRange" min="0" max="10" value="2">
+                <span id="spacingTagVal" class="slider-val">2px</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SLOT 4: Título Principal -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">✦</span> Slot 4 — Título Principal do Produto</div>
             <div class="form-group">
               <div class="input-with-color">
                 <div class="text-inputs">
@@ -189,7 +336,6 @@
                 <input type="color" id="colorTitleInput" value="#f8f9fa" class="color-input-small" title="Cor do Título">
               </div>
             </div>
-            
             <div class="inner-grid-2">
               <div class="form-group">
                 <label>Família da Fonte</label>
@@ -218,19 +364,18 @@
                 </select>
               </div>
             </div>
-
-            <div class="slider-group compact">
-              <label>Tamanho:</label>
-              <input type="range" id="sizeTitleRange" min="24" max="110" value="54">
-              <span id="sizeTitleVal" class="slider-val">54px</span>
+            <div class="inner-grid-2">
+              <div class="slider-group compact">
+                <label>Tamanho:</label>
+                <input type="range" id="sizeTitleRange" min="24" max="110" value="54">
+                <span id="sizeTitleVal" class="slider-val">54px</span>
+              </div>
+              <div class="slider-group compact">
+                <label>Espaçamento:</label>
+                <input type="range" id="spacingTitleRange" min="-2" max="14" value="1">
+                <span id="spacingTitleVal" class="slider-val">1px</span>
+              </div>
             </div>
-
-            <div class="slider-group compact">
-              <label>Espaçamento:</label>
-              <input type="range" id="spacingTitleRange" min="-2" max="14" value="1">
-              <span id="spacingTitleVal" class="slider-val">1px</span>
-            </div>
-
             <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; margin-top: 6px;">
               <div class="slider-group compact" style="margin: 0;">
                 <label>Brilho / Glow:</label>
@@ -241,9 +386,9 @@
             </div>
           </div>
 
-          <!-- Subtítulo -->
+          <!-- SLOT 5: Subtítulo -->
           <div class="control-section">
-            <div class="section-title"><span class="icon">✧</span> Subtítulo & Propriedade</div>
+            <div class="section-title"><span class="icon">✧</span> Slot 5 — Subtítulo & Propriedade</div>
             <div class="form-group">
               <div class="input-with-color">
                 <div class="text-inputs">
@@ -253,7 +398,6 @@
                 <input type="color" id="colorSubtitleInput" value="#eadcb9" class="color-input-small" title="Cor do Subtítulo">
               </div>
             </div>
-            
             <div class="inner-grid-2">
               <div class="form-group">
                 <label>Família da Fonte</label>
@@ -279,17 +423,23 @@
                 </select>
               </div>
             </div>
-
-            <div class="slider-group compact">
-              <label>Tamanho:</label>
-              <input type="range" id="sizeSubtitleRange" min="16" max="52" value="26">
-              <span id="sizeSubtitleVal" class="slider-val">26px</span>
+            <div class="inner-grid-2">
+              <div class="slider-group compact">
+                <label>Tamanho:</label>
+                <input type="range" id="sizeSubtitleRange" min="16" max="52" value="26">
+                <span id="sizeSubtitleVal" class="slider-val">26px</span>
+              </div>
+              <div class="slider-group compact">
+                <label>Espaçamento:</label>
+                <input type="range" id="spacingSubtitleRange" min="-1" max="8" value="0">
+                <span id="spacingSubtitleVal" class="slider-val">0px</span>
+              </div>
             </div>
           </div>
 
-          <!-- Descrição do Produto / Ritual -->
+          <!-- SLOT 6: Descrição Poética -->
           <div class="control-section">
-            <div class="section-title"><span class="icon">✍️</span> Descrição Poética & Energética</div>
+            <div class="section-title"><span class="icon">✍️</span> Slot 6 — Descrição Poética & Energética</div>
             <div class="form-group">
               <div class="input-with-color align-top">
                 <div class="text-inputs">
@@ -299,7 +449,6 @@
                 <input type="color" id="colorDescInput" value="#f8f9fa" class="color-input-small" title="Cor da Descrição">
               </div>
             </div>
-
             <div class="inner-grid-2">
               <div class="form-group">
                 <label>Família da Fonte</label>
@@ -310,33 +459,42 @@
                   <option value="'Marcellus', serif">Marcellus (Sóbrio Nobre)</option>
                 </select>
               </div>
+              <div class="form-group">
+                <label>Peso</label>
+                <select id="weightDescSelect" class="form-control">
+                  <option value="300">Leve (300)</option>
+                  <option value="400">Regular (400)</option>
+                  <option value="500">Médio (500)</option>
+                  <option value="600">Semibold (600)</option>
+                </select>
+              </div>
+            </div>
+            <div class="inner-grid-2">
               <div class="slider-group compact">
                 <label>Tamanho:</label>
                 <input type="range" id="sizeDescRange" min="12" max="36" value="18">
                 <span id="sizeDescVal" class="slider-val">18px</span>
               </div>
-            </div>
-
-            <div class="slider-group compact" style="margin-top: 4px;">
-              <label>Espaço Linha:</label>
-              <input type="range" id="lineHeightDescRange" min="12" max="24" value="16">
-              <span id="lineHeightDescVal" class="slider-val">1.6x</span>
+              <div class="slider-group compact">
+                <label>Espaço Linha:</label>
+                <input type="range" id="lineHeightDescRange" min="12" max="24" value="16">
+                <span id="lineHeightDescVal" class="slider-val">1.6x</span>
+              </div>
             </div>
           </div>
 
-          <!-- Slot 5: Destaque Sagrado / Propriedade Mística -->
+          <!-- SLOT 7: Destaque Sagrado / Afirmação / Frequência -->
           <div class="control-section">
-            <div class="section-title"><span class="icon">✨</span> Slot de Destaque Sagrado (Afirmação / Frequência)</div>
+            <div class="section-title"><span class="icon">✨</span> Slot 7 — Destaque Sagrado (Afirmação / Frequência)</div>
             <div class="form-group">
               <div class="input-with-color">
                 <div class="text-inputs">
-                  <label>Afirmação, Propriedade ou Frequência</label>
+                  <label>Texto do Destaque</label>
                   <input type="text" id="highlightInput" class="form-control" placeholder="Ex: Frequência 432Hz • Chakra Coronário">
                 </div>
                 <input type="color" id="colorHighlightInput" value="#f5d77f" class="color-input-small" title="Cor do Texto">
               </div>
             </div>
-
             <div class="inner-grid-2">
               <div class="form-group">
                 <label>Família da Fonte</label>
@@ -347,13 +505,28 @@
                   <option value="'Marcellus', serif">Marcellus (Clássica)</option>
                 </select>
               </div>
+              <div class="form-group">
+                <label>Peso</label>
+                <select id="weightHighlightSelect" class="form-control">
+                  <option value="600">Semibold (600)</option>
+                  <option value="700">Negrito (700)</option>
+                  <option value="400">Regular (400)</option>
+                  <option value="italic 600">Itálico Semibold</option>
+                </select>
+              </div>
+            </div>
+            <div class="inner-grid-2">
               <div class="slider-group compact">
                 <label>Tamanho:</label>
                 <input type="range" id="sizeHighlightRange" min="10" max="28" value="14">
                 <span id="sizeHighlightVal" class="slider-val">14px</span>
               </div>
+              <div class="slider-group compact">
+                <label>Espaçamento:</label>
+                <input type="range" id="spacingHighlightRange" min="0" max="8" value="1">
+                <span id="spacingHighlightVal" class="slider-val">1px</span>
+              </div>
             </div>
-
             <div class="inner-grid-2" style="margin-top: 6px;">
               <div class="form-group">
                 <label>Cor da Borda da Caixa</label>
@@ -367,45 +540,18 @@
             </div>
           </div>
 
-          <!-- Slot 6: Selo Superior & Categoria / Tag -->
+          <!-- SLOT 8: Chamada Final (CTA / Assinatura do Rodapé) -->
           <div class="control-section">
-            <div class="section-title"><span class="icon">🏷️</span> Selo Místico & Categoria (Tag)</div>
-            
+            <div class="section-title"><span class="icon">📍</span> Slot 8 — Rodapé (CTA & Assinatura)</div>
             <div class="form-group">
               <div class="input-with-color">
                 <div class="text-inputs">
-                  <label>Categoria / Tag Superior</label>
-                  <input type="text" id="categoryTagInput" class="form-control">
-                </div>
-                <input type="color" id="colorTagInput" value="#d4af37" class="color-input-small" title="Cor da Categoria">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <div class="input-with-color">
-                <div class="text-inputs">
-                  <label>Selo Místico Superior (Pill)</label>
-                  <input type="text" id="badgeInput" class="form-control">
-                </div>
-                <input type="color" id="colorBadgeInput" value="#f5d77f" class="color-input-small" title="Cor do Selo">
-              </div>
-            </div>
-          </div>
-
-          <!-- Slot 7: Chamada Final (CTA / Assinatura do Rodapé) -->
-          <div class="control-section">
-            <div class="section-title"><span class="icon">📍</span> Chamada Final (CTA & Assinatura)</div>
-            
-            <div class="form-group">
-              <div class="input-with-color">
-                <div class="text-inputs">
-                  <label>Texto da Chamada (CTA / Convite / Loja)</label>
+                  <label>Texto do Rodapé (CTA / Convite / Loja)</label>
                   <input type="text" id="ctaInput" class="form-control" placeholder="Ex: Visite nosso espaço sagrado em São Luís • Pedaço do Céu">
                 </div>
                 <input type="color" id="colorCtaInput" value="#d4af37" class="color-input-small" title="Cor do CTA">
               </div>
             </div>
-
             <div class="inner-grid-2">
               <div class="form-group">
                 <label>Família da Fonte</label>
@@ -427,7 +573,6 @@
                 </select>
               </div>
             </div>
-
             <div class="inner-grid-2" style="margin-top: 4px;">
               <div class="slider-group compact">
                 <label>Tamanho:</label>
@@ -447,6 +592,7 @@
         <!-- ABA 3: Cores, Degradê & Grafismos Sagrados -->
         <div id="tab-estilo" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-tab-estilo">
           
+
           <!-- Degradê em 3 Pontos com Live Preview -->
           <div class="control-section">
             <div class="section-title"><span class="icon">🎨</span> Degradê Místico de Fundo (3 Pontos)</div>

@@ -30,6 +30,21 @@ export class TextLayer extends BaseLayer {
       this.drawTopCardBackground(ctx, zones.text, state);
     }
 
+    // Header Global (todos os layouts calibrados)
+    if (state.showHeader && state.headerText) {
+      const align = state.align || 'center';
+      const headerX = align === 'left' ? (state.paddingSide || 60) :
+                      align === 'right' ? (width - (state.paddingSide || 60)) : width / 2;
+      ctx.save();
+      ctx.textAlign = align;
+      ctx.fillStyle = state.colorHeader || '#d4af37';
+      ctx.font = `${state.weightHeader || 600} ${state.sizeHeader || 12}px ${state.fontHeader || "'Cinzel', serif"}`;
+      ctx.letterSpacing = `${state.spacingHeader !== undefined ? state.spacingHeader : 2}px`;
+      ctx.fillText((state.headerText || '').toUpperCase(), headerX, 28);
+      ctx.letterSpacing = '0px';
+      ctx.restore();
+    }
+
     const safeZone = applySafeArea(zones.text, state.format);
     const blocks = calculateTextBlocks(ctx, state, safeZone, width, height);
 
@@ -43,28 +58,44 @@ export class TextLayer extends BaseLayer {
     const innerW = textW - (state.paddingSide || 20) * 2;
     const gap = state.blockGap || 22;
     const lineGapExtra = state.globalLineGap || 12;
+    const tagX = this.getAlignX(colX, innerW, state.align);
     let curY = state.paddingTop || 100;
 
-    // Selo Superior
+    // Header / Cabeçalho da Loja (topo absoluto)
+    if (state.showHeader && state.headerText) {
+      ctx.save();
+      ctx.textAlign = state.align || 'center';
+      ctx.fillStyle = state.colorHeader || '#d4af37';
+      ctx.font = `${state.weightHeader || 600} ${state.sizeHeader || 12}px ${state.fontHeader || "'Cinzel', serif"}`;
+      ctx.letterSpacing = `${state.spacingHeader !== undefined ? state.spacingHeader : 2}px`;
+      ctx.fillText((state.headerText || '').toUpperCase(), tagX, curY);
+      ctx.letterSpacing = '0px';
+      ctx.restore();
+      curY += Math.round((state.sizeHeader || 12) * 1.5) + Math.round(gap * 0.4);
+    }
+
+    // Selo Superior (Badge Pill)
     if (state.showBadge && state.badgeText) {
       curY = this.drawBadgePill(ctx, colX + innerW / 2, curY, state.badgeText, true, state);
     }
 
     // Tag / Categoria
     if (state.categoryTag) {
+      ctx.save();
       ctx.textAlign = state.align || 'center';
       ctx.fillStyle = state.colorTag || '#d4af37';
-      ctx.font = `700 15px "Cinzel", serif`;
-      ctx.letterSpacing = '1.5px';
-      const tagX = this.getAlignX(colX, innerW, state.align);
+      ctx.font = `${state.weightTag || 700} ${state.sizeTag || 15}px ${state.fontTag || "'Cinzel', serif"}`;
+      ctx.letterSpacing = `${state.spacingTag !== undefined ? state.spacingTag : 1.5}px`;
       ctx.fillText((state.categoryTag || '').toUpperCase(), tagX, curY);
       ctx.letterSpacing = '0px';
+      ctx.restore();
       curY += Math.round(gap * 0.8) + Math.round((state.sizeTitle || 46) * 0.85);
     } else {
       curY += Math.round((state.sizeTitle || 46) * 0.85);
     }
 
     // Título Principal com Glow
+    ctx.save();
     ctx.fillStyle = state.colorTitle || '#f8f9fa';
     ctx.font = `${state.weightTitle || 700} ${state.sizeTitle || 46}px ${state.fontTitle || "'Cinzel Decorative', serif"}`;
     ctx.letterSpacing = `${state.spacingTitle || 1}px`;
@@ -72,21 +103,23 @@ export class TextLayer extends BaseLayer {
       ctx.shadowColor = state.colorTitleGlow || '#d4af37';
       ctx.shadowBlur = state.glowTitle;
     }
-    const tagX = this.getAlignX(colX, innerW, state.align);
+    ctx.textAlign = state.align || 'center';
     const titleStartY = curY;
     curY = this.drawWrappedText(ctx, state.title, tagX, curY, innerW, (state.sizeTitle || 46) * 1.10 + lineGapExtra * 0.3);
-    ctx.shadowColor = 'transparent';
-    ctx.shadowBlur = 0;
-    ctx.letterSpacing = '0px';
-    
+    ctx.restore();
     this.boundingBoxes.push({ id: 'title', x: colX, y: titleStartY - 10, w: innerW, h: curY - titleStartY + 10 });
 
     curY += Math.round(gap * 0.5) + Math.round((state.sizeSubtitle || 20) * 0.7);
 
     // Subtítulo
+    ctx.save();
     ctx.fillStyle = state.colorSubtitle || '#eadcb9';
     ctx.font = `${state.styleSubtitle || 'italic 500'} ${state.sizeSubtitle || 20}px ${state.fontSubtitle || "'Cormorant Garamond', serif"}`;
+    ctx.textAlign = state.align || 'center';
+    ctx.letterSpacing = `${state.spacingSubtitle !== undefined ? state.spacingSubtitle : 0}px`;
     curY = this.drawWrappedText(ctx, state.subtitle, tagX, curY, innerW, (state.sizeSubtitle || 20) * 1.25 + lineGapExtra * 0.2);
+    ctx.letterSpacing = '0px';
+    ctx.restore();
     curY += Math.round(gap * 0.8);
 
     // Divisor Celestial
@@ -94,9 +127,12 @@ export class TextLayer extends BaseLayer {
     curY += Math.round(gap * 0.8) + Math.round((state.sizeDesc || 16) * 0.85);
 
     // Descrição Poética
+    ctx.save();
     ctx.fillStyle = state.colorDesc || '#f8f9fa';
-    ctx.font = `300 ${state.sizeDesc || 16}px ${state.fontDesc || '"Montserrat", sans-serif'}`;
+    ctx.font = `${state.weightDesc || 300} ${state.sizeDesc || 16}px ${state.fontDesc || "'Montserrat', sans-serif"}`;
+    ctx.textAlign = state.align || 'center';
     curY = this.drawWrappedText(ctx, state.description, tagX, curY, innerW, (state.sizeDesc || 16) * (state.lineHeightDesc || 1.6) + lineGapExtra * 0.15);
+    ctx.restore();
     curY += gap;
 
     // Slot de Destaque Sagrado (Auto-expansível)
@@ -104,13 +140,16 @@ export class TextLayer extends BaseLayer {
       curY = this.drawHighlightBox(ctx, colX, curY, innerW, state.highlightText, state);
     }
 
-    // CTA
+    // CTA / Rodapé
     const ctaY = Math.max(curY + gap, H - 70);
+    ctx.save();
     ctx.fillStyle = state.colorCta || '#d4af37';
     ctx.font = `${state.weightCta || 600} ${state.sizeCta || 14}px ${state.fontCta || "'Cinzel', serif"}`;
+    ctx.textAlign = state.align || 'center';
     ctx.letterSpacing = `${state.spacingCta !== undefined ? state.spacingCta : 1}px`;
     ctx.fillText(state.ctaText || 'Visite nossa loja • Pedaço do Céu', tagX, ctaY);
     ctx.letterSpacing = '0px';
+    ctx.restore();
   }
 
   drawBottomCardBackground(ctx, zone, state) {
@@ -206,11 +245,13 @@ export class TextLayer extends BaseLayer {
         ctx.textAlign = b.align;
         ctx.fillStyle = b.color;
         ctx.font = b.font;
+        ctx.letterSpacing = `${b.letterSpacing !== undefined ? b.letterSpacing : 0}px`;
         let sY = b.y;
         for (const line of b.lines) {
           ctx.fillText(line, b.x, sY);
           sY += b.lineHeight;
         }
+        ctx.letterSpacing = '0px';
         ctx.restore();
       } else if (b.type === 'divider') {
         this.drawCelestialDivider(ctx, b.x, b.y, b.width, b.color);
@@ -268,11 +309,14 @@ export class TextLayer extends BaseLayer {
   drawBadgePill(ctx, x, y, text, centered, state) {
     if (!text) return y;
     ctx.save();
-    ctx.font = `700 12px "Cinzel", serif`;
+    const bFont = state.fontBadge || "'Cinzel', serif";
+    const bSize = state.sizeBadge || 12;
+    const bWeight = state.weightBadge || 700;
+    ctx.font = `${bWeight} ${bSize}px ${bFont}`;
     const textWidth = ctx.measureText(text.toUpperCase()).width;
     const padX = 16;
     const badgeW = textWidth + padX * 2;
-    const badgeH = 28;
+    const badgeH = Math.round(bSize * 2.4);
     const startX = centered ? x - badgeW / 2 : x;
 
     ctx.fillStyle = hexToRgba(state.gradientPrimary || '#00381c', 0.85);
@@ -283,9 +327,10 @@ export class TextLayer extends BaseLayer {
     this.roundRect(ctx, startX, y, badgeW, badgeH, 14, false, true);
 
     ctx.fillStyle = state.colorBadge || '#f5d77f';
-    ctx.letterSpacing = '1px';
+    ctx.letterSpacing = `${state.spacingBadge !== undefined ? state.spacingBadge : 1}px`;
     ctx.textAlign = 'center';
-    ctx.fillText(text.toUpperCase(), startX + badgeW / 2, y + 18);
+    ctx.fillText(text.toUpperCase(), startX + badgeW / 2, y + Math.round(bSize * 1.6));
+    ctx.letterSpacing = '0px';
     ctx.restore();
     return y + badgeH + 16;
   }
@@ -296,8 +341,9 @@ export class TextLayer extends BaseLayer {
     const hFont = state.fontHighlight || "'Montserrat', sans-serif";
     const hSize = state.sizeHighlight || 14;
     const hWeight = state.weightHighlight || 600;
+    const hSpacing = state.spacingHighlight !== undefined ? state.spacingHighlight : 0.6;
     ctx.font = `${hWeight} ${hSize}px ${hFont}`;
-    ctx.letterSpacing = '0.6px';
+    ctx.letterSpacing = `${hSpacing}px`;
 
     const words = text.split(' ');
     let line = '';

@@ -187,9 +187,9 @@ export function calculateTextBlocks(ctx, state, zone, canvasW, canvasH, iteratio
       x: getX(),
       y: currentY,
       align: align,
-      font: `700 ${Math.round(14 * scale)}px 'Cinzel', serif`,
+      font: `${state.weightTag || 700} ${Math.round((state.sizeTag || 14) * scale)}px ${state.fontTag || "'Cinzel', serif"}`,
       color: state.colorTag,
-      letterSpacing: 2,
+      letterSpacing: state.spacingTag !== undefined ? state.spacingTag : 2,
       maxWidth: maxWidth
     });
     currentY += Math.round(16 * scale) + Math.round(gap * 0.8) + Math.round(maxTitleSize * 0.82);
@@ -232,6 +232,7 @@ export function calculateTextBlocks(ctx, state, zone, canvasW, canvasH, iteratio
     align: align,
     font: subFont,
     color: state.colorSubtitle,
+    letterSpacing: state.spacingSubtitle !== undefined ? state.spacingSubtitle : 0,
     maxWidth: maxWidth
   });
   currentY += ((subMetrics.lines.length - 1) * (subSize * 1.25 + lineGapExtra * 0.2)) + Math.round(gap * 0.8);
@@ -248,8 +249,8 @@ export function calculateTextBlocks(ctx, state, zone, canvasW, canvasH, iteratio
 
   // 6. Descrição
   if (state.description) {
-    const descFontFamily = state.fontDesc || '"Montserrat", sans-serif';
-    const descFont = `300 ${descSize}px ${descFontFamily}`;
+    const descFontFamily = state.fontDesc || "'Montserrat', sans-serif";
+    const descFont = `${state.weightDesc || 300} ${descSize}px ${descFontFamily}`;
     const descMetrics = measureWrappedText(ctx, state.description, descSize, maxWidth, descFontFamily);
     currentY += Math.round(descSize * 0.85);
 
@@ -293,9 +294,9 @@ export function calculateTextBlocks(ctx, state, zone, canvasW, canvasH, iteratio
       x: getX(),
       y: ctaY,
       align: align,
-      font: `600 ${Math.round(13 * scale)}px 'Cinzel', serif`,
+      font: `${state.weightCta || 600} ${Math.round((state.sizeCta || 13) * scale)}px ${state.fontCta || "'Cinzel', serif"}`,
       color: state.colorCta,
-      letterSpacing: 1.5,
+      letterSpacing: state.spacingCta !== undefined ? state.spacingCta : 1.5,
       maxWidth: maxWidth
     });
   }
