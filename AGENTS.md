@@ -1,6 +1,6 @@
-# Pedaço do Céu — Fábrica de Conteúdo & Template Studio Místico v2.0 Enterprise
+# ✦ Pedaço do Céu: Fábrica de Conteúdo & Template Studio Místico v2.0 Enterprise
 
-Documentação de arquitetura, contexto, skills dos agentes e diretrizes operacionais para o projeto **Pedaço do Céu** (São Luís, Maranhão).
+Documentação de arquitetura, contexto, skills dos agentes, diretrizes de marca e briefings operacionais para o projeto **Pedaço do Céu** (São Luís, Maranhão).
 
 ---
 
@@ -21,10 +21,19 @@ O **Pedaço do Céu** é um ecossistema holístico que une um estúdio visual in
 
 ```
 ./
-├── AGENTS.md                          # Documento mestre de referência
+├── AGENTS.md                          # Documento mestre de referência e ecossistema
 ├── README.md                          # Guia geral de uso e inicialização
 ├── LICENSE                            # Licença MIT
 ├── package.json                       # Scripts npm de build, test e generate
+├── brand/                             # Diretrizes de Marca e Identidade
+│   ├── brand-book.md                  # Manifesto, Missão, Visão, Valores e Arquétipos
+│   ├── identidade-verbal.md           # Tom de voz, vocabulário sagrado e conformidade
+│   ├── identidade-visual.md           # Paleta cromática, tipografia e geometrias
+│   └── diretrizes-artesanato.md       # Feito à mão, 7 metais e pureza botânica
+├── briefing/                          # Briefings Estratégicos do Negócio
+│   ├── briefing-institucional.md      # Ficha técnica, posicionamento e personas
+│   ├── briefing-conteudo.md           # Linhas editoriais, calendário lunar e esteira
+│   └── matriz-acervo.md               # Detalhamento dos 6 pilares de produtos
 ├── catalogo/                          # Base de dados orientada a schema
 │   ├── schema.json                    # JSON Schema de validação dos produtos
 │   └── itens.json                     # Itens catalogados com atributos e status
@@ -60,25 +69,29 @@ O **Pedaço do Céu** é um ecossistema holístico que une um estúdio visual in
 
 ---
 
-## 3. Skills dos Agentes de Automação
+## 3. Matriz de Skills do Sistema & Composição da Marca
 
-O ecossistema opera através de 6 skills integradas:
-1. **`pesquisa-holistica`** (`./skills/pesquisa-holistica/SKILL.md`): Mapeia chakras, elementos primordiais e métodos de limpeza com rigor ético.
-2. **`analise-imagem`** (`./skills/analise-imagem/SKILL.md`): Extrai paleta cromática de degradê e gera `alt_text` acessível.
-3. **`temas-editoriais`** (`./skills/temas-editoriais/SKILL.md`): Conecta fases lunares com marés equatoriais e festas populares de São Luís (MA).
-4. **`copywriter-mistico`** (`./skills/copywriter-mistico/SKILL.md`): Redige cópias inspiradoras e convites presenciais.
-5. **`holistic-mystic-wisdom`** (`./skills/holistic-mystic-wisdom/SKILL.md`): Conhecimento dos 6 pilares do acervo.
-6. **`tibetan-wisdom`** (`./skills/tibetan-wisdom/SKILL.md`): Sabedoria Vajrayana e cura sonora em 432Hz.
+O ecossistema integra skills nativas e especializadas para garantir coerência e excelência em todas as frentes:
+
+| Área Estratégica | Skills Integradas | Função Direcionada à Pedaço do Céu |
+| :--- | :--- | :--- |
+| **SEO & Descoberta Local** | `seo-engine`, `geo-optimizer` | SEO local para São Luís (MA), Schema LocalBusiness / Store / Artisan, citabilidade em motores de IA generativa (Google AI Overviews, Gemini, ChatGPT). |
+| **Copywriting Sagrado** | `copywriter-mistico`, `copy-architect`, `copy-gate` | Arquétipos Mago+Sábio+Criador, ganchos poéticos, eliminação de clichês/AI slop e conformidade ética ANVISA. |
+| **CTA & Psicologia** | `cta-forge`, `behavior-lever`, `cro-master` | Convites sensoriais em primeira pessoa para a loja física ("Venha sentir a vibração"), gatilhos éticos de acolhimento e pertencimento. |
+| **Conteúdo & Storytelling** | `content-strategist`, `temas-editoriais`, `data-storytelling` | Sincronização com fases lunares, marés de São Luís, equinócios/solstícios e transformação dos dados do catálogo em histórias. |
+| **Curadoria & Acervo** | `holistic-mystic-wisdom`, `pesquisa-holistica`, `tibetan-wisdom` | Mapeamento dos 6 universos: Cristais, Arcanjo Miguel, Zodíaco, Aromaterapia Kailash, Linha NOA e Taças Tibetanas (432Hz). |
+| **Design, Imagem & Prompts**| `nano-banana-prompt-engine`, `jewelry-prompt-engine`, `analise-imagem` | Prompts em JSON para iluminação sacra de joias e minerais, extração cromática precisa e acessibilidade via alt-text. |
+| **Qualidade & Revisão** | `nlp-gate`, `ponytail`, `improve`, `secure-code` | Revisão ortográfica pt-BR, proibição de travessões, validação de simplicidade e segurança de código. |
 
 ---
 
 ## 4. Presets Místicos Disponíveis no Studio
 
-* **✦ Ativação Cristalina:** Fundo Esmeralda Sagrado (`#00381c` a `#008542`), Flor da Vida, Moldura Portal de Ouro, Cinzel Decorative + Cormorant Garamond.
-* **🌙 Mandala Lunar 432Hz:** Fundo Azul Meia-Noite Cósmico (`#0a0e27` a `#1c2758`), Mandala Lunar, Marcellus + Playfair Display.
-* **🔮 Portal dos Arcanjos:** Fundo Púrpura Celestial (`#1a052b` a `#3d125e`), Cubo de Metatron, Cinzel + EB Garamond.
-* **🌿 Sabedoria Ancestral:** Fundo Verde Floresta & Âmbar Dourado (`#1b2e15` a `#3b5e28`), Sri Yantra, Bodoni Moda + Montserrat.
-* **🔥 Chama Trina Sagrada:** Fundo Rubi Sagrado & Ouro Puro (`#2b080c` a `#5c121c`), Símbolo Sagrado da Marca, UnifrakturMaguntia + Fondamento.
+*   **✦ Ativação Cristalina:** Fundo Esmeralda Sagrado (`#00381c` a `#008542`), Flor da Vida, Moldura Portal de Ouro, Cinzel Decorative + Cormorant Garamond.
+*   **🌙 Mandala Lunar 432Hz:** Fundo Azul Meia-Noite Cósmico (`#0a0e27` a `#1c2758`), Mandala Lunar, Marcellus + Playfair Display.
+*   **🔮 Portal dos Arcanjos:** Fundo Púrpura Celestial (`#1a052b` a `#3d125e`), Cubo de Metatron, Cinzel + EB Garamond.
+*   **🌿 Sabedoria Ancestral:** Fundo Verde Floresta & Âmbar Dourado (`#1b2e15` a `#3b5e28`), Sri Yantra, Bodoni Moda + Montserrat.
+*   **🔥 Chama Trina Sagrada:** Fundo Rubi Sagrado & Ouro Puro (`#2b080c` a `#5c121c`), Símbolo Sagrado da Marca, UnifrakturMaguntia + Fondamento.
 
 ---
 

@@ -1,4 +1,4 @@
-# ✦ Pedaço do Céu — Fábrica de Conteúdo & Studio Místico
+# ✦ Pedaço do Céu: Fábrica de Conteúdo & Studio Místico
 
 [![CI Suite](https://github.com/gitreginato/pedaco-do-ceu/actions/workflows/ci.yml/badge.svg)](https://github.com/gitreginato/pedaco-do-ceu/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gold.svg)](LICENSE)
@@ -13,10 +13,11 @@ Plataforma de design automatizado, estúdio interativo HTML5 Canvas 2D (High-DPI
 O projeto resolve o desafio de produzir criativos digitais de altíssimo requinte estético e coerência conceitual para redes sociais (Instagram e TikTok) em escala, mantendo a autenticidade das tradições espirituais e a proibição inegociável de comercialismo agressivo.
 
 ### Pilares Fundamentais:
-1. **Studio Canvas 2D Interativo:** Renderizador multicamadas de alta resolução (2x) com suporte a formatos Feed 1:1, Feed 4:5, Story 9:16 e TikTok 9:16.
-2. **Catálogo Estruturado de Dados (`catalogo/`):** Base central em JSON validada por JSON Schema, mapeando propriedades energéticas, cromáticas e editoriais de cada produto.
-3. **Skills Especializadas dos Agentes:** Conhecimento encapsulado para pesquisa holística, análise cromática de imagens, ganchos conectados a São Luís e redação poética.
-4. **Esteira de Geração em Lote (`scripts/generate_posts.mjs`):** Automação com Playwright headless que consome o catálogo e gera artes finais, legendas, textos alternativos e metadados.
+1. **Documentação de Marca & Briefings (`brand/` e `briefing/`):** Brand Book, diretrizes de artesanato, identidade verbal e briefings estratégicos.
+2. **Studio Canvas 2D Interativo (`design-system/`):** Renderizador multicamadas de alta resolução (2x) com suporte a formatos Feed 1:1, Feed 4:5, Story 9:16 e TikTok 9:16.
+3. **Catálogo Estruturado de Dados (`catalogo/`):** Base central em JSON validada por JSON Schema, mapeando propriedades energéticas, cromáticas e editoriais de cada produto.
+4. **Skills Especializadas dos Agentes:** Conhecimento encapsulado para pesquisa holística, análise cromática de imagens, SEO local, ganchos poéticos e redação sagrada.
+5. **Esteira de Geração em Lote (`scripts/generate_posts.mjs`):** Automação com Playwright headless que consome o catálogo e gera artes finais, legendas, textos alternativos e metadados.
 
 ---
 
@@ -76,14 +77,13 @@ Os arquivos gerados são salvos em `./dist/posts/AAAA-MM-DD-<id-item>/`:
 
 ---
 
-## 📂 Estrutura do Catálogo (`catalogo/`)
+## 📂 Estrutura do Repositório
 
-O catálogo é regido pelo schema `./catalogo/schema.json` e armazena:
-* **Identificação:** `id`, `item`, `categoria` (`cristais`, `aromatizacao`, `estatuas`, `joias`, `bem-estar`).
-* **Atributos Visuais:** `cor_predominante`, `simbolo_layout`, `fundo_sugerido`.
-* **Atributos Holísticos:** `chakra`, `elemento`, `signos_afins`, `palavras_chave`, `metodo_limpeza`.
-* **Dados de Conteúdo:** `gancho`, `corpo_legenda`, `cta`, `hashtags`, `alt_text`.
-* **Status do Fluxo:** `rascunho` ➔ `revisado` ➔ `pronto_para_render` ➔ `renderizado` ➔ `publicado`.
+* **`brand/`**: Brand Book, Identidade Verbal, Identidade Visual e Diretrizes de Artesanato Nobre.
+* **`briefing/`**: Briefing Institucional, Briefing de Conteúdo e Matriz do Acervo (6 Pilares).
+* **`catalogo/`**: Catálogo estruturado regido por `schema.json` com atributos visuais, holísticos e de conteúdo.
+* **`skills/`**: Skills dos agentes para pesquisa holística, análise de imagem, temas e copy.
+* **`Fotos/`**: Acervo fotográfico real organizado por categorias.
 
 ---
 

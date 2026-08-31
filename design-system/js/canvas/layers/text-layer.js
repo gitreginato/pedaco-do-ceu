@@ -22,12 +22,25 @@ export class TextLayer extends BaseLayer {
     const zones = calculateZones(width, height, state.layout);
     if (!zones.text) return;
 
-    if (state.layout === 'center') {
-      this.drawCenterCardBackground(ctx, zones.text, state);
-    } else if (state.layout === 'bottom') {
-      this.drawBottomCardBackground(ctx, zones.text, state);
-    } else if (state.layout === 'top') {
-      this.drawTopCardBackground(ctx, zones.text, state);
+    const cardStyle = state.textCardStyle || 'card';
+
+    if (cardStyle !== 'transparent' && cardStyle !== 'separated') {
+      if (cardStyle === 'gradient') {
+        this.drawGradientFadeBackground(ctx, width, height, zones.text, state);
+      } else if (cardStyle === 'glass') {
+        this.drawGlassCardBackground(ctx, zones.text, state);
+      } else if (cardStyle === 'framed') {
+        this.drawFramedCardBackground(ctx, zones.text, state);
+      } else {
+        // card (fundo preenchido / sólido clássico)
+        if (state.layout === 'center') {
+          this.drawCenterCardBackground(ctx, zones.text, state);
+        } else if (state.layout === 'bottom') {
+          this.drawBottomCardBackground(ctx, zones.text, state);
+        } else if (state.layout === 'top') {
+          this.drawTopCardBackground(ctx, zones.text, state);
+        }
+      }
     }
 
     // Header Global (todos os layouts calibrados)
@@ -58,95 +71,98 @@ export class TextLayer extends BaseLayer {
     const innerW = textW - (state.paddingSide || 20) * 2;
     const gap = state.blockGap || 22;
     const lineGapExtra = state.globalLineGap || 12;
+
+    let curY = state.paddingTop || 90;
     const tagX = this.getAlignX(colX, innerW, state.align);
-    let curY = state.paddingTop || 100;
 
-    // Header / Cabeçalho da Loja (topo absoluto)
-    if (state.showHeader && state.headerText) {
-      ctx.save();
-      ctx.textAlign = state.align || 'center';
-      ctx.fillStyle = state.colorHeader || '#d4af37';
-      ctx.font = `${state.weightHeader || 600} ${state.sizeHeader || 12}px ${state.fontHeader || "'Cinzel', serif"}`;
-      ctx.letterSpacing = `${state.spacingHeader !== undefined ? state.spacingHeader : 2}px`;
-      ctx.fillText((state.headerText || '').toUpperCase(), tagX, curY);
-      ctx.letterSpacing = '0px';
-      ctx.restore();
-      curY += Math.round((state.sizeHeader || 12) * 1.5) + Math.round(gap * 0.4);
-    }
-
-    // Selo Superior (Badge Pill)
-    if (state.showBadge && state.badgeText) {
-      curY = this.drawBadgePill(ctx, colX + innerW / 2, curY, state.badgeText, true, state);
-    }
-
-    // Tag / Categoria
+    // 1. Tag de Categoria
     if (state.categoryTag) {
       ctx.save();
-      ctx.textAlign = state.align || 'center';
-      ctx.fillStyle = state.colorTag || '#d4af37';
-      ctx.font = `${state.weightTag || 700} ${state.sizeTag || 15}px ${state.fontTag || "'Cinzel', serif"}`;
-      ctx.letterSpacing = `${state.spacingTag !== undefined ? state.spacingTag : 1.5}px`;
-      ctx.fillText((state.categoryTag || '').toUpperCase(), tagX, curY);
+      ctx.textAlign = state.align;
+      ctx.fillStyle = state.colorTag;
+      const tFont = state.fontTag || "'Cinzel', serif";
+      const tSize = state.sizeTag || 14;
+      const tWeight = state.weightTag || 600;
+      ctx.font = `${tWeight} ${tSize}px ${tFont}`;
+      ctx.letterSpacing = `${state.spacingTag !== undefined ? state.spacingTag : 2}px`;
+      ctx.fillText(state.categoryTag.toUpperCase(), tagX, curY);
       ctx.letterSpacing = '0px';
       ctx.restore();
-      curY += Math.round(gap * 0.8) + Math.round((state.sizeTitle || 46) * 0.85);
-    } else {
-      curY += Math.round((state.sizeTitle || 46) * 0.85);
+      curY += Math.round(tSize * 1.5) + gap;
     }
 
-    // Título Principal com Glow
-    ctx.save();
-    ctx.fillStyle = state.colorTitle || '#f8f9fa';
-    ctx.font = `${state.weightTitle || 700} ${state.sizeTitle || 46}px ${state.fontTitle || "'Cinzel Decorative', serif"}`;
-    ctx.letterSpacing = `${state.spacingTitle || 1}px`;
-    if (state.glowTitle > 0) {
-      ctx.shadowColor = state.colorTitleGlow || '#d4af37';
-      ctx.shadowBlur = state.glowTitle;
-    }
-    ctx.textAlign = state.align || 'center';
-    const titleStartY = curY;
-    curY = this.drawWrappedText(ctx, state.title, tagX, curY, innerW, (state.sizeTitle || 46) * 1.10 + lineGapExtra * 0.3);
-    ctx.restore();
-    this.boundingBoxes.push({ id: 'title', x: colX, y: titleStartY - 10, w: innerW, h: curY - titleStartY + 10 });
-
-    curY += Math.round(gap * 0.5) + Math.round((state.sizeSubtitle || 20) * 0.7);
-
-    // Subtítulo
-    ctx.save();
-    ctx.fillStyle = state.colorSubtitle || '#eadcb9';
-    ctx.font = `${state.styleSubtitle || 'italic 500'} ${state.sizeSubtitle || 20}px ${state.fontSubtitle || "'Cormorant Garamond', serif"}`;
-    ctx.textAlign = state.align || 'center';
-    ctx.letterSpacing = `${state.spacingSubtitle !== undefined ? state.spacingSubtitle : 0}px`;
-    curY = this.drawWrappedText(ctx, state.subtitle, tagX, curY, innerW, (state.sizeSubtitle || 20) * 1.25 + lineGapExtra * 0.2);
-    ctx.letterSpacing = '0px';
-    ctx.restore();
-    curY += Math.round(gap * 0.8);
-
-    // Divisor Celestial
-    this.drawCelestialDivider(ctx, colX + innerW / 2, curY, 60, state.colorDividers || '#d4af37');
-    curY += Math.round(gap * 0.8) + Math.round((state.sizeDesc || 16) * 0.85);
-
-    // Descrição Poética
-    ctx.save();
-    ctx.fillStyle = state.colorDesc || '#f8f9fa';
-    ctx.font = `${state.weightDesc || 300} ${state.sizeDesc || 16}px ${state.fontDesc || "'Montserrat', sans-serif"}`;
-    ctx.textAlign = state.align || 'center';
-    curY = this.drawWrappedText(ctx, state.description, tagX, curY, innerW, (state.sizeDesc || 16) * (state.lineHeightDesc || 1.6) + lineGapExtra * 0.15);
-    ctx.restore();
-    curY += gap;
-
-    // Slot de Destaque Sagrado (Auto-expansível)
-    if (state.showHighlightBox && state.highlightText) {
-      curY = this.drawHighlightBox(ctx, colX, curY, innerW, state.highlightText, state);
-    }
-
-    // CTA / Rodapé
-    if (state.ctaText) {
-      const ctaY = Math.max(curY + gap, H - 70);
+    // 2. Título Principal
+    if (state.title) {
       ctx.save();
-      ctx.fillStyle = state.colorCta || '#d4af37';
-      ctx.font = `${state.weightCta || 600} ${state.sizeCta || 14}px ${state.fontCta || "'Cinzel', serif"}`;
-      ctx.textAlign = state.align || 'center';
+      ctx.textAlign = state.align;
+      ctx.fillStyle = state.colorTitle;
+      const titFont = state.fontTitle || "'Cinzel Decorative', 'Cinzel', serif";
+      const titSize = state.sizeTitle || 38;
+      const titWeight = state.weightTitle || 700;
+      ctx.font = `${titWeight} ${titSize}px ${titFont}`;
+      ctx.letterSpacing = `${state.spacingTitle !== undefined ? state.spacingTitle : 1}px`;
+      if (state.glowTitle > 0) {
+        ctx.shadowColor = state.colorTitleGlow || state.colorTitle;
+        ctx.shadowBlur = state.glowTitle;
+      }
+      curY = this.drawWrappedText(ctx, state.title, tagX, curY, innerW, Math.round(titSize * 1.15) + lineGapExtra);
+      ctx.shadowColor = 'transparent';
+      ctx.letterSpacing = '0px';
+      ctx.restore();
+      curY += gap;
+    }
+
+    // 3. Subtítulo Poético
+    if (state.subtitle) {
+      ctx.save();
+      ctx.textAlign = state.align;
+      ctx.fillStyle = state.colorSubtitle;
+      const subFont = state.fontSubtitle || "'Cormorant Garamond', serif";
+      const subSize = state.sizeSubtitle || 24;
+      const subStyle = state.styleSubtitle || "italic";
+      ctx.font = `${subStyle} ${subSize}px ${subFont}`;
+      ctx.letterSpacing = `${state.spacingSubtitle !== undefined ? state.spacingSubtitle : 0}px`;
+      curY = this.drawWrappedText(ctx, state.subtitle, tagX, curY, innerW, Math.round(subSize * 1.25) + lineGapExtra);
+      ctx.letterSpacing = '0px';
+      ctx.restore();
+      curY += gap;
+    }
+
+    // Divisor Sagrado Místico
+    this.drawCelestialDivider(ctx, colX, curY, innerW, state.colorDividers);
+    curY += 26;
+
+    // 4. Descrição do Produto
+    if (state.description) {
+      ctx.save();
+      ctx.textAlign = state.align;
+      ctx.fillStyle = state.colorDesc;
+      const dFont = state.fontDesc || "'Montserrat', sans-serif";
+      const dSize = state.sizeDesc || 15;
+      const dWeight = state.weightDesc || 300;
+      const dLineH = state.lineHeightDesc ? Math.round(dSize * state.lineHeightDesc) : 22;
+      ctx.font = `${dWeight} ${dSize}px ${dFont}`;
+      curY = this.drawWrappedText(ctx, state.description, tagX, curY, innerW, dLineH);
+      ctx.restore();
+      curY += gap + 6;
+    }
+
+    // 5. Destaque Vibracional
+    if (state.highlightText) {
+      curY = this.drawHighlightBox(ctx, colX, curY, innerW, state.highlightText, state);
+      curY += gap;
+    }
+
+    // 6. Chamada para Ação / CTA
+    if (state.ctaText && state.ctaText.trim() !== '') {
+      const ctaY = Math.max(curY + 10, H - 55);
+      ctx.save();
+      ctx.textAlign = state.align;
+      ctx.fillStyle = state.colorCta || state.colorTitle;
+      const cFont = state.fontCta || "'Cinzel', serif";
+      const cSize = state.sizeCta || 14;
+      const cWeight = state.weightCta || 600;
+      ctx.font = `${cWeight} ${cSize}px ${cFont}`;
       ctx.letterSpacing = `${state.spacingCta !== undefined ? state.spacingCta : 1}px`;
       ctx.fillText(state.ctaText, tagX, ctaY);
       ctx.letterSpacing = '0px';
@@ -213,7 +229,89 @@ export class TextLayer extends BaseLayer {
     ctx.restore();
   }
 
+  drawGradientFadeBackground(ctx, W, H, zone, state) {
+    const intensity = state.gradientIntensity || 0.88;
+    ctx.save();
+    if (state.layout === 'bottom') {
+      const startY = Math.max(0, zone.y - 80);
+      const grad = ctx.createLinearGradient(0, startY, 0, H);
+      grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      grad.addColorStop(0.25, hexToRgba(state.gradientPrimary || '#00381c', 0.55 * intensity));
+      grad.addColorStop(0.65, hexToRgba(state.gradientSecondary || '#008542', 0.85 * intensity));
+      grad.addColorStop(1, hexToRgba(state.gradientDarkness || '#050c07', Math.min(intensity + 0.08, 1)));
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, startY, W, H - startY);
+    } else if (state.layout === 'top') {
+      const endY = Math.min(H, zone.y + zone.h + 80);
+      const grad = ctx.createLinearGradient(0, endY, 0, 0);
+      grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      grad.addColorStop(0.25, hexToRgba(state.gradientPrimary || '#00381c', 0.55 * intensity));
+      grad.addColorStop(0.65, hexToRgba(state.gradientSecondary || '#008542', 0.85 * intensity));
+      grad.addColorStop(1, hexToRgba(state.gradientDarkness || '#050c07', Math.min(intensity + 0.08, 1)));
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, endY);
+    } else if (state.layout === 'center') {
+      const cx = W / 2;
+      const cy = H / 2;
+      const radius = Math.max(zone.w, zone.h) * 0.75;
+      const radGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
+      radGrad.addColorStop(0, hexToRgba(state.gradientDarkness || '#050c07', 0.90 * intensity));
+      radGrad.addColorStop(0.5, hexToRgba(state.gradientPrimary || '#00381c', 0.60 * intensity));
+      radGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = radGrad;
+      ctx.fillRect(0, 0, W, H);
+    }
+    ctx.restore();
+  }
+
+  drawGlassCardBackground(ctx, zone, state) {
+    const opacity = (state.boxOpacity !== undefined ? state.boxOpacity : 0.95) * 0.45;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+    ctx.shadowBlur = 35;
+    const grad = ctx.createLinearGradient(zone.x, zone.y, zone.x, zone.y + zone.h);
+    grad.addColorStop(0, hexToRgba(state.gradientPrimary || '#00381c', opacity));
+    grad.addColorStop(1, hexToRgba(state.gradientDarkness || '#050c07', Math.min(opacity + 0.2, 0.85)));
+    ctx.fillStyle = grad;
+
+    const pad = state.layout === 'center' ? 0 : 28;
+    const rY = state.layout === 'top' ? zone.y + 28 : zone.y + 10;
+    const rH = state.layout === 'center' ? zone.h : zone.h - 38;
+
+    this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, 18, true, false);
+    ctx.shadowColor = 'transparent';
+
+    ctx.strokeStyle = hexToRgba(state.colorCorners || '#d4af37', 0.45);
+    ctx.lineWidth = 1.2;
+    this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, 18, false, true);
+    ctx.restore();
+  }
+
+  drawFramedCardBackground(ctx, zone, state) {
+    ctx.save();
+    const pad = state.layout === 'center' ? 0 : 28;
+    const rY = state.layout === 'top' ? zone.y + 28 : zone.y + 10;
+    const rH = state.layout === 'center' ? zone.h : zone.h - 38;
+
+    // Fundo translúcido sutil para contraste
+    ctx.fillStyle = 'rgba(2, 9, 4, 0.28)';
+    this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, 18, true, false);
+
+    // Moldura dupla fina dourada
+    ctx.strokeStyle = hexToRgba(state.colorCorners || '#d4af37', 0.7);
+    ctx.lineWidth = 1.6;
+    this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, 18, false, true);
+
+    ctx.strokeStyle = hexToRgba(state.colorCorners || '#d4af37', 0.25);
+    ctx.lineWidth = 0.8;
+    this.roundRect(ctx, zone.x + pad + 6, rY + 6, zone.w - pad * 2 - 12, rH - 12, 14, false, true);
+    ctx.restore();
+  }
+
   renderCalibratedBlocks(ctx, blocks, state) {
+    const isSeparated = state.textCardStyle === 'separated';
+    const isTransparent = state.textCardStyle === 'transparent' || state.textCardStyle === 'gradient';
+
     for (const b of blocks) {
       if (b.type === 'badge') {
         this.drawBadgePill(ctx, b.x, b.y, b.text, true, state);
@@ -223,17 +321,48 @@ export class TextLayer extends BaseLayer {
         ctx.fillStyle = b.color;
         ctx.font = b.font;
         ctx.letterSpacing = `${b.letterSpacing}px`;
+        if (isTransparent) {
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+          ctx.shadowBlur = 8;
+        }
         ctx.fillText(b.text, b.x, b.y);
         ctx.restore();
       } else if (b.type === 'title') {
         ctx.save();
-        ctx.textAlign = b.align;
-        ctx.fillStyle = b.color;
         ctx.font = b.font;
         ctx.letterSpacing = `${b.letterSpacing || 1}px`;
+
+        if (isSeparated && b.lines && b.lines.length > 0) {
+          const align = b.align || 'center';
+          let maxW = 0;
+          for (const l of b.lines) {
+            const w = ctx.measureText(l).width;
+            if (w > maxW) maxW = w;
+          }
+          const boxW = Math.min(maxW + 48, (state.width || 1080) - 60);
+          const boxH = b.lines.length * b.lineHeight + 16;
+          const boxX = align === 'left' ? b.x - 16 : (align === 'right' ? b.x - boxW + 16 : b.x - boxW / 2);
+          const boxY = b.y - b.size * 0.85;
+
+          ctx.shadowColor = 'rgba(0,0,0,0.6)';
+          ctx.shadowBlur = 18;
+          ctx.fillStyle = hexToRgba(state.gradientDarkness || '#050c07', 0.82);
+          this.roundRect(ctx, boxX, boxY, boxW, boxH, 12, true, false);
+          ctx.shadowColor = 'transparent';
+
+          ctx.strokeStyle = hexToRgba(state.colorCorners || '#d4af37', 0.45);
+          ctx.lineWidth = 1;
+          this.roundRect(ctx, boxX, boxY, boxW, boxH, 12, false, true);
+        }
+
+        ctx.textAlign = b.align;
+        ctx.fillStyle = b.color;
         if (b.glow > 0) {
           ctx.shadowColor = b.glowColor;
           ctx.shadowBlur = b.glow;
+        } else if (isTransparent) {
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+          ctx.shadowBlur = 10;
         }
         let tY = b.y;
         for (const line of b.lines) {
@@ -244,10 +373,34 @@ export class TextLayer extends BaseLayer {
         ctx.restore();
       } else if (b.type === 'subtitle') {
         ctx.save();
-        ctx.textAlign = b.align;
-        ctx.fillStyle = b.color;
         ctx.font = b.font;
         ctx.letterSpacing = `${b.letterSpacing !== undefined ? b.letterSpacing : 0}px`;
+
+        if (isSeparated && b.lines && b.lines.length > 0) {
+          const align = b.align || 'center';
+          let maxW = 0;
+          for (const l of b.lines) {
+            const w = ctx.measureText(l).width;
+            if (w > maxW) maxW = w;
+          }
+          const boxW = Math.min(maxW + 32, (state.width || 1080) - 70);
+          const boxH = b.lines.length * b.lineHeight + 12;
+          const boxX = align === 'left' ? b.x - 12 : (align === 'right' ? b.x - boxW + 12 : b.x - boxW / 2);
+          const boxY = b.y - b.size * 0.85;
+
+          ctx.fillStyle = hexToRgba(state.gradientPrimary || '#00381c', 0.72);
+          this.roundRect(ctx, boxX, boxY, boxW, boxH, 8, true, false);
+          ctx.strokeStyle = hexToRgba(state.colorCorners || '#d4af37', 0.3);
+          ctx.lineWidth = 0.8;
+          this.roundRect(ctx, boxX, boxY, boxW, boxH, 8, false, true);
+        }
+
+        ctx.textAlign = b.align;
+        ctx.fillStyle = b.color;
+        if (isTransparent) {
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+          ctx.shadowBlur = 8;
+        }
         let sY = b.y;
         for (const line of b.lines) {
           ctx.fillText(line, b.x, sY);
@@ -259,9 +412,33 @@ export class TextLayer extends BaseLayer {
         this.drawCelestialDivider(ctx, b.x, b.y, b.width, b.color);
       } else if (b.type === 'description') {
         ctx.save();
+        ctx.font = b.font;
+
+        if (isSeparated && b.lines && b.lines.length > 0) {
+          const align = b.align || 'center';
+          let maxW = 0;
+          for (const l of b.lines) {
+            const w = ctx.measureText(l).width;
+            if (w > maxW) maxW = w;
+          }
+          const boxW = Math.min(maxW + 36, (state.width || 1080) - 60);
+          const boxH = b.lines.length * b.lineHeight + 16;
+          const boxX = align === 'left' ? b.x - 14 : (align === 'right' ? b.x - boxW + 14 : b.x - boxW / 2);
+          const boxY = b.y - b.size * 0.85;
+
+          ctx.fillStyle = hexToRgba(state.gradientDarkness || '#050c07', 0.78);
+          this.roundRect(ctx, boxX, boxY, boxW, boxH, 10, true, false);
+          ctx.strokeStyle = hexToRgba(state.colorCorners || '#d4af37', 0.35);
+          ctx.lineWidth = 0.8;
+          this.roundRect(ctx, boxX, boxY, boxW, boxH, 10, false, true);
+        }
+
         ctx.textAlign = b.align;
         ctx.fillStyle = b.color;
-        ctx.font = b.font;
+        if (isTransparent) {
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+          ctx.shadowBlur = 6;
+        }
         let dY = b.y;
         for (const line of b.lines) {
           ctx.fillText(line, b.x, dY);
@@ -276,6 +453,10 @@ export class TextLayer extends BaseLayer {
         ctx.fillStyle = b.color;
         ctx.font = b.font;
         ctx.letterSpacing = `${b.letterSpacing}px`;
+        if (isTransparent) {
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
+          ctx.shadowBlur = 8;
+        }
         ctx.fillText(b.text, b.x, b.y);
         ctx.restore();
       }

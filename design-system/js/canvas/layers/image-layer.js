@@ -143,6 +143,18 @@ export class ImageLayer extends BaseLayer {
       ctx.lineWidth = 2.2;
       this.roundRect(ctx, portalX, portalY, portalW, portalH, 18, false, true);
       ctx.restore();
+    } else if (state.fitMode === 'cover' || state.textCardStyle === 'gradient' || state.textCardStyle === 'transparent' || state.textCardStyle === 'separated' || state.textCardStyle === 'glass' || state.textCardStyle === 'framed') {
+      // Imersão fotográfica total em tela cheia
+      this.drawImageCover(ctx, state.imgObj, 0, 0, W, H, state);
+    } else if (state.fitMode === 'fusion') {
+      // Fusão suave com degradê
+      this.drawImageCover(ctx, state.imgObj, 0, 0, W, H, state);
+      const ov = ctx.createLinearGradient(0, zone.h - 100, 0, H);
+      ov.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      ov.addColorStop(0.5, hexToRgba(state.gradientPrimary || '#00381c', 0.8 * (state.gradientIntensity || 0.88)));
+      ov.addColorStop(1, hexToRgba(state.gradientDarkness || '#050c07', state.gradientIntensity || 0.88));
+      ctx.fillStyle = ov;
+      ctx.fillRect(0, zone.h - 100, W, H - (zone.h - 100));
     } else {
       ctx.save();
       ctx.beginPath();
@@ -177,6 +189,18 @@ export class ImageLayer extends BaseLayer {
       ctx.lineWidth = 2.2;
       this.roundRect(ctx, portalX, portalY, portalW, portalH, 18, false, true);
       ctx.restore();
+    } else if (state.fitMode === 'cover' || state.textCardStyle === 'gradient' || state.textCardStyle === 'transparent' || state.textCardStyle === 'separated' || state.textCardStyle === 'glass' || state.textCardStyle === 'framed') {
+      // Imersão fotográfica total em tela cheia
+      this.drawImageCover(ctx, state.imgObj, 0, 0, W, H, state);
+    } else if (state.fitMode === 'fusion') {
+      // Fusão suave com degradê no topo
+      this.drawImageCover(ctx, state.imgObj, 0, 0, W, H, state);
+      const ov = ctx.createLinearGradient(0, zone.y + 100, 0, 0);
+      ov.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      ov.addColorStop(0.5, hexToRgba(state.gradientPrimary || '#00381c', 0.8 * (state.gradientIntensity || 0.88)));
+      ov.addColorStop(1, hexToRgba(state.gradientDarkness || '#050c07', state.gradientIntensity || 0.88));
+      ctx.fillStyle = ov;
+      ctx.fillRect(0, 0, W, zone.y + 100);
     } else {
       ctx.save();
       ctx.beginPath();

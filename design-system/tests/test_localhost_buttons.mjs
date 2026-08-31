@@ -146,6 +146,21 @@ import { chromium } from 'playwright';
     }
   }
 
+  // 8.1 Testa Todos os Estilos de Fundo de Texto
+  console.log('\n--- 8.1 TESTANDO ESTILOS DE FUNDO DE TEXTO ---');
+  const cardStyles = ['card', 'gradient', 'separated', 'glass', 'transparent', 'framed'];
+  for (const cs of cardStyles) {
+    await page.click(`.segmented-btn[data-text-card-style="${cs}"]`);
+    const cur = await page.evaluate(() => window.pedacoStudio.store.state.textCardStyle);
+    if (cur === cs) {
+      console.log(`✅ [OK] Estilo de Fundo "${cs}" ativado`);
+      passed++;
+    } else {
+      console.error(`❌ [ERROR] Estilo de Fundo "${cs}" falhou`);
+      failed++;
+    }
+  }
+
   // 9. Testa View Modes
   console.log('\n--- 9. TESTANDO VIEW MODES (CANVAS) ---');
   await page.click('.view-mode-btn[data-view-mode="split"]');

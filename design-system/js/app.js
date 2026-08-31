@@ -697,6 +697,8 @@ const INITIAL_STATE = {
   showBadge: true,
   showSafeAreaGuide: false,
 
+  textCardStyle: 'card', // 'card', 'gradient', 'separated', 'glass', 'transparent', 'framed'
+
   paddingTop: 90,
   blockGap: 20,
   paddingSide: 60,
@@ -1166,6 +1168,15 @@ export class PedacoDoCeuStudio {
       });
     });
 
+    // Estilo do Fundo de Texto (card, gradient, separated, glass, transparent, framed)
+    document.querySelectorAll('[data-text-card-style]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-text-card-style]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.store.state.textCardStyle = btn.getAttribute('data-text-card-style');
+      });
+    });
+
     // Modo Split
     document.querySelectorAll('[data-view-mode]').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -1521,6 +1532,23 @@ export class PedacoDoCeuStudio {
     setCheck('showSafeAreaGuideCheck', s.showSafeAreaGuide);
     setCheck('imgFlipHCheck', s.imgFlipH);
     setCheck('imgFlipVCheck', s.imgFlipV);
+
+    // Sincronização dos Botões Segmentados (Formato, Layout, Alinhamento, Enquadramento, Estilo de Fundo)
+    document.querySelectorAll('[data-format]').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-format') === s.format);
+    });
+    document.querySelectorAll('[data-layout]').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-layout') === s.layout);
+    });
+    document.querySelectorAll('[data-align]').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-align') === s.align);
+    });
+    document.querySelectorAll('[data-fit]').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-fit') === s.fitMode);
+    });
+    document.querySelectorAll('[data-text-card-style]').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-text-card-style') === (s.textCardStyle || 'card'));
+    });
 
     // Live Gradient Preview Bar
     this.updateGradientLivePreview();

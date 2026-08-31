@@ -189,6 +189,19 @@ const FILE_URL = `file://${path.resolve(__dirname, '../index.html')}`;
   if (!await testCheckbox('#imgFlipVCheck', true, 'imgFlipV')) failed++;
   if (!await testCheckbox('#imgFlipVCheck', false, 'imgFlipV')) failed++;
 
+  console.log('\n--- SEGMENTED BUTTONS & TEXT CARD STYLES ---');
+  const cardStyles = ['card', 'gradient', 'separated', 'glass', 'transparent', 'framed'];
+  for (const cs of cardStyles) {
+    await page.click(`.segmented-btn[data-text-card-style="${cs}"]`);
+    const stVal = await page.evaluate(() => window.pedacoStudio.store.state.textCardStyle);
+    if (stVal !== cs) {
+      console.error(`❌ [ERROR] textCardStyle - Expected "${cs}", got "${stVal}"`);
+      failed++;
+    } else {
+      console.log(`✅ [OK] textCardStyle -> "${cs}"`);
+    }
+  }
+
   console.log('\n--- TEMPLATE MANAGEMENT & PERSISTENCE ---');
   // 1. Salva um novo template
   await page.fill('#templateNameInput', 'Template Teste Ametista');

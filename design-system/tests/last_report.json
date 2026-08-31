@@ -1,6 +1,6 @@
 {
-  "date": "2026-08-31T20:04:53.730Z",
-  "totalDurationSeconds": 114.41,
+  "date": "2026-08-31T20:26:23.344Z",
+  "totalDurationSeconds": 79.82,
   "totalPassed": 138,
   "totalFailed": 0,
   "suites": [
@@ -494,15 +494,15 @@
           "pass": true
         },
         {
-          "name": "Performance sob stress: média de 47.82ms por mutação/render (< 50ms CPU mode)",
+          "name": "Performance sob stress: média de 12.65ms por mutação/render (< 50ms CPU mode)",
           "pass": true
         },
         {
-          "name": "Frame Budget: tempo médio de renderização = 12.23ms (< 60ms modo CPU software)",
+          "name": "Frame Budget: tempo médio de renderização = 12.16ms (< 60ms modo CPU software)",
           "pass": true
         },
         {
-          "name": "Frame Budget: latência p95 = 15.20ms (< 120ms)",
+          "name": "Frame Budget: latência p95 = 14.20ms (< 120ms)",
           "pass": true
         },
         {
