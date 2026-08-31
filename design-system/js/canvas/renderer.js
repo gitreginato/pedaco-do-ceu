@@ -148,7 +148,11 @@ export class Renderer {
   async renderHighRes(scale = 2) {
     if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
       try {
-        await document.fonts.ready;
+        // Timeout de segurança de 250ms para nunca travar a exportação caso a rede esteja lenta
+        await Promise.race([
+          document.fonts.ready,
+          new Promise(r => setTimeout(r, 250))
+        ]);
       } catch (e) {
         console.warn('Erro ao aguardar carregamento de fontes:', e);
       }
@@ -156,7 +160,7 @@ export class Renderer {
 
     const baseW = this.store.state.width || 1080;
     const baseH = this.store.state.height || 1080;
-    const exportScale = Math.max(scale, 2); // Garante no mínimo 2x (2K Ultra-HD)
+    const exportScale = Math.max(scale, 1);
     const targetW = Math.round(baseW * exportScale);
     const targetH = Math.round(baseH * exportScale);
 
@@ -180,7 +184,11 @@ export class Renderer {
 
     const state = this.store.state;
     for (const layer of this.layers) {
-      layer.render(ctx, baseW, baseH, state);
+      try {
+        layer.render(ctx, baseW, baseH, state);
+      } catch (layerErr) {
+        console.warn(`Erro ao renderizar camada ${layer.name}:`, layerErr);
+      }
     }
 
     ctx.restore();
@@ -188,50 +196,75 @@ export class Renderer {
   }
 
   async exportHighResImage(filename = 'pedaco-do-ceu-post-2k.png', scale = 2) {
-    try {
-      const offscreen = await this.renderHighRes(scale);
-      if (!offscreen) {
-        return this.exportLegacyImage(filename);
-      }
+    return new Promise(async (resolve) => {
+      try {
+        const offscreen = await this.renderHighRes(scale);
+        if (!offscreen) {
+          this.exportLegacyImage(filename);
+          return resolve();
+        }
 
-      // Tenta exportação via Blob (qualidade máxima sem limite de URL)
-      if (offscreen.toBlob) {
-        offscreen.toBlob((blob) => {
-          if (!blob) {
-            const dataUrl = offscreen.toDataURL('image/png', 1.0);
-            this.downloadDataUrl(dataUrl, filename);
-            return;
+        // Tenta exportação via Blob (qualidade máxima sem limite de URL)
+        if (offscreen.toBlob) {
+          try {
+            offscreen.toBlob((blob) => {
+              if (blob) {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                setTimeout(() => {
+                  if (link.parentNode) link.parentNode.removeChild(link);
+                  URL.revokeObjectURL(url);
+                }, 1000);
+                resolve();
+              } else {
+                this.exportViaDataURL(offscreen, filename);
+                resolve();
+              }
+            }, 'image/png', 1.0);
+          } catch (blobErr) {
+            console.warn('toBlob falhou, tentando toDataURL:', blobErr);
+            this.exportViaDataURL(offscreen, filename);
+            resolve();
           }
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.download = filename;
-          link.href = url;
-          document.body.appendChild(link);
-          link.click();
-          setTimeout(() => {
-            if (link.parentNode) link.parentNode.removeChild(link);
-            URL.revokeObjectURL(url);
-          }, 1000);
-        }, 'image/png', 1.0);
-      } else {
-        const dataUrl = offscreen.toDataURL('image/png', 1.0);
-        this.downloadDataUrl(dataUrl, filename);
+        } else {
+          this.exportViaDataURL(offscreen, filename);
+          resolve();
+        }
+      } catch (err) {
+        console.warn('Fallback para exportação padrão:', err);
+        this.exportLegacyImage(filename);
+        resolve();
       }
-    } catch (err) {
-      console.warn('Fallback para exportação padrão:', err);
+    });
+  }
+
+  exportViaDataURL(canvas, filename) {
+    try {
+      const dataUrl = canvas.toDataURL('image/png', 1.0);
+      this.downloadDataUrl(dataUrl, filename);
+    } catch (e) {
+      console.warn('toDataURL falhou, usando fallback legacy:', e);
       this.exportLegacyImage(filename);
     }
   }
 
   downloadDataUrl(dataUrl, filename) {
-    const link = document.createElement('a');
-    link.download = filename;
-    link.href = dataUrl;
-    document.body.appendChild(link);
-    link.click();
-    setTimeout(() => {
-      if (link.parentNode) link.parentNode.removeChild(link);
-    }, 150);
+    try {
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        if (link.parentNode) link.parentNode.removeChild(link);
+      }, 150);
+    } catch (e) {
+      console.error('Falha ao disparar download:', e);
+    }
   }
 
   exportLegacyImage(filename = 'pedaco-do-ceu-post.png') {
