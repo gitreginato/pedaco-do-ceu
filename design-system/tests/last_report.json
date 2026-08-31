@@ -1,0 +1,625 @@
+{
+  "date": "2026-08-30T06:21:16.082Z",
+  "totalDurationSeconds": 62.77,
+  "totalPassed": 138,
+  "totalFailed": 0,
+  "suites": [
+    {
+      "name": "Camada Atômica & Fuzzing",
+      "tests": [
+        {
+          "name": "hexToRgb: #ffffff retorna {r:255, g:255, b:255}",
+          "pass": true
+        },
+        {
+          "name": "hexToRgb: #000000 retorna {r:0, g:0, b:0}",
+          "pass": true
+        },
+        {
+          "name": "hexToRgb: #d4af37 retorna {r:212, g:175, b:55}",
+          "pass": true
+        },
+        {
+          "name": "hexToRgb: hex curto #fff retorna valores corretos ou fallback",
+          "pass": true
+        },
+        {
+          "name": "hexToRgb: input inválido retorna fallback seguro sem quebrar",
+          "pass": true
+        },
+        {
+          "name": "hexToRgba: alfa 0.5 formata rgba(212, 175, 55, 0.5)",
+          "pass": true
+        },
+        {
+          "name": "hexToRgba: alfa 0 formata rgba(212, 175, 55, 0)",
+          "pass": true
+        },
+        {
+          "name": "hexToRgba: alfa 1 formata rgba(212, 175, 55, 1)",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] em [1:1]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] em [1:1]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] [1:1]: soma das larguras = W",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] [1:1]: altura total = H",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] em [4:5]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] em [4:5]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] [4:5]: soma das larguras = W",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] [4:5]: altura total = H",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] em [9:16]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] em [9:16]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] [9:16]: soma das larguras = W",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] [9:16]: altura total = H",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] em [4K]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] em [4K]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] [4K]: soma das larguras = W",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [right] [4K]: altura total = H",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] em [1:1]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] em [1:1]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] [1:1]: soma das alturas = H",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] [1:1]: largura total = W",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] em [4:5]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] em [4:5]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] [4:5]: soma das alturas = H",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] [4:5]: largura total = W",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] em [9:16]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] em [9:16]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] [9:16]: soma das alturas = H",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] [9:16]: largura total = W",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] em [4K]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] em [4K]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] [4K]: soma das alturas = H",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [bottom] [4K]: largura total = W",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] em [1:1]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] em [1:1]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] [1:1]: soma das alturas = H",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] [1:1]: largura total = W",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] em [4:5]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] em [4:5]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] [4:5]: soma das alturas = H",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] [4:5]: largura total = W",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] em [9:16]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] em [9:16]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] [9:16]: soma das alturas = H",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] [9:16]: largura total = W",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] em [4K]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] em [4K]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] [4K]: soma das alturas = H",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [top] [4K]: largura total = W",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] em [1:1]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] em [1:1]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] [1:1]: imagem preenche 100%",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] [1:1]: card de texto centralizado",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] em [4:5]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] em [4:5]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] [4:5]: imagem preenche 100%",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] [4:5]: card de texto centralizado",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] em [9:16]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] em [9:16]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] [9:16]: imagem preenche 100%",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] [9:16]: card de texto centralizado",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] em [4K]: zona img e text definidas",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] em [4K]: sem valores NaN",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] [4K]: imagem preenche 100%",
+          "pass": true
+        },
+        {
+          "name": "calculateZones [center] [4K]: card de texto centralizado",
+          "pass": true
+        },
+        {
+          "name": "applySafeArea [1:1]: zona segura dentro da zona bruta",
+          "pass": true
+        },
+        {
+          "name": "applySafeArea [1:1]: margens positivas",
+          "pass": true
+        },
+        {
+          "name": "applySafeArea [4:5]: zona segura dentro da zona bruta",
+          "pass": true
+        },
+        {
+          "name": "applySafeArea [4:5]: margens positivas",
+          "pass": true
+        },
+        {
+          "name": "applySafeArea [9:16-story]: zona segura dentro da zona bruta",
+          "pass": true
+        },
+        {
+          "name": "applySafeArea [9:16-story]: margens positivas",
+          "pass": true
+        },
+        {
+          "name": "applySafeArea [9:16-story]: margem superior >= 90px para UI social",
+          "pass": true
+        },
+        {
+          "name": "applySafeArea [9:16-tiktok]: zona segura dentro da zona bruta",
+          "pass": true
+        },
+        {
+          "name": "applySafeArea [9:16-tiktok]: margens positivas",
+          "pass": true
+        },
+        {
+          "name": "applySafeArea [9:16-tiktok]: margem superior >= 90px para UI social",
+          "pass": true
+        },
+        {
+          "name": "measureWrappedText: string vazia retorna height 0",
+          "pass": true
+        },
+        {
+          "name": "measureWrappedText: palavra única retorna 1 linha",
+          "pass": true
+        },
+        {
+          "name": "measureWrappedText: quebra em múltiplas linhas quando excede maxWidth",
+          "pass": true
+        },
+        {
+          "name": "measureWrappedText: processa unicode tibetano e símbolos sem erro",
+          "pass": true
+        },
+        {
+          "name": "calculateTextBlocks: gera todos os tipos de blocos esperados",
+          "pass": true
+        },
+        {
+          "name": "calculateTextBlocks: ativa Text-Fit Mode e distribui blocos sem quebrar",
+          "pass": true
+        },
+        {
+          "name": "SnappingManager: valor 542 dentro do threshold de 15px faz snap para 540",
+          "pass": true
+        },
+        {
+          "name": "SnappingManager: valor 600 fora do threshold não faz snap",
+          "pass": true
+        },
+        {
+          "name": "SnappingManager: valor 364 faz snap para o terço esquerdo (359.64)",
+          "pass": true
+        },
+        {
+          "name": "A11yManager: luminância do branco é 1.0",
+          "pass": true
+        },
+        {
+          "name": "A11yManager: luminância do preto é 0.0",
+          "pass": true
+        },
+        {
+          "name": "A11yManager: contraste branco x preto é 21:1",
+          "pass": true
+        },
+        {
+          "name": "A11yManager: ouro claro sobre esmeralda atende WCAG AA (ratio >= 4.5)",
+          "pass": true
+        },
+        {
+          "name": "HistoryManager: canUndo é true após pushes",
+          "pass": true
+        },
+        {
+          "name": "HistoryManager: canRedo é false antes de undo",
+          "pass": true
+        },
+        {
+          "name": "HistoryManager: undo retorna estado anterior (step: 2)",
+          "pass": true
+        },
+        {
+          "name": "HistoryManager: canRedo é true após undo",
+          "pass": true
+        },
+        {
+          "name": "HistoryManager: redo avança para o estado futuro (step: 3)",
+          "pass": true
+        },
+        {
+          "name": "HistoryManager: pilha não ultrapassa o limite configurado de 50 snapshots",
+          "pass": true
+        },
+        {
+          "name": "HistoryManager: nova ação limpa a pilha de futuro",
+          "pass": true
+        }
+      ],
+      "passed": 102,
+      "failed": 0
+    },
+    {
+      "name": "Camada Massiva Combinatória (300 Combinações)",
+      "tests": [
+        {
+          "name": "Matriz Combinatória: 300 combinações testadas no Canvas sem falha",
+          "pass": true
+        },
+        {
+          "name": "Geometria Sagrada [flowerOfLife] renderiza sem exceção",
+          "pass": true
+        },
+        {
+          "name": "Geometria Sagrada [metatronCube] renderiza sem exceção",
+          "pass": true
+        },
+        {
+          "name": "Geometria Sagrada [sriYantra] renderiza sem exceção",
+          "pass": true
+        },
+        {
+          "name": "Geometria Sagrada [lunarMandala] renderiza sem exceção",
+          "pass": true
+        },
+        {
+          "name": "Geometria Sagrada [logoPattern] renderiza sem exceção",
+          "pass": true
+        },
+        {
+          "name": "Geometria Sagrada [none] renderiza sem exceção",
+          "pass": true
+        },
+        {
+          "name": "Modo de Enquadramento [portal] renderiza com precisão",
+          "pass": true
+        },
+        {
+          "name": "Modo de Enquadramento [fusion] renderiza com precisão",
+          "pass": true
+        },
+        {
+          "name": "Modo de Enquadramento [cover] renderiza com precisão",
+          "pass": true
+        },
+        {
+          "name": "Alinhamento de Texto [left] renderiza com precisão",
+          "pass": true
+        },
+        {
+          "name": "Alinhamento de Texto [center] renderiza com precisão",
+          "pass": true
+        },
+        {
+          "name": "Alinhamento de Texto [right] renderiza com precisão",
+          "pass": true
+        },
+        {
+          "name": "Exportação High-DPI: gera DataURL PNG válido",
+          "pass": true
+        },
+        {
+          "name": "Exportação High-DPI: gera Blob binário com tamanho positivo",
+          "pass": true
+        }
+      ],
+      "passed": 15,
+      "failed": 0
+    },
+    {
+      "name": "Camada de Stress, Performance & Robustez",
+      "tests": [
+        {
+          "name": "Stress Test: 500 mutações consecutivas processadas sem travar",
+          "pass": true
+        },
+        {
+          "name": "Performance sob stress: média de 22.48ms por mutação/render (< 50ms CPU mode)",
+          "pass": true
+        },
+        {
+          "name": "Frame Budget: tempo médio de renderização = 16.35ms (< 60ms modo CPU software)",
+          "pass": true
+        },
+        {
+          "name": "Frame Budget: latência p95 = 20.90ms (< 120ms)",
+          "pass": true
+        },
+        {
+          "name": "Uso de Heap JS sob controle: 9.54 MB (< 150MB)",
+          "pass": true
+        }
+      ],
+      "passed": 5,
+      "failed": 0
+    },
+    {
+      "name": "Integridade Estrutural & ARIA A11y",
+      "tests": [
+        {
+          "name": "Canvas #renderCanvas existe",
+          "pass": true
+        },
+        {
+          "name": "Aba #tab-acervo existe e tem role=\"tabpanel\"",
+          "pass": true
+        },
+        {
+          "name": "Aba #tab-textos existe e tem role=\"tabpanel\"",
+          "pass": true
+        },
+        {
+          "name": "Aba #tab-estilo existe e tem role=\"tabpanel\"",
+          "pass": true
+        },
+        {
+          "name": "Aba #tab-formato existe e tem role=\"tabpanel\"",
+          "pass": true
+        },
+        {
+          "name": "Botões Undo (#btnUndo) e Redo (#btnRedo) no Header",
+          "pass": true
+        },
+        {
+          "name": "Região Live A11y (#a11yStatus) presente",
+          "pass": true
+        }
+      ],
+      "passed": 7,
+      "failed": 0
+    },
+    {
+      "name": "Viewport Estável & Canvas High-DPI",
+      "tests": [
+        {
+          "name": "Canvas 100% fixo durante rolagem da sidebar",
+          "pass": true
+        }
+      ],
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "name": "Undo / Redo (HistoryManager) & Persistência LocalStorage",
+      "tests": [
+        {
+          "name": "Botão Undo habilitado após edição",
+          "pass": true
+        },
+        {
+          "name": "Undo restaura estado anterior com sucesso",
+          "pass": true
+        },
+        {
+          "name": "Estado persistido no LocalStorage",
+          "pass": true
+        }
+      ],
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "name": "Interação WYSIWYG Drag & Drop no Canvas",
+      "tests": [
+        {
+          "name": "Pointer events e Snapping executados no Canvas",
+          "pass": true
+        }
+      ],
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "name": "Exportação em Alta Resolução (PNG)",
+      "tests": [
+        {
+          "name": "Botão #btnExport funcional e acessível",
+          "pass": true
+        },
+        {
+          "name": "Screenshot de validação master gerado",
+          "pass": true
+        }
+      ],
+      "passed": 2,
+      "failed": 0
+    },
+    {
+      "name": "Validação SDD/TDD/ODD (Layout Esquerdo)",
+      "tests": [
+        {
+          "name": "SDD: PaddingSide reflete a spec atualizada (60px) na UI",
+          "pass": true
+        },
+        {
+          "name": "TDD: Renderização do Layout Esquerdo efetuada com sucesso no Canvas",
+          "pass": true
+        }
+      ],
+      "passed": 2,
+      "failed": 0
+    }
+  ],
+  "consoleErrors": [],
+  "pageErrors": []
+}

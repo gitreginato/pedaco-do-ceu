@@ -1,0 +1,62 @@
+/* ==========================================================================
+   DESIGN TOKENS: PEDAÇO DO CÉU (ESPAÇO ARTES)
+   Estilo: Misticismo Barroco & Ouro Sagrado
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* --- PALETA CROMÁTICA OFICIAL --- */
+  --color-emerald-primary: #008542;       /* Verde oficial da logo */
+  --color-emerald-light: #05a653;         /* Verde vibrante para brilhos */
+  --color-emerald-deep: #003d1e;          /* Verde floresta profundo */
+  --color-emerald-darkest: #001f0f;       /* Verde abissal para contraste */
+  
+  --color-gold-ancient: #d4af37;          /* Ouro envelhecido principal */
+  --color-gold-bright: #f5d77f;           /* Ouro radiante para highlights */
+  --color-gold-dark: #91721e;             /* Ouro escuro/bronze para sombras */
+  --color-gold-gradient: linear-gradient(135deg, #d4af37 0%, #f5d77f 50%, #aa8422 100%);
+  --color-emerald-gradient: linear-gradient(135deg, #001f0f 0%, #003d1e 40%, #008542 100%);
+  --color-mystic-overlay: linear-gradient(180deg, rgba(0, 31, 15, 0.2) 0%, rgba(0, 31, 15, 0.85) 65%, rgba(4, 15, 8, 0.98) 100%);
+
+  --color-pearl-white: #f8f9fa;           /* Branco pérola celestial */
+  --color-parchment: #eadcb9;             /* Tom pergaminho/papiro suave */
+  --color-obsidian: #080d0a;              /* Preto obsidiana cósmica */
+  --color-amethyst-accent: #7b4397;       /* Toque sutil para pedras */
+  --color-terracotta-accent: #c05c3d;     /* Toque sutil para elementos terrosos */
+
+  /* --- TIPOGRAFIA --- */
+  --font-display-decorative: 'Cinzel Decorative', serif;
+  --font-display-noble: 'Cinzel', serif;
+  --font-serif-mystic: 'Cormorant Garamond', Georgia, serif;
+  --font-sans-clean: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* --- ESPAÇAMENTO & GRID --- */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+  --spacing-3xl: 64px;
+
+  /* --- BORDAS & FILIGRANAS --- */
+  --border-gold-thin: 1px solid rgba(212, 175, 55, 0.4);
+  --border-gold-ornate: 2px solid rgba(212, 175, 55, 0.85);
+  --border-gold-double: 4px double #d4af37;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+
+  /* --- SOMBRAS & BRILHO SAGRADO --- */
+  --glow-gold: 0 0 15px rgba(245, 215, 127, 0.45);
+  --glow-emerald: 0 0 20px rgba(0, 133, 66, 0.5);
+  --shadow-card-mystic: 0 12px 36px -6px rgba(0, 10, 5, 0.7), 0 0 0 1px rgba(212, 175, 55, 0.35);
+  --shadow-text-noble: 0 2px 8px rgba(0, 0, 0, 0.85);
+
+  /* --- TRANSIÇÕES & EFEITOS --- */
+  --glass-blur-mystic: blur(12px);
+  --glass-bg-emerald: rgba(0, 31, 15, 0.78);
+  --glass-bg-dark: rgba(8, 13, 10, 0.85);
+}

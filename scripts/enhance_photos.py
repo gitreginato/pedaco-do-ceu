@@ -1,0 +1,1 @@
+/home/mat77/Projetos/Pedaço do ceu /design-system/scripts/enhance_photos.py

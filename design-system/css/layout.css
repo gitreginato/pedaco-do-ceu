@@ -1,0 +1,177 @@
+/* Layout Macro & Container Queries - Pedaço do Céu Studio v2.0 */
+@layer layout {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: var(--color-obsidian);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans-clean);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Header do Studio */
+  .studio-header {
+    height: 61px;
+    background: rgba(0, 18, 9, 0.95);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--space-xl);
+    flex-shrink: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+  }
+
+  .brand-badge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  .brand-icon {
+    width: 32px;
+    height: 32px;
+    filter: drop-shadow(0 0 8px rgba(245, 215, 127, 0.5));
+  }
+
+  .brand-title {
+    font-family: var(--font-display-noble);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--color-sacred-gold-light);
+    line-height: 1.1;
+  }
+
+  .brand-tagline {
+    font-size: 10.5px;
+    color: var(--color-parchment);
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+  }
+
+  /* Layout Principal do Studio */
+  .studio-main {
+    display: grid;
+    grid-template-columns: 460px 1fr;
+    flex: 1;
+    height: calc(100vh - 61px);
+    overflow: hidden;
+  }
+
+  /* Barra Lateral de Controles */
+  .controls-sidebar {
+    background: rgba(4, 12, 7, 0.96);
+    border-right: 1px solid rgba(212, 175, 55, 0.25);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: calc(100vh - 61px);
+    overflow: hidden;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+    z-index: 20;
+  }
+
+  /* Área de Visualização (Viewport Fixo) */
+  .studio-viewport {
+    background: var(--color-obsidian);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: var(--space-xl);
+    overflow: hidden;
+    height: 100%;
+    container-type: inline-size;
+    container-name: viewport;
+  }
+
+  .viewport-display-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xl);
+    width: 100%;
+    height: 100%;
+  }
+
+  .canvas-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    max-height: 84vh;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.15);
+    border-radius: 4px;
+  }
+
+  #renderCanvas {
+    max-width: 100%;
+    max-height: 82vh;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* Card da Foto Original (Modo Split) */
+  .original-photo-card {
+    display: none;
+    flex-direction: column;
+    width: 320px;
+    background: rgba(0, 20, 10, 0.8);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  }
+
+  .original-photo-card.show {
+    display: flex;
+  }
+
+  .original-photo-card img {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+  }
+
+  .original-card-title {
+    padding: 8px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--color-sacred-gold-light);
+    text-align: center;
+    border-top: 1px solid rgba(212, 175, 55, 0.2);
+    font-family: var(--font-display-noble);
+  }
+
+  /* Container Queries */
+  @container viewport (max-width: 860px) {
+    .viewport-display-area {
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .original-photo-card {
+      width: 240px;
+    }
+    .original-photo-card img {
+      height: 180px;
+    }
+  }
+}

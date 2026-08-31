@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedaço do Céu: Template Studio Místico & Sagrado</title>
+  
+  <!-- Fontes do Design System e Novas Tipografias Místicas & Nobres -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Fondamento:ital@0;1&family=Great+Vibes&family=Marcellus&family=MedievalSharp&family=Montserrat:ital,wght@0,300..800;1,300..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Prata&family=Syne:wght@400..800&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header do Studio -->
+  <header class="studio-header">
+    <div class="brand-badge">
+      <svg class="brand-icon" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M100 15 C145 15 180 52 180 100 C180 148 145 185 100 185 C85 185 71 181 58 174 C90 162 118 133 118 100 C118 67 90 38 58 26 C71 19 85 15 100 15 Z" fill="#f5d77f"/>
+        <polygon points="76,46 79,56 90,56 81,62 84,72 76,66 68,72 71,62 62,56 73,56" fill="#f5d77f"/>
+        <polygon points="102,90 105,100 116,100 107,106 110,116 102,110 94,116 97,106 88,100 99,100" fill="#f5d77f"/>
+        <polygon points="76,134 79,144 90,144 81,150 84,160 76,154 68,160 71,150 62,144 73,144" fill="#f5d77f"/>
+      </svg>
+      <div>
+        <h1 class="brand-title">PEDAÇO DO CÉU</h1>
+        <p class="brand-tagline">Espaço Artes • Design System & Template Studio</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button id="btnUndo" class="btn-icon" title="Desfazer (Ctrl+Z)" aria-label="Desfazer alteração" disabled>↶</button>
+      <button id="btnRedo" class="btn-icon" title="Refazer (Ctrl+Shift+Z)" aria-label="Refazer alteração" disabled>↷</button>
+      <button id="btnExport" class="btn-gold" aria-label="Exportar imagem em alta resolução PNG">
+        <span>✦</span> Exportar em Alta Resolução (PNG)
+      </button>
+    </div>
+  </header>
+
+  <!-- Corpo Principal do Estúdio -->
+  <main class="studio-main">
+    
+    <!-- Barra Lateral de Controles com Abas Inteligentes -->
+    <aside class="controls-sidebar">
+      
+      <!-- Navegação por Abas -->
+      <nav class="tabs-nav" role="tablist" aria-label="Abas de Edição do Template">
+        <button class="tab-btn active" role="tab" id="tab-btn-tab-acervo" data-target="tab-acervo" aria-selected="true" aria-controls="tab-acervo" tabindex="0">Acervo</button>
+        <button class="tab-btn" role="tab" id="tab-btn-tab-textos" data-target="tab-textos" aria-selected="false" aria-controls="tab-textos" tabindex="-1">Tipografia</button>
+        <button class="tab-btn" role="tab" id="tab-btn-tab-estilo" data-target="tab-estilo" aria-selected="false" aria-controls="tab-estilo" tabindex="-1">Cores & Fundo</button>
+        <button class="tab-btn" role="tab" id="tab-btn-tab-formato" data-target="tab-formato" aria-selected="false" aria-controls="tab-formato" tabindex="-1">Layout</button>
+      </nav>
+
+      <div class="tabs-container">
+        
+        <!-- ABA 1: Acervo Real & Presets Místicos -->
+        <div id="tab-acervo" class="tab-content active" role="tabpanel" aria-labelledby="tab-btn-tab-acervo">
+          
+          <!-- Presets Místicos Rápidos -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">⚡</span> Presets Místicos de Design</div>
+            <p class="section-desc">Selecione uma atmosfera sagrada pré-configurada:</p>
+            <div class="presets-grid" id="presetsGrid">
+              <button type="button" class="preset-btn active" data-preset="cristal">✦ Ativação Cristalina</button>
+              <button type="button" class="preset-btn" data-preset="tibete">🕊️ Prece do Tibete & Nepal</button>
+              <button type="button" class="preset-btn" data-preset="lunar">🌙 Mandala Lunar 432Hz</button>
+              <button type="button" class="preset-btn" data-preset="arcanjos">🔮 Portal dos Arcanjos</button>
+              <button type="button" class="preset-btn" data-preset="ancestral">🌿 Sabedoria Ancestral</button>
+              <button type="button" class="preset-btn" data-preset="chama">🔥 Chama Trina Sagrada</button>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <div class="section-title"><span class="icon">📷</span> Catálogo de Imagens do Acervo</div>
+            <p class="section-desc">Selecione uma peça real para preencher automaticamente os textos sagrados, paleta e geometria:</p>
+            <div id="photoGallery" class="photo-gallery-selector"></div>
+          </div>
+
+          <div class="control-section">
+            <div class="section-title"><span class="icon">🔍</span> Enquadramento da Imagem</div>
+            <div class="form-group">
+              <label>Zoom da Foto</label>
+              <div class="slider-group">
+                <input type="range" id="imgZoomRange" min="80" max="250" value="100">
+                <span id="imgZoomVal" class="slider-val">1.0x</span>
+              </div>
+            </div>
+            <div class="inner-grid-2">
+              <div class="form-group">
+                <label>Posição Horizontal (X)</label>
+                <div class="slider-group">
+                  <input type="range" id="imgPanXRange" min="-400" max="400" value="0">
+                  <span id="imgPanXVal" class="slider-val">0px</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Posição Vertical (Y)</label>
+                <div class="slider-group">
+                  <input type="range" id="imgPanYRange" min="-400" max="400" value="0">
+                  <span id="imgPanYVal" class="slider-val">0px</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-group" style="margin-top: 10px;">
+              <label>Estilo de Enquadramento da Foto</label>
+              <div class="segmented-control">
+                <div class="segmented-btn active" data-fit="portal">Portal de Ouro</div>
+                <div class="segmented-btn" data-fit="fusion">Fusão Imersiva</div>
+                <div class="segmented-btn" data-fit="cover">Preenchimento</div>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 8px;">
+              <label>Carregar outra foto local:</label>
+              <input type="file" id="imageUploadInput" accept="image/*" class="form-control file-input">
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ABA 2: Textos & Tipografia Avançada -->
+        <div id="tab-textos" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-tab-textos">
+          
+          <!-- Alinhamento Global -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">📏</span> Alinhamento do Bloco de Texto</div>
+            <div class="segmented-control">
+              <div class="segmented-btn" data-align="left">Esquerda</div>
+              <div class="segmented-btn active" data-align="center">Centro</div>
+              <div class="segmented-btn" data-align="right">Direita</div>
+            </div>
+          </div>
+
+          <!-- Espaçamento & Entrelinha de Caixas -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">📐</span> Espaçamento & Entrelinha das Caixas</div>
+
+            <div class="slider-group compact">
+              <label>Margem Top:</label>
+              <input type="range" id="paddingTopRange" min="20" max="220" value="90">
+              <span id="paddingTopVal" class="slider-val">90px</span>
+            </div>
+
+            <div class="slider-group compact">
+              <label>Gap Blocos:</label>
+              <input type="range" id="blockGapRange" min="6" max="60" value="20">
+              <span id="blockGapVal" class="slider-val">20px</span>
+            </div>
+
+            <div class="slider-group compact">
+              <label>Margem Lateral:</label>
+              <input type="range" id="paddingSideRange" min="14" max="120" value="60">
+              <span id="paddingSideVal" class="slider-val">60px</span>
+            </div>
+
+            <div class="slider-group compact">
+              <label>Entrelinha Global:</label>
+              <input type="range" id="globalLineGapRange" min="4" max="30" value="12">
+              <span id="globalLineGapVal" class="slider-val">12px</span>
+            </div>
+          </div>
+
+          <!-- Título Principal -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">✦</span> Título Principal do Produto</div>
+            <div class="form-group">
+              <div class="input-with-color">
+                <div class="text-inputs">
+                  <label>Texto do Título</label>
+                  <input type="text" id="titleInput" class="form-control">
+                </div>
+                <input type="color" id="colorTitleInput" value="#f8f9fa" class="color-input-small" title="Cor do Título">
+              </div>
+            </div>
+            
+            <div class="inner-grid-2">
+              <div class="form-group">
+                <label>Família da Fonte</label>
+                <select id="fontTitleSelect" class="form-control">
+                  <option value="'Cinzel Decorative', serif">Cinzel Decorative (Barroco Sagrado)</option>
+                  <option value="'Cinzel', serif">Cinzel (Romano Imperial)</option>
+                  <option value="'Marcellus', serif">Marcellus (Clássico Nobre)</option>
+                  <option value="'Playfair Display', serif">Playfair Display (Editorial Luxo)</option>
+                  <option value="'Bodoni Moda', serif">Bodoni Moda (Alta Costura)</option>
+                  <option value="'Syne', sans-serif">Syne (Moderno Vanguardista)</option>
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond (Místico Clássico)</option>
+                  <option value="'UnifrakturMaguntia', cursive">UnifrakturMaguntia (Gótico Medieval)</option>
+                  <option value="'Great Vibes', cursive">Great Vibes (Caligráfico Fluido)</option>
+                  <option value="'Prata', serif">Prata (Didone Elegante)</option>
+                  <option value="'MedievalSharp', cursive">MedievalSharp (Rúnico Sagrado)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Peso / Estilo</label>
+                <select id="weightTitleSelect" class="form-control">
+                  <option value="700">Negrito (700)</option>
+                  <option value="900">Black (900)</option>
+                  <option value="400">Regular (400)</option>
+                  <option value="italic 700">Itálico Negrito</option>
+                  <option value="italic 900">Itálico Black</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="slider-group compact">
+              <label>Tamanho:</label>
+              <input type="range" id="sizeTitleRange" min="24" max="110" value="54">
+              <span id="sizeTitleVal" class="slider-val">54px</span>
+            </div>
+
+            <div class="slider-group compact">
+              <label>Espaçamento:</label>
+              <input type="range" id="spacingTitleRange" min="-2" max="14" value="1">
+              <span id="spacingTitleVal" class="slider-val">1px</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; margin-top: 6px;">
+              <div class="slider-group compact" style="margin: 0;">
+                <label>Brilho / Glow:</label>
+                <input type="range" id="glowTitleRange" min="0" max="40" value="14">
+                <span id="glowTitleVal" class="slider-val">14px</span>
+              </div>
+              <input type="color" id="colorTitleGlowInput" value="#d4af37" class="color-input-mini" title="Cor da Aura / Brilho do Título">
+            </div>
+          </div>
+
+          <!-- Subtítulo -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">✧</span> Subtítulo & Propriedade</div>
+            <div class="form-group">
+              <div class="input-with-color">
+                <div class="text-inputs">
+                  <label>Texto do Subtítulo</label>
+                  <input type="text" id="subtitleInput" class="form-control">
+                </div>
+                <input type="color" id="colorSubtitleInput" value="#eadcb9" class="color-input-small" title="Cor do Subtítulo">
+              </div>
+            </div>
+            
+            <div class="inner-grid-2">
+              <div class="form-group">
+                <label>Família da Fonte</label>
+                <select id="fontSubtitleSelect" class="form-control">
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond (Místico)</option>
+                  <option value="'Cinzel', serif">Cinzel (Romano Nobre)</option>
+                  <option value="'Marcellus', serif">Marcellus (Imperial)</option>
+                  <option value="'Playfair Display', serif">Playfair Display (Elegante)</option>
+                  <option value="'EB Garamond', serif">EB Garamond (Renascentista)</option>
+                  <option value="'Fondamento', cursive">Fondamento (Manuscrito Italiano)</option>
+                  <option value="'Alex Brush', cursive">Alex Brush (Caligráfico Íntimo)</option>
+                  <option value="'Montserrat', sans-serif">Montserrat (Moderno Clean)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Estilo</label>
+                <select id="styleSubtitleSelect" class="form-control">
+                  <option value="italic 500">Itálico Médio</option>
+                  <option value="italic 600">Itálico Semibold</option>
+                  <option value="normal 400">Regular</option>
+                  <option value="normal 600">Semibold</option>
+                  <option value="italic 700">Itálico Bold</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="slider-group compact">
+              <label>Tamanho:</label>
+              <input type="range" id="sizeSubtitleRange" min="16" max="52" value="26">
+              <span id="sizeSubtitleVal" class="slider-val">26px</span>
+            </div>
+          </div>
+
+          <!-- Descrição do Produto / Ritual -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">✍️</span> Descrição Poética & Energética</div>
+            <div class="form-group">
+              <div class="input-with-color align-top">
+                <div class="text-inputs">
+                  <label>Corpo do Texto</label>
+                  <textarea id="descriptionInput" class="form-control" rows="3"></textarea>
+                </div>
+                <input type="color" id="colorDescInput" value="#f8f9fa" class="color-input-small" title="Cor da Descrição">
+              </div>
+            </div>
+
+            <div class="inner-grid-2">
+              <div class="form-group">
+                <label>Família da Fonte</label>
+                <select id="fontDescSelect" class="form-control">
+                  <option value="'Montserrat', sans-serif">Montserrat (Clean & Nítida)</option>
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond (Literário)</option>
+                  <option value="'EB Garamond', serif">EB Garamond (Clássico Poético)</option>
+                  <option value="'Marcellus', serif">Marcellus (Sóbrio Nobre)</option>
+                </select>
+              </div>
+              <div class="slider-group compact">
+                <label>Tamanho:</label>
+                <input type="range" id="sizeDescRange" min="12" max="36" value="18">
+                <span id="sizeDescVal" class="slider-val">18px</span>
+              </div>
+            </div>
+
+            <div class="slider-group compact" style="margin-top: 4px;">
+              <label>Espaço Linha:</label>
+              <input type="range" id="lineHeightDescRange" min="12" max="24" value="16">
+              <span id="lineHeightDescVal" class="slider-val">1.6x</span>
+            </div>
+          </div>
+
+          <!-- Destaque Sagrado / Propriedade Mística -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">✨</span> Slot de Destaque Sagrado</div>
+            <div class="form-group">
+              <div class="input-with-color">
+                <div class="text-inputs">
+                  <label>Afirmação, Propriedade ou Frequência</label>
+                  <input type="text" id="highlightInput" class="form-control" placeholder="Ex: Frequência 432Hz • Chakra Coronário">
+                </div>
+                <input type="color" id="colorHighlightInput" value="#f5d77f" class="color-input-small" title="Cor do Texto">
+              </div>
+            </div>
+
+            <div class="inner-grid-2">
+              <div class="form-group">
+                <label>Cor da Borda da Caixa</label>
+                <input type="color" id="colorHighlightBorderInput" value="#d4af37" class="color-input">
+              </div>
+              <div class="form-group" style="display: flex; align-items: flex-end; padding-bottom: 4px;">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="showHighlightBoxCheck" checked> Exibir Caixa Iluminada
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selo Superior, Categoria & Chamada -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">🏷️</span> Selo, Categoria & Rodapé</div>
+            
+            <div class="form-group">
+              <div class="input-with-color">
+                <div class="text-inputs">
+                  <label>Categoria / Tag</label>
+                  <input type="text" id="categoryTagInput" class="form-control">
+                </div>
+                <input type="color" id="colorTagInput" value="#d4af37" class="color-input-small" title="Cor da Categoria">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="input-with-color">
+                <div class="text-inputs">
+                  <label>Selo Místico Superior</label>
+                  <input type="text" id="badgeInput" class="form-control">
+                </div>
+                <input type="color" id="colorBadgeInput" value="#f5d77f" class="color-input-small" title="Cor do Selo">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="input-with-color">
+                <div class="text-inputs">
+                  <label>Chamada Final (CTA / Assinatura)</label>
+                  <input type="text" id="ctaInput" class="form-control">
+                </div>
+                <input type="color" id="colorCtaInput" value="#d4af37" class="color-input-small" title="Cor do CTA">
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ABA 3: Cores, Degradê & Grafismos Sagrados -->
+        <div id="tab-estilo" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-tab-estilo">
+          
+          <!-- Degradê em 3 Pontos com Live Preview -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">🎨</span> Degradê Místico de Fundo (3 Pontos)</div>
+            <div class="color-pickers-grid">
+              <div class="form-group">
+                <label>Cor Superior (Início)</label>
+                <input type="color" id="gradientPrimaryInput" value="#00381c" class="color-input">
+              </div>
+              <div class="form-group">
+                <label>Cor Média (Centro)</label>
+                <input type="color" id="gradientSecondaryInput" value="#008542" class="color-input">
+              </div>
+              <div class="form-group">
+                <label>Base Profunda (Fim)</label>
+                <input type="color" id="gradientDarknessInput" value="#050c07" class="color-input">
+              </div>
+            </div>
+
+            <!-- Preview do Degradê em Tempo Real -->
+            <div class="gradient-preview-wrapper" style="margin-top: 10px;">
+              <label style="font-size: 11px; color: var(--color-parchment); margin-bottom: 4px; display: block;">Preview em Tempo Real do Degradê</label>
+              <div id="gradientLivePreview" class="gradient-live-bar" style="height: 24px; border-radius: 6px; border: 1px solid rgba(212, 175, 55, 0.4); background: linear-gradient(135deg, #00381c, #008542, #050c07);"></div>
+            </div>
+            
+            <div class="form-group" style="margin-top: 10px;">
+              <label>Intensidade / Opacidade do Degradê</label>
+              <div class="slider-group">
+                <input type="range" id="gradientIntensityRange" min="20" max="100" value="88">
+                <span id="gradientIntensityVal" class="slider-val">88%</span>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 10px;">
+              <label>Opacidade da Caixa de Texto (Layouts: Centro, Topo, Rodapé)</label>
+              <div class="slider-group">
+                <input type="range" id="boxOpacityRange" min="10" max="100" value="95">
+                <span id="boxOpacityVal" class="slider-val">95%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Imagem de Fundo Personalizada -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">🌌</span> Imagem de Fundo / Textura</div>
+            <div class="form-group">
+              <label>Subir imagem ou textura de fundo:</label>
+              <input type="file" id="bgImageUploadInput" accept="image/*" class="form-control file-input">
+            </div>
+            <div class="form-group" style="margin-top: 6px;">
+              <label>Opacidade da Imagem de Fundo</label>
+              <div class="slider-group">
+                <input type="range" id="bgImageOpacityRange" min="0" max="100" value="60">
+                <span id="bgImageOpacityVal" class="slider-val">60%</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 6px;">
+              <button type="button" id="btnRemoveBgImage" class="btn-action" style="flex: 1; font-size: 11px;">Remover Fundo Personalizado</button>
+            </div>
+          </div>
+
+          <!-- Geometria Sagrada -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">🔮</span> Geometria Sagrada & Vetores</div>
+            
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 8px;">
+              <div class="form-group">
+                <label>Padrão Geométrico</label>
+                <select id="sacredPatternSelect" class="form-control">
+                  <option value="flowerOfLife">Flor da Vida (Harmonia & Cura)</option>
+                  <option value="metatronCube">Cubo de Metatron (Proteção & Força)</option>
+                  <option value="sriYantra">Sri Yantra (Prosperidade & Meditação)</option>
+                  <option value="lunarMandala">Mandala Lunar (Cosmologia & Zodíaco)</option>
+                  <option value="logoPattern">Símbolo da Marca (Lua + Estrelas)</option>
+                  <option value="none">Nenhum Padrão</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Cor do Padrão</label>
+                <input type="color" id="colorPatternInput" value="#d4af37" class="color-input">
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 6px;">
+              <label>Opacidade do Grafismo Sagrado</label>
+              <div class="slider-group">
+                <input type="range" id="patternOpacityRange" min="0" max="90" value="35">
+                <span id="patternOpacityVal" class="slider-val">35%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Molduras Barrocas & Divisores Sagrados -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">⚜️</span> Cantoneiras Barrocas & Divisores</div>
+            
+            <div class="inner-grid-2">
+              <div class="form-group">
+                <label>Cor das Cantoneiras</label>
+                <input type="color" id="colorCornersInput" value="#d4af37" class="color-input">
+              </div>
+              <div class="form-group">
+                <label>Cor dos Divisores & Estrelas</label>
+                <input type="color" id="colorDividersInput" value="#d4af37" class="color-input">
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+              <label class="checkbox-label">
+                <input type="checkbox" id="showCornersCheck" checked> Cantoneiras Barrocas de Ouro
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="showBadgeCheck" checked> Exibir Selo Místico Superior
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ABA 4: Formato & Layout -->
+        <div id="tab-formato" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-tab-formato">
+          
+          <div class="control-section">
+            <div class="section-title"><span class="icon">📐</span> Proporção da Publicação</div>
+            <div class="segmented-control">
+              <div class="segmented-btn active" data-format="1:1">Feed 1:1</div>
+              <div class="segmented-btn" data-format="4:5">Feed 4:5</div>
+              <div class="segmented-btn" data-format="9:16-story">Stories</div>
+              <div class="segmented-btn" data-format="9:16-tiktok">TikTok</div>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <div class="section-title"><span class="icon">🏛️</span> Estrutura do Layout</div>
+            <div class="segmented-control">
+              <div class="segmented-btn" data-layout="left">Esq.</div>
+              <div class="segmented-btn active" data-layout="right">Dir.</div>
+              <div class="segmented-btn" data-layout="bottom">Rodapé</div>
+              <div class="segmented-btn" data-layout="top">Topo</div>
+              <div class="segmented-btn" data-layout="center">Centro</div>
+            </div>
+          </div>
+
+          <!-- Guias Visuais de Safe Area -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">👁️</span> Guias Visuais & Safe Areas</div>
+            <label class="checkbox-label">
+              <input type="checkbox" id="showSafeAreaGuideCheck"> Exibir Guias de Safe Area (Instagram/TikTok)
+            </label>
+            <p class="section-desc" style="margin-top: 4px; font-size: 11px;">
+              As linhas pontilhadas mostram os limites seguros onde a interface do Instagram e TikTok não cobrem seus textos.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </aside>
+
+    <!-- Área de Visualização do Canvas & Foto -->
+    <section class="studio-viewport">
+      <div class="viewport-toolbar">
+        <span class="toolbar-info" id="formatDimDisplay">1080 x 1080px (Feed 1:1)</span>
+        <div class="view-mode-toggle">
+          <button class="view-mode-btn active" data-view-mode="single">Template</button>
+          <button class="view-mode-btn" data-view-mode="split">Ver com Foto Original</button>
+        </div>
+      </div>
+      
+      <div class="viewport-display-area">
+        <!-- Foto Original (Modo Comparação) -->
+        <div id="originalPhotoCard" class="original-photo-card">
+          <span class="photo-label">📷 Foto Original Selecionada</span>
+          <img id="originalPhotoImg" src="../Fotos/Bem Estar/Tratadas/IMG_20260828_160836341.jpg" alt="Foto do Produto">
+        </div>
+
+        <!-- Canvas Renderizado -->
+        <div class="canvas-container">
+          <canvas id="renderCanvas"></canvas>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="a11yStatus" class="a11y-live-region" aria-live="polite" aria-atomic="true"></div>
+  <script src="assets/svg-library.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

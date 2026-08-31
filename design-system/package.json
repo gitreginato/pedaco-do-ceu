@@ -1,0 +1,17 @@
+{
+  "name": "design-system",
+  "version": "1.0.0",
+  "description": "Este diretório contém a especificação completa de identidade visual e o estúdio interativo para geração de posts de redes sociais (Instagram e TikTok).",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "playwright": "^1.62.1"
+  }
+}

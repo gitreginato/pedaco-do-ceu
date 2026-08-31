@@ -1,0 +1,61 @@
+/* Design Tokens Semânticos - Pedaço do Céu Studio v2.0 Enterprise */
+@layer tokens {
+  :root {
+    /* Paleta Nobre & Sagrada (Ouro Líquido) */
+    --color-sacred-gold: #d4af37;
+    --color-sacred-gold-light: #f5d77f;
+    --color-sacred-gold-bright: #ffd700;
+    --color-sacred-gold-dark: #8c7322;
+    --color-sacred-gold-deep: #5c4a12;
+    --color-gold-gradient: linear-gradient(135deg, #f5d77f 0%, #d4af37 50%, #aa820a 100%);
+    --color-gold-glow: rgba(212, 175, 55, 0.4);
+
+    /* Atmosfera Mística (Esmeralda Profundo & Obsidiana) */
+    --color-mystic-green: #00381c;
+    --color-mystic-green-mid: #008542;
+    --color-mystic-green-deep: #001f0f;
+    --color-mystic-darkness: #050c07;
+    --color-base-dark: #040c07;
+    --color-obsidian: #020503;
+
+    /* Textos & Pergaminho */
+    --color-text-primary: #f8f9fa;
+    --color-text-secondary: #eadcb9;
+    --color-parchment: #eadcb9;
+    --color-text-muted: #8fa396;
+
+    /* Tipografia Sagrada */
+    --font-display-noble: 'Cinzel Decorative', 'Cinzel', serif;
+    --font-serif-classic: 'Cinzel', serif;
+    --font-editorial: 'Playfair Display', serif;
+    --font-mystic: 'Cormorant Garamond', serif;
+    --font-script: 'Great Vibes', 'Alex Brush', cursive;
+    --font-sans-clean: 'Montserrat', sans-serif;
+
+    /* Espaçamentos e Raios */
+    --space-2xs: 2px;
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 12px;
+    --space-lg: 16px;
+    --space-xl: 24px;
+    --space-2xl: 32px;
+
+    --radius-xs: 3px;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-full: 9999px;
+
+    /* Transições Fluidas */
+    --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-smooth: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-bounce: 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* Sombras & Profundidade */
+    --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-medium: 0 6px 20px rgba(0, 0, 0, 0.6);
+    --shadow-glow-gold: 0 0 15px rgba(212, 175, 55, 0.35);
+    --shadow-portal: 0 10px 30px rgba(0, 0, 0, 0.7);
+  }
+}
