@@ -107,8 +107,8 @@ export class TextLayer extends BaseLayer {
     // CTA
     const ctaY = Math.max(curY + gap, H - 70);
     ctx.fillStyle = state.colorCta || '#d4af37';
-    ctx.font = `600 14px "Cinzel", serif`;
-    ctx.letterSpacing = '1px';
+    ctx.font = `${state.weightCta || 600} ${state.sizeCta || 14}px ${state.fontCta || "'Cinzel', serif"}`;
+    ctx.letterSpacing = `${state.spacingCta !== undefined ? state.spacingCta : 1}px`;
     ctx.fillText(state.ctaText || 'Visite nossa loja • Pedaço do Céu', tagX, ctaY);
     ctx.letterSpacing = '0px';
   }
@@ -293,7 +293,10 @@ export class TextLayer extends BaseLayer {
   drawHighlightBox(ctx, x, y, width, text, state) {
     if (!text) return y;
     ctx.save();
-    ctx.font = `600 14px "Cinzel", serif`;
+    const hFont = state.fontHighlight || "'Montserrat', sans-serif";
+    const hSize = state.sizeHighlight || 14;
+    const hWeight = state.weightHighlight || 600;
+    ctx.font = `${hWeight} ${hSize}px ${hFont}`;
     ctx.letterSpacing = '0.6px';
 
     const words = text.split(' ');
@@ -312,23 +315,22 @@ export class TextLayer extends BaseLayer {
     lines.push(line.trim());
 
     const padY = 10;
-    const lineH = 18;
+    const lineH = Math.round(hSize * 1.35);
     const boxH = lines.length * lineH + padY * 2;
 
     ctx.fillStyle = hexToRgba(state.gradientPrimary || '#00381c', 0.55);
     this.roundRect(ctx, x, y, width, boxH, 8, true, false);
 
-    ctx.strokeStyle = state.colorHighlightBorder || '#d4af37';
-    ctx.lineWidth = 1.3;
+    ctx.strokeStyle = state.colorHighlightBorder || state.colorCorners || '#d4af37';
+    ctx.lineWidth = 1;
     this.roundRect(ctx, x, y, width, boxH, 8, false, true);
 
     ctx.fillStyle = state.colorHighlight || '#f5d77f';
-    ctx.textAlign = state.align || 'center';
+    ctx.textAlign = 'center';
 
-    let textY = y + padY + 13;
-    const alignX = this.getAlignX(x, width, state.align);
+    let textY = y + padY + hSize * 0.9;
     for (const l of lines) {
-      ctx.fillText(l, alignX, textY);
+      ctx.fillText(l, x + width / 2, textY);
       textY += lineH;
     }
     ctx.restore();

@@ -644,6 +644,15 @@ const INITIAL_STATE = {
   sizeDesc: 18,
   lineHeightDesc: PHOTO_CATALOG[0].lineHeightDesc,
 
+  fontHighlight: "'Montserrat', sans-serif",
+  weightHighlight: "600",
+  sizeHighlight: 14,
+
+  fontCta: "'Cinzel', serif",
+  weightCta: "600",
+  sizeCta: 14,
+  spacingCta: 1,
+
   colorTitle: PHOTO_CATALOG[0].colorTitle,
   colorSubtitle: PHOTO_CATALOG[0].colorSubtitle,
   colorDesc: PHOTO_CATALOG[0].colorDesc,
@@ -891,6 +900,9 @@ export class PedacoDoCeuStudio {
     bindInput('glowTitleRange', 'glowTitle', true);
     bindInput('sizeSubtitleRange', 'sizeSubtitle', true);
     bindInput('sizeDescRange', 'sizeDesc', true);
+    bindInput('sizeHighlightRange', 'sizeHighlight', true);
+    bindInput('sizeCtaRange', 'sizeCta', true);
+    bindInput('spacingCtaRange', 'spacingCta', true);
     bindInput('paddingTopRange', 'paddingTop', true);
     bindInput('blockGapRange', 'blockGap', true);
     bindInput('paddingSideRange', 'paddingSide', true);
@@ -906,14 +918,14 @@ export class PedacoDoCeuStudio {
     }
 
     // Selects de Família de Fonte Expandidos
-    ['fontTitleSelect', 'weightTitleSelect', 'fontSubtitleSelect', 'styleSubtitleSelect', 'fontDescSelect', 'sacredPatternSelect'].forEach(id => {
+    ['fontTitleSelect', 'weightTitleSelect', 'fontSubtitleSelect', 'styleSubtitleSelect', 'fontDescSelect', 'fontHighlightSelect', 'fontCtaSelect', 'weightCtaSelect', 'sacredPatternSelect'].forEach(id => {
       const el = document.getElementById(id);
       const prop = id.replace('Select', '');
       if (el) el.addEventListener('change', (e) => { 
         this.store.state[prop] = e.target.value; 
         this.renderer.requestRender();
         // Garante que se a fonte web não foi baixada, ele força e re-renderiza
-        if (prop.includes('font') || prop.includes('fontTitle')) {
+        if (prop.includes('font') || prop.includes('fontTitle') || prop.includes('fontCta') || prop.includes('fontHighlight')) {
           const fontStr = e.target.value.replace(/'/g, '');
           if (document.fonts) {
             document.fonts.load(`16px ${fontStr}`).then(() => this.renderer.requestRender());
@@ -1150,6 +1162,9 @@ export class PedacoDoCeuStudio {
     setVal('fontSubtitleSelect', s.fontSubtitle);
     setVal('styleSubtitleSelect', s.styleSubtitle);
     setVal('fontDescSelect', s.fontDesc);
+    setVal('fontHighlightSelect', s.fontHighlight || "'Montserrat', sans-serif");
+    setVal('fontCtaSelect', s.fontCta || "'Cinzel', serif");
+    setVal('weightCtaSelect', s.weightCta || "600");
     setVal('sacredPatternSelect', s.sacredPattern);
 
     // Sliders
@@ -1172,6 +1187,18 @@ export class PedacoDoCeuStudio {
     setVal('sizeDescRange', s.sizeDesc);
     const sizeDescVal = document.getElementById('sizeDescVal');
     if (sizeDescVal) sizeDescVal.textContent = s.sizeDesc + 'px';
+
+    setVal('sizeHighlightRange', s.sizeHighlight || 14);
+    const sizeHighVal = document.getElementById('sizeHighlightVal');
+    if (sizeHighVal) sizeHighVal.textContent = (s.sizeHighlight || 14) + 'px';
+
+    setVal('sizeCtaRange', s.sizeCta || 14);
+    const sizeCtaVal = document.getElementById('sizeCtaVal');
+    if (sizeCtaVal) sizeCtaVal.textContent = (s.sizeCta || 14) + 'px';
+
+    setVal('spacingCtaRange', s.spacingCta !== undefined ? s.spacingCta : 1);
+    const spacingCtaVal = document.getElementById('spacingCtaVal');
+    if (spacingCtaVal) spacingCtaVal.textContent = (s.spacingCta !== undefined ? s.spacingCta : 1) + 'px';
 
     setVal('paddingTopRange', s.paddingTop);
     const pTopVal = document.getElementById('paddingTopVal');

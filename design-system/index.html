@@ -324,9 +324,9 @@
             </div>
           </div>
 
-          <!-- Destaque Sagrado / Propriedade Mística -->
+          <!-- Slot 5: Destaque Sagrado / Propriedade Mística -->
           <div class="control-section">
-            <div class="section-title"><span class="icon">✨</span> Slot de Destaque Sagrado</div>
+            <div class="section-title"><span class="icon">✨</span> Slot de Destaque Sagrado (Afirmação / Frequência)</div>
             <div class="form-group">
               <div class="input-with-color">
                 <div class="text-inputs">
@@ -339,6 +339,23 @@
 
             <div class="inner-grid-2">
               <div class="form-group">
+                <label>Família da Fonte</label>
+                <select id="fontHighlightSelect" class="form-control">
+                  <option value="'Montserrat', sans-serif">Montserrat (Moderna & Clara)</option>
+                  <option value="'Cinzel', serif">Cinzel (Romano Nobre)</option>
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond (Mística)</option>
+                  <option value="'Marcellus', serif">Marcellus (Clássica)</option>
+                </select>
+              </div>
+              <div class="slider-group compact">
+                <label>Tamanho:</label>
+                <input type="range" id="sizeHighlightRange" min="10" max="28" value="14">
+                <span id="sizeHighlightVal" class="slider-val">14px</span>
+              </div>
+            </div>
+
+            <div class="inner-grid-2" style="margin-top: 6px;">
+              <div class="form-group">
                 <label>Cor da Borda da Caixa</label>
                 <input type="color" id="colorHighlightBorderInput" value="#d4af37" class="color-input">
               </div>
@@ -350,14 +367,14 @@
             </div>
           </div>
 
-          <!-- Selo Superior, Categoria & Chamada -->
+          <!-- Slot 6: Selo Superior & Categoria / Tag -->
           <div class="control-section">
-            <div class="section-title"><span class="icon">🏷️</span> Selo, Categoria & Rodapé</div>
+            <div class="section-title"><span class="icon">🏷️</span> Selo Místico & Categoria (Tag)</div>
             
             <div class="form-group">
               <div class="input-with-color">
                 <div class="text-inputs">
-                  <label>Categoria / Tag</label>
+                  <label>Categoria / Tag Superior</label>
                   <input type="text" id="categoryTagInput" class="form-control">
                 </div>
                 <input type="color" id="colorTagInput" value="#d4af37" class="color-input-small" title="Cor da Categoria">
@@ -367,20 +384,60 @@
             <div class="form-group">
               <div class="input-with-color">
                 <div class="text-inputs">
-                  <label>Selo Místico Superior</label>
+                  <label>Selo Místico Superior (Pill)</label>
                   <input type="text" id="badgeInput" class="form-control">
                 </div>
                 <input type="color" id="colorBadgeInput" value="#f5d77f" class="color-input-small" title="Cor do Selo">
               </div>
             </div>
+          </div>
 
+          <!-- Slot 7: Chamada Final (CTA / Assinatura do Rodapé) -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">📍</span> Chamada Final (CTA & Assinatura)</div>
+            
             <div class="form-group">
               <div class="input-with-color">
                 <div class="text-inputs">
-                  <label>Chamada Final (CTA / Assinatura)</label>
-                  <input type="text" id="ctaInput" class="form-control">
+                  <label>Texto da Chamada (CTA / Convite / Loja)</label>
+                  <input type="text" id="ctaInput" class="form-control" placeholder="Ex: Visite nosso espaço sagrado em São Luís • Pedaço do Céu">
                 </div>
                 <input type="color" id="colorCtaInput" value="#d4af37" class="color-input-small" title="Cor do CTA">
+              </div>
+            </div>
+
+            <div class="inner-grid-2">
+              <div class="form-group">
+                <label>Família da Fonte</label>
+                <select id="fontCtaSelect" class="form-control">
+                  <option value="'Cinzel', serif">Cinzel (Romano Nobre)</option>
+                  <option value="'Montserrat', sans-serif">Montserrat (Clean & Nítida)</option>
+                  <option value="'Marcellus', serif">Marcellus (Imperial)</option>
+                  <option value="'Playfair Display', serif">Playfair Display (Editorial)</option>
+                  <option value="'Cormorant Garamond', serif">Cormorant Garamond (Místico)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Peso / Estilo</label>
+                <select id="weightCtaSelect" class="form-control">
+                  <option value="600">Semibold (600)</option>
+                  <option value="700">Negrito (700)</option>
+                  <option value="400">Regular (400)</option>
+                  <option value="italic 600">Itálico Semibold</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="inner-grid-2" style="margin-top: 4px;">
+              <div class="slider-group compact">
+                <label>Tamanho:</label>
+                <input type="range" id="sizeCtaRange" min="10" max="32" value="14">
+                <span id="sizeCtaVal" class="slider-val">14px</span>
+              </div>
+              <div class="slider-group compact">
+                <label>Espaçamento:</label>
+                <input type="range" id="spacingCtaRange" min="0" max="10" value="1">
+                <span id="spacingCtaVal" class="slider-val">1px</span>
               </div>
             </div>
           </div>

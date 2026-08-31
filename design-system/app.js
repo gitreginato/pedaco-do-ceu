@@ -1446,8 +1446,8 @@
       }
       const ctaY = Math.max(curY + gap, H - 70);
       ctx.fillStyle = state.colorCta || "#d4af37";
-      ctx.font = `600 14px "Cinzel", serif`;
-      ctx.letterSpacing = "1px";
+      ctx.font = `${state.weightCta || 600} ${state.sizeCta || 14}px ${state.fontCta || "'Cinzel', serif"}`;
+      ctx.letterSpacing = `${state.spacingCta !== void 0 ? state.spacingCta : 1}px`;
       ctx.fillText(state.ctaText || "Visite nossa loja \u2022 Peda\xE7o do C\xE9u", tagX, ctaY);
       ctx.letterSpacing = "0px";
     }
@@ -1617,7 +1617,10 @@
     drawHighlightBox(ctx, x, y, width, text, state) {
       if (!text) return y;
       ctx.save();
-      ctx.font = `600 14px "Cinzel", serif`;
+      const hFont = state.fontHighlight || "'Montserrat', sans-serif";
+      const hSize = state.sizeHighlight || 14;
+      const hWeight = state.weightHighlight || 600;
+      ctx.font = `${hWeight} ${hSize}px ${hFont}`;
       ctx.letterSpacing = "0.6px";
       const words = text.split(" ");
       let line = "";
@@ -1634,19 +1637,18 @@
       }
       lines.push(line.trim());
       const padY = 10;
-      const lineH = 18;
+      const lineH = Math.round(hSize * 1.35);
       const boxH = lines.length * lineH + padY * 2;
       ctx.fillStyle = hexToRgba(state.gradientPrimary || "#00381c", 0.55);
       this.roundRect(ctx, x, y, width, boxH, 8, true, false);
-      ctx.strokeStyle = state.colorHighlightBorder || "#d4af37";
-      ctx.lineWidth = 1.3;
+      ctx.strokeStyle = state.colorHighlightBorder || state.colorCorners || "#d4af37";
+      ctx.lineWidth = 1;
       this.roundRect(ctx, x, y, width, boxH, 8, false, true);
       ctx.fillStyle = state.colorHighlight || "#f5d77f";
-      ctx.textAlign = state.align || "center";
-      let textY = y + padY + 13;
-      const alignX = this.getAlignX(x, width, state.align);
+      ctx.textAlign = "center";
+      let textY = y + padY + hSize * 0.9;
       for (const l of lines) {
-        ctx.fillText(l, alignX, textY);
+        ctx.fillText(l, x + width / 2, textY);
         textY += lineH;
       }
       ctx.restore();
@@ -2746,6 +2748,13 @@
     fontDesc: "'Montserrat', sans-serif",
     sizeDesc: 18,
     lineHeightDesc: PHOTO_CATALOG[0].lineHeightDesc,
+    fontHighlight: "'Montserrat', sans-serif",
+    weightHighlight: "600",
+    sizeHighlight: 14,
+    fontCta: "'Cinzel', serif",
+    weightCta: "600",
+    sizeCta: 14,
+    spacingCta: 1,
     colorTitle: PHOTO_CATALOG[0].colorTitle,
     colorSubtitle: PHOTO_CATALOG[0].colorSubtitle,
     colorDesc: PHOTO_CATALOG[0].colorDesc,
@@ -2962,6 +2971,9 @@
       bindInput("glowTitleRange", "glowTitle", true);
       bindInput("sizeSubtitleRange", "sizeSubtitle", true);
       bindInput("sizeDescRange", "sizeDesc", true);
+      bindInput("sizeHighlightRange", "sizeHighlight", true);
+      bindInput("sizeCtaRange", "sizeCta", true);
+      bindInput("spacingCtaRange", "spacingCta", true);
       bindInput("paddingTopRange", "paddingTop", true);
       bindInput("blockGapRange", "blockGap", true);
       bindInput("paddingSideRange", "paddingSide", true);
@@ -2974,13 +2986,13 @@
           if (lhVal) lhVal.textContent = this.store.state.lineHeightDesc.toFixed(1) + "x";
         });
       }
-      ["fontTitleSelect", "weightTitleSelect", "fontSubtitleSelect", "styleSubtitleSelect", "fontDescSelect", "sacredPatternSelect"].forEach((id) => {
+      ["fontTitleSelect", "weightTitleSelect", "fontSubtitleSelect", "styleSubtitleSelect", "fontDescSelect", "fontHighlightSelect", "fontCtaSelect", "weightCtaSelect", "sacredPatternSelect"].forEach((id) => {
         const el = document.getElementById(id);
         const prop = id.replace("Select", "");
         if (el) el.addEventListener("change", (e) => {
           this.store.state[prop] = e.target.value;
           this.renderer.requestRender();
-          if (prop.includes("font") || prop.includes("fontTitle")) {
+          if (prop.includes("font") || prop.includes("fontTitle") || prop.includes("fontCta") || prop.includes("fontHighlight")) {
             const fontStr = e.target.value.replace(/'/g, "");
             if (document.fonts) {
               document.fonts.load(`16px ${fontStr}`).then(() => this.renderer.requestRender());
@@ -3188,6 +3200,9 @@
       setVal("fontSubtitleSelect", s.fontSubtitle);
       setVal("styleSubtitleSelect", s.styleSubtitle);
       setVal("fontDescSelect", s.fontDesc);
+      setVal("fontHighlightSelect", s.fontHighlight || "'Montserrat', sans-serif");
+      setVal("fontCtaSelect", s.fontCta || "'Cinzel', serif");
+      setVal("weightCtaSelect", s.weightCta || "600");
       setVal("sacredPatternSelect", s.sacredPattern);
       setVal("sizeTitleRange", s.sizeTitle);
       const sizeTitleVal = document.getElementById("sizeTitleVal");
@@ -3204,6 +3219,15 @@
       setVal("sizeDescRange", s.sizeDesc);
       const sizeDescVal = document.getElementById("sizeDescVal");
       if (sizeDescVal) sizeDescVal.textContent = s.sizeDesc + "px";
+      setVal("sizeHighlightRange", s.sizeHighlight || 14);
+      const sizeHighVal = document.getElementById("sizeHighlightVal");
+      if (sizeHighVal) sizeHighVal.textContent = (s.sizeHighlight || 14) + "px";
+      setVal("sizeCtaRange", s.sizeCta || 14);
+      const sizeCtaVal = document.getElementById("sizeCtaVal");
+      if (sizeCtaVal) sizeCtaVal.textContent = (s.sizeCta || 14) + "px";
+      setVal("spacingCtaRange", s.spacingCta !== void 0 ? s.spacingCta : 1);
+      const spacingCtaVal = document.getElementById("spacingCtaVal");
+      if (spacingCtaVal) spacingCtaVal.textContent = (s.spacingCta !== void 0 ? s.spacingCta : 1) + "px";
       setVal("paddingTopRange", s.paddingTop);
       const pTopVal = document.getElementById("paddingTopVal");
       if (pTopVal) pTopVal.textContent = s.paddingTop + "px";

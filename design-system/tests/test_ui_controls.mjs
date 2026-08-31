@@ -98,12 +98,15 @@ const FILE_URL = `file://${path.resolve(__dirname, '../index.html')}`;
   if (!await testInput('#glowTitleRange', '15', 'glowTitle', true)) failed++;
   if (!await testInput('#sizeSubtitleRange', '20', 'sizeSubtitle', true)) failed++;
   if (!await testInput('#sizeDescRange', '25', 'sizeDesc', true)) failed++;
+  if (!await testInput('#sizeHighlightRange', '16', 'sizeHighlight', true)) failed++;
+  if (!await testInput('#sizeCtaRange', '18', 'sizeCta', true)) failed++;
+  if (!await testInput('#spacingCtaRange', '3', 'spacingCta', true)) failed++;
   if (!await testInput('#paddingTopRange', '30', 'paddingTop', true)) failed++;
   if (!await testInput('#blockGapRange', '35', 'blockGap', true)) failed++;
   if (!await testInput('#paddingSideRange', '40', 'paddingSide', true)) failed++;
   if (!await testInput('#globalLineGapRange', '30', 'globalLineGap', true)) failed++;
 
-  console.log('\\n--- RANGE SLIDERS (WITH TRANSFORM) ---');
+  console.log('\n--- RANGE SLIDERS (WITH TRANSFORM) ---');
   // imgZoom is divided by 100
   await page.$eval('#imgZoomRange', el => el.value = '150');
   await page.evaluate(() => document.querySelector('#imgZoomRange').dispatchEvent(new Event('input')));
@@ -147,6 +150,9 @@ const FILE_URL = `file://${path.resolve(__dirname, '../index.html')}`;
   if (!await testSelect('#fontSubtitleSelect', "'Cormorant Garamond', serif", 'fontSubtitle')) failed++;
   if (!await testSelect('#styleSubtitleSelect', 'normal 400', 'styleSubtitle')) failed++;
   if (!await testSelect('#fontDescSelect', "'Montserrat', sans-serif", 'fontDesc')) failed++;
+  if (!await testSelect('#fontHighlightSelect', "'Montserrat', sans-serif", 'fontHighlight')) failed++;
+  if (!await testSelect('#fontCtaSelect', "'Cinzel', serif", 'fontCta')) failed++;
+  if (!await testSelect('#weightCtaSelect', '600', 'weightCta')) failed++;
   if (!await testSelect('#sacredPatternSelect', 'flowerOfLife', 'sacredPattern')) failed++;
 
   console.log('\n--- CHECKBOXES ---');
