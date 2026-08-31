@@ -1,164 +1,105 @@
-# Pedaço do Céu — Template Studio Místico & Sagrado v2.0 Enterprise
+# Pedaço do Céu — Fábrica de Conteúdo & Template Studio Místico v2.0 Enterprise
 
-Documentação de arquitetura, contexto e diretrizes operacionais para agentes e desenvolvedores que atuam no projeto **Pedaço do Céu**.
+Documentação de arquitetura, contexto, skills dos agentes e diretrizes operacionais para o projeto **Pedaço do Céu** (São Luís, Maranhão).
 
 ---
 
-## 1. Visão Geral do Projeto & Escopo
+## 1. Visão Geral do Projeto & Missão
 
-O **Pedaço do Céu Studio** é uma plataforma interativa de criação e renderização de criativos visuais em alta resolução (High-DPI 2x) baseada em HTML5 Canvas e CSS nativo. A ferramenta foi projetada exclusivamente para o acervo de artes sacras, produtos holísticos e esotéricos da loja.
+O **Pedaço do Céu** é um ecossistema holístico que une um estúdio visual interativo High-DPI 2x (HTML5 Canvas 2D) com uma esteira orientada a dados para geração em lote de criativos e cópias poéticas para redes sociais (Instagram Feed 1:1, Feed 4:5, Story 9:16 e TikTok).
 
 ### Princípios Sagrados & Regras de Negócio Inegociáveis
-1. **Ausência Total de Preços e Valores Monetários:** Os criativos nunca exibem cifrões, números de preço ou termos comerciais agressivos. O foco de toda peça é a vibração energética, litoterapia, mantras, frequências harmônicas, simbologia ancestral e bem-estar espiritual.
-2. **Regra de Ouro da Engine de Layout:** O layout **Lateral (`right`)** é a referência de proporção áurea (split 60/40). Os layouts **Rodapé (`bottom`)**, **Topo (`top`)** e **Centro (`center`)** utilizam camadas de sobreposição em degradê suave (`OverlayLayer`, z-index 35) para assegurar legibilidade perfeita sobre qualquer foto.
-3. **Robustez de Renderização:** O texto nunca vaza da área segura. A engine possui cálculo automático de quebra de linha (`measureWrappedText`) e redução proporcional de tamanho de fonte (`Auto Text-Fit`).
+1. **Ausência Total de Preços e Comercialismo Agressivo:** Os criativos e textos nunca exibem cifrões ("R$"), números de preço ou termos como "compre já", "promoção" ou "desconto". O foco de toda peça é a vibração energética, litoterapia, sabedoria ancestral e bem-estar espiritual.
+2. **Convite Presencial para São Luís (MA):** As chamadas para ação (CTAs) convidam o seguidor a vivenciar uma experiência sensorial e acolhedora no espaço físico da loja em São Luís.
+3. **Ética & Conformidade Terapêutica:** Proibição estrita de promessas de cura física ou médica (conformidade com ANVISA e diretrizes éticas integrativas).
+4. **Regra de Ouro da Engine de Layout:** O layout **Lateral (`right` / `left`)** aplica a proporção áurea (split 60/40). Os layouts **Rodapé (`bottom`)**, **Topo (`top`)** e **Centro (`center`)** utilizam camadas de sobreposição em degradê suave (`OverlayLayer`, z-index 35) para assegurar legibilidade perfeita sobre qualquer foto.
+5. **Robustez de Renderização:** O texto nunca vaza da área segura (*Safe Areas*). A engine possui cálculo automático de quebra de linha (`measureWrappedText`) e auto text-fit.
 
 ---
 
 ## 2. Estrutura do Repositório
 
 ```
-/home/mat77/Projetos/Pedaço do ceu /
-├── AGENTS.md                          # Este documento mestre de referência
-├── agent.md                           # Link simbólico para AGENTS.md
+./
+├── AGENTS.md                          # Documento mestre de referência
+├── README.md                          # Guia geral de uso e inicialização
+├── LICENSE                            # Licença MIT
+├── package.json                       # Scripts npm de build, test e generate
+├── catalogo/                          # Base de dados orientada a schema
+│   ├── schema.json                    # JSON Schema de validação dos produtos
+│   └── itens.json                     # Itens catalogados com atributos e status
+├── skills/                            # Skills especializadas dos agentes
+│   ├── pesquisa-holistica/SKILL.md    # Propriedades metafísicas e conformidade ética
+│   ├── analise-imagem/SKILL.md        # Análise cromática, geometrias e alt_text
+│   ├── temas-editoriais/SKILL.md      # Calendário lunar e conexão com São Luís (MA)
+│   ├── copywriter-mistico/SKILL.md    # Arquétipos Mago+Sábio+Criador e CTAs
+│   ├── holistic-mystic-wisdom/SKILL.md# Compêndio geral dos 6 pilares do acervo
+│   └── tibetan-wisdom/SKILL.md        # Tradição dos Himalaias, taças e mantras
 ├── scripts/
+│   ├── generate_posts.mjs             # Script da esteira de geração em lote
 │   └── enhance_photos.py              # Script executável de tratamento de fotos
+├── dist/                              # Saída da esteira geradora
+│   └── posts/                         # Pastas de posts gerados por data/item
 ├── Fotos/                             # Acervo fotográfico real catalogado
-│   ├── Arcanjo Miguel/                # Imagens e imagens HDR da linha São Miguel
-│   │   └── Tratadas/                  # Versões aprimoradas em alta definição (20 fotos)
+│   ├── Arcanjo Miguel/                # Imagens da linha São Miguel
 │   ├── Bem Estar/                     # Cristais, sabonetes fitoenergéticos e velas
-│   │   └── Tratadas/                  # Versões aprimoradas em alta definição (2 fotos)
 │   ├── Kailash/                       # Incensos artesanais e defumadores nobres
-│   │   └── Tratadas/                  # Versões aprimoradas em alta definição (4 fotos)
 │   ├── Logo/                          # Logomarca oficial Pedaço do Céu
-│   │   └── Tratadas/                  # Logomarcas aprimoradas (2 fotos)
 │   ├── NOA/                           # Imagens e peças da Linha NOA Orixás
-│   │   └── Tratadas/                  # Versão aprimorada em alta definição (1 foto)
-│   ├── TIbate/                        # Taças tibetanas de 7 metais e símbolos sagrados
-│   │   ├── DIZERES_DO_TIBETE.md       # Compêndio sagrado de provérbios e mantras
-│   │   └── Tratadas/                  # Versões aprimoradas em alta definição (8 fotos)
+│   ├── TIbate/                        # Taças tibetanas e símbolos sagrados
 │   └── zodiaco/                       # Peças dos signos e mapas astrais
-│       └── Tratadas/                  # Versões aprimoradas em alta definição (3 fotos)
-├── Fotos_Tratadas/                    # Backup consolidado das fotos tratadas
-├── Fotos_Comparacao/                  # Imagens comparativas Antes/Depois lado a lado
-└── design-system/                     # Aplicação web completa do estúdio
+└── design-system/                     # Aplicação web do Studio Canvas
     ├── index.html                     # Interface SPA do estúdio com abas e canvas
     ├── styles.css                     # Folha de estilo principal integrada
-    ├── app.js                         # Bundle universal compilado do estúdio
-    ├── css/
-    │   ├── tokens.css                 # Variáveis de cores místicas, fontes e raios
-    │   └── components.css             # Componentes de UI, grids e anti-overflow
-    ├── js/
-    │   ├── tokens.js                  # Constantes JS, presets e dimensões
-    │   ├── app.js                     # Classe orquestradora principal (PedacoDoCeuStudio)
-    │   ├── state/
-    │   │   ├── store.js               # Gerenciador de estado reativo
-    │   │   └── history.js             # Pilha de Undo / Redo com persistência
-    │   ├── canvas/
-    │   │   ├── high-dpi.js            # Calibração de escala 2x para exportação
-    │   │   ├── layout-engine.js       # Zonas espaciais, safe areas e auto text-fit
-    │   │   ├── renderer.js            # Orquestrador de renderização multicamadas
-    │   │   └── layers/
-    │   │       ├── background-layer.js # Fundo com degradê místico e imagem de fundo
-    │   │       ├── image-layer.js      # Posicionamento e recorte da foto do produto
-    │   │       ├── overlay-layer.js    # Camada intermediária de degradê anti-contraste
-    │   │       ├── pattern-layer.js    # Geometrias sagradas vetorizadas com cache Path2D
-    │   │       ├── frame-layer.js      # Molduras barrocas e cantoneiras douradas
-    │   │       └── text-layer.js       # Tipografia, auras de luz e badges
-    │   └── ui/
-    │       ├── drag-drop.js           # Interação WYSIWYG no canvas
-    │       ├── snapping.js            # Guias magnéticas de alinhamento
-    │       ├── shortcuts.js           # Atalhos de teclado (Ctrl+Z, Ctrl+Y)
-    │       └── a11y.js                # Acessibilidade e live regions para leitores
-    └── tests/                         # Suíte de testes em 3 camadas
-        ├── atomic_suite.mjs           # Camada 1: Funções puras e asserções atômicas
-        ├── massive_combinatorial_suite.mjs # Camada 2: 240 combinações no Canvas
-        ├── stress_performance_suite.mjs    # Camada 3: 500 mutações e memory checks
-        ├── run_all.mjs                # Orquestrador mestre dos testes
-        ├── capture_layouts.mjs        # Script gerador de capturas de tela dos layouts
-        └── screenshots/               # Imagens de verificação visual
+    ├── app.js                         # Bundle compilado do estúdio
+    ├── package.json                   # Dependências e scripts locais
+    ├── css/                           # Tokens e componentes modulares
+    ├── js/                            # Código-fonte modular ESM do Canvas Studio
+    └── tests/                         # Suíte de testes em 3 camadas e E2E
 ```
 
 ---
 
-## 3. Pilares Místicos & Universo do Acervo
+## 3. Skills dos Agentes de Automação
 
-O conteúdo editorial e os presets do estúdio seguem as duas skills criadas especificamente para este projeto:
-
-1. **`holistic-mystic-wisdom`** (`~/.agents/skills/holistic-mystic-wisdom/SKILL.md`):
-   - **Cristais & Litoterapia:** Quartzo Rosa (amor), Ametista (transmutação), Selenita (luz pura), Turmalina Negra (escudo).
-   - **Angiologia:** Arcanjo Miguel, Chama Azul, Espada Flamejante, Quebra de Demandas.
-   - **Zodíaco & Astrologia:** Alinhamento dos 4 Elementos Sagrados e regências planetárias.
-   - **Botânica & Fitoenergia:** Sabonetes rituais, banhos de ervas, aromaterapia.
-   - **Ancestralidade:** Linha NOA Orixás, conexão com as forças da natureza.
-2. **`tibetan-wisdom`** (`~/.agents/skills/tibetan-wisdom/SKILL.md`):
-   - **Budismo Vajrayana & Tradição dos Himalaias:** Taças tibetanas forjadas em 7 metais sagrados, afinação na frequência 432Hz, símbolo do Nó Infinito (Ashtamangala) e mantras de compaixão (Om Mani Padme Hum).
-   - **Documento Local:** `Fotos/TIbate/DIZERES_DO_TIBETE.md` com compêndio completo de provérbios, mantras e tabelas de significados dos 8 símbolos auspiciosos.
+O ecossistema opera através de 6 skills integradas:
+1. **`pesquisa-holistica`** (`./skills/pesquisa-holistica/SKILL.md`): Mapeia chakras, elementos primordiais e métodos de limpeza com rigor ético.
+2. **`analise-imagem`** (`./skills/analise-imagem/SKILL.md`): Extrai paleta cromática de degradê e gera `alt_text` acessível.
+3. **`temas-editoriais`** (`./skills/temas-editoriais/SKILL.md`): Conecta fases lunares com marés equatoriais e festas populares de São Luís (MA).
+4. **`copywriter-mistico`** (`./skills/copywriter-mistico/SKILL.md`): Redige cópias inspiradoras e convites presenciais.
+5. **`holistic-mystic-wisdom`** (`./skills/holistic-mystic-wisdom/SKILL.md`): Conhecimento dos 6 pilares do acervo.
+6. **`tibetan-wisdom`** (`./skills/tibetan-wisdom/SKILL.md`): Sabedoria Vajrayana e cura sonora em 432Hz.
 
 ---
 
 ## 4. Presets Místicos Disponíveis no Studio
 
-Os presets aplicam combinações harmônicas de degradês, geometrias sagradas e tipografias com apenas um clique:
-
-*   **✦ Ativação Cristalina:** Fundo Esmeralda Sagrado (`#00381c` a `#008542`), Flor da Vida, Moldura Portal de Ouro, Cinzel Decorative + Cormorant Garamond.
-*   **🌙 Mandala Lunar 432Hz:** Fundo Azul Meia-Noite Cósmico (`#0a0e27` a `#1c2758`), Mandala Lunar, Marcellus + Playfair Display.
-*   **🔮 Portal dos Arcanjos:** Fundo Púrpura Celestial (`#1a052b` a `#3d125e`), Cubo de Metatron, Cinzel + EB Garamond.
-*   **🌿 Sabedoria Ancestral:** Fundo Verde Floresta & Âmbar Dourado (`#1b2e15` a `#3b5e28`), Sri Yantra, Bodoni Moda + Montserrat.
-*   **🔥 Chama Trina Sagrada:** Fundo Rubi Sagrado & Ouro Puro (`#2b080c` a `#5c121c`), Símbolo Sagrado da Marca, UnifrakturMaguntia + Fondamento.
+* **✦ Ativação Cristalina:** Fundo Esmeralda Sagrado (`#00381c` a `#008542`), Flor da Vida, Moldura Portal de Ouro, Cinzel Decorative + Cormorant Garamond.
+* **🌙 Mandala Lunar 432Hz:** Fundo Azul Meia-Noite Cósmico (`#0a0e27` a `#1c2758`), Mandala Lunar, Marcellus + Playfair Display.
+* **🔮 Portal dos Arcanjos:** Fundo Púrpura Celestial (`#1a052b` a `#3d125e`), Cubo de Metatron, Cinzel + EB Garamond.
+* **🌿 Sabedoria Ancestral:** Fundo Verde Floresta & Âmbar Dourado (`#1b2e15` a `#3b5e28`), Sri Yantra, Bodoni Moda + Montserrat.
+* **🔥 Chama Trina Sagrada:** Fundo Rubi Sagrado & Ouro Puro (`#2b080c` a `#5c121c`), Símbolo Sagrado da Marca, UnifrakturMaguntia + Fondamento.
 
 ---
 
-## 5. Tipografias Suportadas
+## 5. Comandos e Ciclo de Vida do Projeto
 
-O estúdio carrega 14 famílias Google Fonts com pesos e estilos variados:
-*   **Barroco & Solene:** `Cinzel Decorative`, `Cinzel`, `Marcellus`, `Prata`.
-*   **Editorial & Luxo:** `Playfair Display`, `Bodoni Moda`.
-*   **Contemporâneo & Limpo:** `Syne`, `Montserrat`.
-*   **Místico & Literário:** `Cormorant Garamond`, `EB Garamond`.
-*   **Gótico & Rúnico:** `UnifrakturMaguntia`, `MedievalSharp`.
-*   **Caligráfico:** `Fondamento`, `Great Vibes`, `Alex Brush`.
-
----
-
-## 6. Comandos Úteis para Desenvolvimento e Testes
-
-### Execução da Suíte Completa de Testes (3 Camadas)
+### Compilação do Bundle do Studio (esbuild)
 ```bash
-node "/home/mat77/Projetos/Pedaço do ceu /design-system/tests/run_all.mjs"
+npm run build
 ```
 
-### Análise de Complexidade Ciclomática
+### Execução da Suíte Completa de Testes
 ```bash
-python3 ~/.agents/scripts/complexity-analyzer.py "/home/mat77/Projetos/Pedaço do ceu /design-system" 15
+npm test
 ```
 
-### Recompilação do Bundle Universal (`app.js`)
-Quando alterar arquivos dentro de `design-system/js/`, execute o script de empacotamento para atualizar `design-system/app.js`:
+### Geração Automatizada de Posts em Lote
 ```bash
-node /tmp/bundle_app.js
+npm run generate
 ```
 
-### Tratamento Profissional de Fotos do Acervo (Python)
-Para reprocessar e aprimorar todas as fotos originais (`Fotos/`), salvando automaticamente dentro da subpasta `Tratadas/` de cada categoria:
+### Tratamento de Fotos com Python
 ```bash
-python3 "/home/mat77/Projetos/Pedaço do ceu /scripts/enhance_photos.py"
+python3 scripts/enhance_photos.py
 ```
-
-### Captura de Screenshots de Verificação Visual
-```bash
-node "/home/mat77/Projetos/Pedaço do ceu /design-system/tests/capture_layouts.mjs"
-```
-
----
-
-## 7. Histórico de Decisões & Trabalho Realizado
-
-*   **Subpastas de Fotos Tratadas:** Todas as 40 fotos foram aprimoradas (recuperação de sombras, vivacidade seletiva, balanço de brancos adaptativo e nitidez) e organizadas dentro de `Fotos/<Categoria>/Tratadas/`. O estúdio web foi atualizado para consumir diretamente essas versões.
-*   **Compêndio Dizeres do Tibete:** Criação de `Fotos/TIbate/DIZERES_DO_TIBETE.md` com provérbios ancestrais, ensinamentos de compaixão (Karuna), mantras traduzidos sílaba por sílaba e os 8 símbolos auspiciosos.
-*   **Pipeline de Tratamento de Imagens (Python/Pillow/NumPy):** `enhance_photos.py` com perfis adaptativos por categoria e proteção contra recursão em subpastas.
-*   **Calibração da Engine de Layouts:** Criação de `LAYOUT_CONFIG` e `calculateZones()` para eliminar sobreposições de fotos e textos nos modos `bottom`, `top` e `center`.
-*   **Safe Areas para Redes Sociais:** Implementação de zonas seguras reservando margens para elementos de interface do Instagram Stories e TikTok.
-*   **Suíte de 3 Camadas:** Cobertura total com 102 asserções unitárias/atômicas, 240 variações combinatórias no Canvas, 500 mutações de stress contínuo e 14 verificações de integração E2E (136/136 aprovados, 0 erros no console).
-*   **Acessibilidade e Semântica:** Adição de `role="tabpanel"`, `role="tab"`, `aria-selected`, `aria-labelledby` e live regions para leitores de tela.
-*   **Zero Erros de Console:** Sincronização estrita com os caminhos dos arquivos fotográficos reais em disco.

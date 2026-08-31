@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PedacoDoCeuItemCatalogo",
+  "description": "Schema de validação para itens do catálogo sagrado da loja Pedaço do Céu.",
+  "type": "object",
+  "required": [
+    "id",
+    "item",
+    "categoria",
+    "arquivo_foto",
+    "atributos_visuais",
+    "atributos_holisticos",
+    "dados_post",
+    "status_fluxo"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_-]+$",
+      "description": "Identificador único alfanumérico do item."
+    },
+    "item": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Nome sagrado do produto ou peça."
+    },
+    "categoria": {
+      "type": "string",
+      "enum": ["cristais", "aromatizacao", "estatuas", "joias", "bem-estar"],
+      "description": "Categoria principal do acervo."
+    },
+    "arquivo_foto": {
+      "type": "string",
+      "description": "Caminho relativo da foto tratada no repositório."
+    },
+    "atributos_visuais": {
+      "type": "object",
+      "required": ["cor_predominante", "simbolo_layout", "fundo_sugerido"],
+      "properties": {
+        "cor_predominante": {
+          "type": "string",
+          "description": "Nome da cor mística predominante."
+        },
+        "simbolo_layout": {
+          "type": "string",
+          "enum": ["flowerOfLife", "metatronCube", "sriYantra", "lunarMandala", "logoPattern", "none"],
+          "description": "Geometria sagrada a ser renderizada no fundo."
+        },
+        "fundo_sugerido": {
+          "type": "object",
+          "required": ["gradientPrimary", "gradientSecondary", "gradientDarkness"],
+          "properties": {
+            "gradientPrimary": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+            "gradientSecondary": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+            "gradientDarkness": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+            "colorTitleGlow": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" }
+          }
+        }
+      }
+    },
+    "atributos_holisticos": {
+      "type": "object",
+      "required": ["chakra", "elemento", "signos_afins", "palavras_chave", "metodo_limpeza"],
+      "properties": {
+        "chakra": { "type": "string" },
+        "elemento": { "type": "string" },
+        "signos_afins": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "palavras_chave": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "metodo_limpeza": { "type": "string" }
+      }
+    },
+    "dados_post": {
+      "type": "object",
+      "required": ["gancho", "corpo_legenda", "cta", "hashtags", "alt_text"],
+      "properties": {
+        "gancho": {
+          "type": "string",
+          "description": "Linha de abertura poética / gancho magnético."
+        },
+        "corpo_legenda": {
+          "type": "string",
+          "description": "Corpo explicativo sobre a energia e uso da peça."
+        },
+        "cta": {
+          "type": "string",
+          "description": "Convite presencial para vivência na loja física em São Luís."
+        },
+        "hashtags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "alt_text": {
+          "type": "string",
+          "description": "Texto alternativo acessível e descritivo."
+        }
+      }
+    },
+    "status_fluxo": {
+      "type": "string",
+      "enum": ["rascunho", "revisado", "pronto_para_render", "renderizado", "publicado"],
+      "description": "Estado atual do item na esteira de publicação."
+    }
+  }
+}

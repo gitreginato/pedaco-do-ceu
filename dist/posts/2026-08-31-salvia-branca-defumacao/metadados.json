@@ -1,0 +1,43 @@
+{
+  "id": "salvia-branca-defumacao",
+  "item": "Incenso Natural de Sálvia Branca & Resinas",
+  "categoria": "aromatizacao",
+  "data_geracao": "2026-08-31T01:49:00.365Z",
+  "arquivos_gerados": {
+    "feed": "arte_feed.png",
+    "story": "arte_story.png",
+    "legenda": "legenda.txt",
+    "alt_text": "alt_text.txt"
+  },
+  "dimensoes": {
+    "feed": "1080x1350",
+    "story": "1080x1920"
+  },
+  "atributos_holisticos": {
+    "chakra": "Laríngeo e Cardíaco",
+    "elemento": "Ar & Fogo (Botânica Oculta)",
+    "signos_afins": [
+      "Gêmeos",
+      "Libra",
+      "Aquário",
+      "Áries"
+    ],
+    "palavras_chave": [
+      "Purificação Áurica",
+      "Defumação Sagrada",
+      "Clareza",
+      "Renovação"
+    ],
+    "metodo_limpeza": "Consagrar ao elemento Fogo em local ventilado e seguro"
+  },
+  "atributos_visuais": {
+    "cor_predominante": "verde_salvia_botanico",
+    "simbolo_layout": "flowerOfLife",
+    "fundo_sugerido": {
+      "gradientPrimary": "#002914",
+      "gradientSecondary": "#006332",
+      "gradientDarkness": "#020f07",
+      "colorTitleGlow": "#a7f3d0"
+    }
+  }
+}

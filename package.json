@@ -1,0 +1,27 @@
+{
+  "name": "pedaco-do-ceu",
+  "version": "2.0.0",
+  "description": "Fábrica escalável de conteúdo orientada a dados e estúdio de templates místico para a loja Pedaço do Céu em São Luís (MA).",
+  "main": "design-system/app.js",
+  "type": "module",
+  "scripts": {
+    "build": "esbuild design-system/js/app.js --bundle --outfile=design-system/app.js --format=iife --platform=browser",
+    "test": "node design-system/tests/run_all.mjs",
+    "generate": "node scripts/generate_posts.mjs"
+  },
+  "keywords": [
+    "design-system",
+    "canvas",
+    "esoterico",
+    "holistico",
+    "instagram-automation",
+    "sao-luis"
+  ],
+  "author": "Pedaço do Céu",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "1.62.1",
+    "esbuild": "0.25.0",
+    "playwright": "1.62.1"
+  }
+}

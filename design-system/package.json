@@ -1,17 +1,24 @@
 {
   "name": "design-system",
-  "version": "1.0.0",
-  "description": "Este diretório contém a especificação completa de identidade visual e o estúdio interativo para geração de posts de redes sociais (Instagram e TikTok).",
+  "version": "2.0.0",
+  "description": "Especificação completa de identidade visual e estúdio interativo para geração de posts (Pedaço do Céu).",
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "esbuild js/app.js --bundle --outfile=app.js --format=iife --platform=browser",
+    "test": "node tests/run_all.mjs",
+    "generate": "node ../scripts/generate_posts.mjs"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "design-system",
+    "canvas",
+    "templates"
+  ],
+  "author": "Pedaço do Céu",
+  "license": "MIT",
   "devDependencies": {
-    "@playwright/test": "^1.62.1",
-    "playwright": "^1.62.1"
+    "@playwright/test": "1.62.1",
+    "esbuild": "0.25.0",
+    "playwright": "1.62.1"
   }
 }

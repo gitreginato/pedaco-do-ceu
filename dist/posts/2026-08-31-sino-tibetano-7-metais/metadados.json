@@ -1,0 +1,40 @@
+{
+  "id": "sino-tibetano-7-metais",
+  "item": "Taça Tibetana dos 7 Metais Sagrados (432Hz)",
+  "categoria": "bem-estar",
+  "data_geracao": "2026-08-31T01:48:58.386Z",
+  "arquivos_gerados": {
+    "feed": "arte_feed.png",
+    "story": "arte_story.png",
+    "legenda": "legenda.txt",
+    "alt_text": "alt_text.txt"
+  },
+  "dimensoes": {
+    "feed": "1080x1350",
+    "story": "1080x1920"
+  },
+  "atributos_holisticos": {
+    "chakra": "Todos os Chakras (Alinhamento Bioenergético)",
+    "elemento": "Éter / Som Primordial (Nada Brahma)",
+    "signos_afins": [
+      "Todos os Signos do Zodíaco"
+    ],
+    "palavras_chave": [
+      "Cura Sonora",
+      "Frequência 432Hz",
+      "Vajrayana",
+      "Silêncio Interior"
+    ],
+    "metodo_limpeza": "Tocar a própria taça em intenção de autocura e purificação com fumaça de incenso nobre"
+  },
+  "atributos_visuais": {
+    "cor_predominante": "bronze_dourado_tibete",
+    "simbolo_layout": "lunarMandala",
+    "fundo_sugerido": {
+      "gradientPrimary": "#2a1700",
+      "gradientSecondary": "#5c3800",
+      "gradientDarkness": "#0d0700",
+      "colorTitleGlow": "#f5d77f"
+    }
+  }
+}
