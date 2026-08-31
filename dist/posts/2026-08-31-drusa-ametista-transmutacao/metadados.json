@@ -2,10 +2,11 @@
   "id": "drusa-ametista-transmutacao",
   "item": "Drusa de Ametista Natural",
   "categoria": "cristais",
-  "data_geracao": "2026-08-31T01:48:54.553Z",
+  "data_geracao": "2026-08-31T02:03:16.323Z",
   "arquivos_gerados": {
     "feed": "arte_feed.png",
     "story": "arte_story.png",
+    "html": "post.html",
     "legenda": "legenda.txt",
     "alt_text": "alt_text.txt"
   },

@@ -199,6 +199,8 @@ export class ImageLayer extends BaseLayer {
     const zoom = state.imgZoom || 1.0;
     const panX = state.imgPanX || 0;
     const panY = state.imgPanY || 0;
+    const flipH = state.imgFlipH || false;
+    const flipV = state.imgFlipV || false;
 
     if (imgRatio > targetRatio) {
       renderH = h * zoom;
@@ -210,7 +212,18 @@ export class ImageLayer extends BaseLayer {
     offsetX = x + (w - renderW) / 2 + panX;
     offsetY = y + (h - renderH) / 2 + panY;
 
-    ctx.drawImage(img, offsetX, offsetY, renderW, renderH);
+    if (flipH || flipV) {
+      ctx.save();
+      const cx = x + w / 2;
+      const cy = y + h / 2;
+      ctx.translate(cx, cy);
+      ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
+      ctx.translate(-cx, -cy);
+      ctx.drawImage(img, offsetX, offsetY, renderW, renderH);
+      ctx.restore();
+    } else {
+      ctx.drawImage(img, offsetX, offsetY, renderW, renderH);
+    }
   }
 
   roundRect(ctx, x, y, width, height, radius, fill, stroke) {

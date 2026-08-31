@@ -158,6 +158,10 @@ const FILE_URL = `file://${path.resolve(__dirname, '../index.html')}`;
   if (!await testCheckbox('#showHighlightBoxCheck', true, 'showHighlightBox')) failed++;
   if (!await testCheckbox('#showSafeAreaGuideCheck', true, 'showSafeAreaGuide')) failed++;
   if (!await testCheckbox('#showSafeAreaGuideCheck', false, 'showSafeAreaGuide')) failed++;
+  if (!await testCheckbox('#imgFlipHCheck', true, 'imgFlipH')) failed++;
+  if (!await testCheckbox('#imgFlipHCheck', false, 'imgFlipH')) failed++;
+  if (!await testCheckbox('#imgFlipVCheck', true, 'imgFlipV')) failed++;
+  if (!await testCheckbox('#imgFlipVCheck', false, 'imgFlipV')) failed++;
 
   if (failed > 0) {
     console.error(`\n❌ FALHA: ${failed} controles não mapearam para o state.`);

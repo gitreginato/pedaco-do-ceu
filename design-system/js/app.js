@@ -608,6 +608,8 @@ const INITIAL_STATE = {
   imgZoom: 1.0,
   imgPanX: 0,
   imgPanY: 0,
+  imgFlipH: false,
+  imgFlipV: false,
 
   bgImageSrc: null,
   bgImageObj: null,
@@ -993,12 +995,17 @@ export class PedacoDoCeuStudio {
     // Checkboxes
     const bindCheck = (id, prop) => {
       const el = document.getElementById(id);
-      if (el) el.addEventListener('change', (e) => { this.store.state[prop] = e.target.checked; });
+      if (el) el.addEventListener('change', (e) => { 
+        this.store.state[prop] = e.target.checked; 
+        this.renderer.requestRender();
+      });
     };
     bindCheck('showBadgeCheck', 'showBadge');
     bindCheck('showCornersCheck', 'showBaroqueCorners');
     bindCheck('showHighlightBoxCheck', 'showHighlightBox');
     bindCheck('showSafeAreaGuideCheck', 'showSafeAreaGuide');
+    bindCheck('imgFlipHCheck', 'imgFlipH');
+    bindCheck('imgFlipVCheck', 'imgFlipV');
 
     // Upload Foto Principal
     const imgUpload = document.getElementById('imageUploadInput');
@@ -1008,7 +1015,6 @@ export class PedacoDoCeuStudio {
         if (file) {
           const reader = new FileReader();
           reader.onload = (evt) => {
-            this.store.state.imgSrc = evt.target.result;
             this.loadImage(evt.target.result, () => this.renderer.requestRender());
           };
           reader.readAsDataURL(file);
@@ -1073,6 +1079,15 @@ export class PedacoDoCeuStudio {
           .replace(/[^a-z0-9]/g, '-');
         this.renderer.exportImage(`pedaco-do-ceu-${this.store.state.format}-${cleanTitle}.png`);
         A11yManager.announce('Exportação PNG concluída com sucesso!');
+      });
+    }
+
+    // Exportar HTML
+    const btnExportHtml = document.getElementById('btnExportHtml');
+    if (btnExportHtml) {
+      btnExportHtml.addEventListener('click', () => {
+        this.exportHTML();
+        A11yManager.announce('Exportação HTML concluída com sucesso!');
       });
     }
   }
@@ -1194,14 +1209,218 @@ export class PedacoDoCeuStudio {
     if (bgOpVal) bgOpVal.textContent = Math.round((s.bgImageOpacity || 0.6) * 100) + '%';
 
     // Checkboxes
-    const setCheck = (id, val) => { const el = document.getElementById(id); if (el) el.checked = val; };
+    const setCheck = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
     setCheck('showBadgeCheck', s.showBadge);
     setCheck('showCornersCheck', s.showBaroqueCorners);
     setCheck('showHighlightBoxCheck', s.showHighlightBox);
     setCheck('showSafeAreaGuideCheck', s.showSafeAreaGuide);
+    setCheck('imgFlipHCheck', s.imgFlipH);
+    setCheck('imgFlipVCheck', s.imgFlipV);
 
     // Live Gradient Preview Bar
     this.updateGradientLivePreview();
+  }
+
+  exportHTML(filename) {
+    const s = this.store.state;
+    const cleanTitle = (s.title || 'post')
+      .toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/g, '-');
+    const actualFilename = filename || `pedaco-do-ceu-${s.format}-${cleanTitle}.html`;
+    
+    // Obtém imagem em alta resolução
+    const imgDataUrl = this.renderer.highDPICanvas.getExportDataURL('image/png', 1.0);
+    
+    const htmlContent = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${s.title || 'Pedaço do Céu'} | ${s.subtitle || 'Artes Místicas & Sagradas'}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-darkness: ${s.gradientDarkness || '#0d0216'};
+      --primary: ${s.gradientPrimary || '#2b0042'};
+      --secondary: ${s.gradientSecondary || '#581c87'};
+      --gold: #f5d77f;
+      --gold-dark: #d4af37;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at center, var(--secondary) 0%, var(--primary) 50%, var(--bg-darkness) 100%);
+      color: #f8f9fa;
+      font-family: 'Montserrat', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 15px;
+    }
+    .post-container {
+      max-width: 680px;
+      width: 100%;
+      background: rgba(10, 5, 20, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1.5px solid var(--gold-dark);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(212, 175, 55, 0.2);
+    }
+    .post-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .post-brand {
+      font-family: 'Cinzel', serif;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 1.5px;
+      font-size: 15px;
+    }
+    .post-badge {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+    .post-image-wrapper {
+      width: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+    }
+    .post-image-wrapper img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .post-content {
+      padding: 28px 24px;
+    }
+    .post-tag {
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: var(--gold-dark);
+      margin-bottom: 8px;
+    }
+    .post-title {
+      font-family: 'Cinzel Decorative', 'Cinzel', serif;
+      font-size: 26px;
+      color: #fff;
+      text-shadow: 0 0 16px rgba(245, 215, 127, 0.4);
+      margin-bottom: 8px;
+    }
+    .post-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 19px;
+      color: #eadcb9;
+      margin-bottom: 18px;
+    }
+    .post-desc {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #e2e8f0;
+      margin-bottom: 22px;
+      white-space: pre-line;
+    }
+    .post-highlight {
+      background: rgba(212, 175, 55, 0.1);
+      border-left: 3px solid var(--gold);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 14px;
+      color: var(--gold);
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+    .post-cta {
+      border-top: 1px dashed rgba(212, 175, 55, 0.3);
+      padding-top: 18px;
+      font-size: 14px;
+      color: var(--gold);
+      font-style: italic;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .post-footer {
+      padding: 16px 24px;
+      background: rgba(5, 2, 10, 0.9);
+      border-top: 1px solid rgba(212, 175, 55, 0.2);
+      font-size: 12px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn-copy {
+      background: var(--gold-dark);
+      color: #1a0826;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s;
+    }
+    .btn-copy:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <article class="post-container">
+    <header class="post-header">
+      <span class="post-brand">✦ PEDAÇO DO CÉU</span>
+      ${s.badgeText ? `<span class="post-badge">${s.badgeText}</span>` : ''}
+    </header>
+    
+    <div class="post-image-wrapper">
+      <img src="${imgDataUrl}" alt="${s.title || 'Criativo Sagrado Pedaço do Céu'}">
+    </div>
+
+    <div class="post-content">
+      ${s.categoryTag ? `<div class="post-tag">${s.categoryTag}</div>` : ''}
+      <h1 class="post-title">${s.title || ''}</h1>
+      ${s.subtitle ? `<h2 class="post-subtitle">${s.subtitle}</h2>` : ''}
+      <p class="post-desc">${s.description || ''}</p>
+      ${s.highlightText ? `<div class="post-highlight">✦ ${s.highlightText}</div>` : ''}
+      <div class="post-cta">
+        <span>📍</span>
+        <span>${s.ctaText || 'Visite nosso espaço sagrado em São Luís • Pedaço do Céu'}</span>
+      </div>
+    </div>
+
+    <footer class="post-footer">
+      <span>Fábrica de Conteúdo • São Luís (MA)</span>
+      <button class="btn-copy" onclick="navigator.clipboard.writeText(document.querySelector('.post-desc').innerText).then(() => alert('Texto copiado com sucesso!'))">Copiar Texto</button>
+    </footer>
+  </article>
+</body>
+</html>`;
+
+    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+    const link = document.createElement('a');
+    link.download = actualFilename;
+    link.href = URL.createObjectURL(blob);
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 1000);
   }
 }
 

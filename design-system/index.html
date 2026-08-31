@@ -31,8 +31,11 @@
     <div class="header-actions">
       <button id="btnUndo" class="btn-icon" title="Desfazer (Ctrl+Z)" aria-label="Desfazer alteração" disabled>↶</button>
       <button id="btnRedo" class="btn-icon" title="Refazer (Ctrl+Shift+Z)" aria-label="Refazer alteração" disabled>↷</button>
+      <button id="btnExportHtml" class="btn-gold" style="background: rgba(0, 35, 18, 0.85); border: 1px solid var(--color-sacred-gold); color: var(--color-sacred-gold-light);" aria-label="Exportar template interativo em HTML">
+        <span>🌐</span> Exportar HTML
+      </button>
       <button id="btnExport" class="btn-gold" aria-label="Exportar imagem em alta resolução PNG">
-        <span>✦</span> Exportar em Alta Resolução (PNG)
+        <span>✦</span> Exportar PNG (2x)
       </button>
     </div>
   </header>
@@ -107,6 +110,20 @@
                 <div class="segmented-btn active" data-fit="portal">Portal de Ouro</div>
                 <div class="segmented-btn" data-fit="fusion">Fusão Imersiva</div>
                 <div class="segmented-btn" data-fit="cover">Preenchimento</div>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 10px;">
+              <label>Espelhamento / Inversão da Foto</label>
+              <div style="display: flex; gap: 14px; margin-top: 6px;">
+                <label class="checkbox-label" style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-parchment); cursor: pointer;">
+                  <input type="checkbox" id="imgFlipHCheck">
+                  <span>Inverter Horizontal (⇄)</span>
+                </label>
+                <label class="checkbox-label" style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-parchment); cursor: pointer;">
+                  <input type="checkbox" id="imgFlipVCheck">
+                  <span>Inverter Vertical (⇅)</span>
+                </label>
               </div>
             </div>
 
