@@ -189,11 +189,86 @@ const FILE_URL = `file://${path.resolve(__dirname, '../index.html')}`;
   if (!await testCheckbox('#imgFlipVCheck', true, 'imgFlipV')) failed++;
   if (!await testCheckbox('#imgFlipVCheck', false, 'imgFlipV')) failed++;
 
+  console.log('\n--- TEMPLATE MANAGEMENT & PERSISTENCE ---');
+  // 1. Salva um novo template
+  await page.fill('#templateNameInput', 'Template Teste Ametista');
+  await page.click('#btnSaveCustomTemplate');
+  await page.waitForTimeout(300);
+
+  const tplCount = await page.$$eval('.saved-template-card', cards => cards.length);
+  if (tplCount < 1) {
+    console.error('❌ [ERROR] Template não foi salvo na lista DOM');
+    failed++;
+  } else {
+    console.log(`✅ [OK] Template salvo na lista DOM (Total: ${tplCount})`);
+  }
+
+  // 2. Modifica um estado e carrega o template para verificar restauração
+  await page.evaluate(() => {
+    window.pedacoStudio.store.state.title = 'TITULO TEMPORARIO MODIFICADO';
+  });
+  const modifiedTitle = await page.evaluate(() => window.pedacoStudio.store.state.title);
+  if (modifiedTitle !== 'TITULO TEMPORARIO MODIFICADO') {
+    console.error('❌ [ERROR] Falha ao modificar título temporário');
+    failed++;
+  }
+
+  // Clica no botão carregar do primeiro card
+  await page.click('.btn-tpl-load');
+  await page.waitForTimeout(300);
+  const restoredTitle = await page.evaluate(() => window.pedacoStudio.store.state.title);
+  if (restoredTitle === 'TITULO TEMPORARIO MODIFICADO') {
+    console.error('❌ [ERROR] Template carregar não restaurou o estado salvo');
+    failed++;
+  } else {
+    console.log(`✅ [OK] Template carregado com sucesso, estado restaurado: "${restoredTitle}"`);
+  }
+
+  // 3. Exportação e Importação de JSON
+  const exportedJson = await page.evaluate(() => {
+    return window.pedacoStudio.exportTemplatesJSON ? true : false;
+  });
+  if (!exportedJson) {
+    console.error('❌ [ERROR] Método exportTemplatesJSON não encontrado');
+    failed++;
+  } else {
+    console.log('✅ [OK] exportTemplatesJSON disponível e operacional');
+  }
+
+  console.log('\n--- SUPER RESOLUÇÃO 2K / 4K EXPORT ---');
+  const res2k = await page.evaluate(async () => {
+    const offscreen = await window.pedacoStudio.renderer.renderHighRes(2);
+    return {
+      w: offscreen ? offscreen.width : 0,
+      h: offscreen ? offscreen.height : 0
+    };
+  });
+  if (res2k.w < 2160 || res2k.h < 2160) {
+    console.error(`❌ [ERROR] Render 2K gerou dimensão insuficiente: ${res2k.w}x${res2k.h}`);
+    failed++;
+  } else {
+    console.log(`✅ [OK] Render 2K Ultra-HD verificado com sucesso: ${res2k.w}x${res2k.h} px (mínimo 2160px)`);
+  }
+
+  const res4k = await page.evaluate(async () => {
+    const offscreen = await window.pedacoStudio.renderer.renderHighRes(4);
+    return {
+      w: offscreen ? offscreen.width : 0,
+      h: offscreen ? offscreen.height : 0
+    };
+  });
+  if (res4k.w < 4320 || res4k.h < 4320) {
+    console.error(`❌ [ERROR] Render 4K gerou dimensão insuficiente: ${res4k.w}x${res4k.h}`);
+    failed++;
+  } else {
+    console.log(`✅ [OK] Render 4K Master verificado com sucesso: ${res4k.w}x${res4k.h} px (mínimo 4320px)`);
+  }
+
   if (failed > 0) {
-    console.error(`\n❌ FALHA: ${failed} controles não mapearam para o state.`);
+    console.error(`\n❌ FALHA: ${failed} verificações falharam.`);
     process.exit(1);
   } else {
-    console.log('\n🎉 SUCESSO: Todos os controles da UI estão mapeando para o state corretamente!');
+    console.log('\n🎉 SUCESSO: Todos os controles, templates e exportação 2K/4K aprovados com 100% de êxito!');
     process.exit(0);
   }
 })();

@@ -1,5 +1,6 @@
 // Pedaço do Céu — Template Studio Místico & Sagrado v2.0 Enterprise
 import { Store } from './state/store.js';
+import { Persistence } from './state/persistence.js';
 import { Renderer } from './canvas/renderer.js';
 import { CanvasDragDrop } from './ui/drag-drop.js';
 import { ShortcutManager } from './ui/shortcuts.js';
@@ -707,7 +708,11 @@ const INITIAL_STATE = {
 // Classe Principal do Estúdio Místico
 export class PedacoDoCeuStudio {
   constructor() {
-    this.store = new Store(INITIAL_STATE);
+    // Restaura sessão salva no localStorage caso exista, mesclando com o INITIAL_STATE
+    const saved = Persistence.load();
+    const activeState = saved ? { ...INITIAL_STATE, ...saved } : INITIAL_STATE;
+
+    this.store = new Store(activeState);
     this.canvasEl = document.getElementById('renderCanvas');
     this.renderer = new Renderer(this.canvasEl, this.store);
     this.dragDrop = new CanvasDragDrop(this.canvasEl, this.renderer, this.store);
@@ -719,10 +724,11 @@ export class PedacoDoCeuStudio {
 
   init() {
     this.initPhotoGallery();
+    this.initSavedTemplates();
     this.bindEvents();
     this.syncUI();
 
-    // Carrega a primeira foto
+    // Carrega a foto ativa (do estado salvo ou padrão)
     this.loadImage(this.store.state.imgSrc, () => {
       this.renderer.requestRender();
     });
@@ -731,6 +737,146 @@ export class PedacoDoCeuStudio {
     this.store.subscribe(() => {
       this.updateUndoRedoButtons();
     });
+  }
+
+  initSavedTemplates() {
+    this.renderSavedTemplatesList();
+  }
+
+  renderSavedTemplatesList() {
+    const listEl = document.getElementById('savedTemplatesList');
+    if (!listEl) return;
+
+    const templates = Persistence.getTemplates();
+    listEl.innerHTML = '';
+
+    if (templates.length === 0) {
+      listEl.innerHTML = `
+        <div style="font-size: 11px; color: var(--color-sacred-gold-light); opacity: 0.75; text-align: center; padding: 12px 6px; border: 1px dashed rgba(212, 175, 55, 0.25); border-radius: 4px;">
+          ✦ Nenhum template salvo ainda.<br>Digite um nome acima e clique em <b>Salvar</b>!
+        </div>
+      `;
+      return;
+    }
+
+    templates.forEach(tpl => {
+      const card = document.createElement('div');
+      card.className = 'saved-template-card';
+      const dateStr = tpl.createdAt ? new Date(tpl.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+      
+      card.innerHTML = `
+        <div class="template-info">
+          <span class="template-title" title="${tpl.name}">${tpl.name}</span>
+          <div class="template-meta">
+            <span class="template-badge-fmt">${tpl.format || '1:1'}</span>
+            <span>${dateStr}</span>
+          </div>
+        </div>
+        <div class="template-actions">
+          <button type="button" class="btn-tpl-load" title="Carregar este template" data-id="${tpl.id}">Carregar</button>
+          <button type="button" class="btn-tpl-delete" title="Excluir template" data-id="${tpl.id}">✕</button>
+        </div>
+      `;
+
+      const btnLoad = card.querySelector('.btn-tpl-load');
+      if (btnLoad) {
+        btnLoad.addEventListener('click', () => this.loadSavedTemplate(tpl.id));
+      }
+
+      const btnDel = card.querySelector('.btn-tpl-delete');
+      if (btnDel) {
+        btnDel.addEventListener('click', () => {
+          if (typeof confirm !== 'undefined' ? confirm(`Deseja realmente excluir o template "${tpl.name}"?`) : true) {
+            this.deleteSavedTemplate(tpl.id);
+          }
+        });
+      }
+
+      listEl.appendChild(card);
+    });
+  }
+
+  saveCurrentTemplate(customName) {
+    const input = document.getElementById('templateNameInput');
+    const name = (customName && customName.trim()) ? customName.trim() : (input ? input.value.trim() : '') || `Template ${this.store.state.title || 'Místico'}`;
+    const saved = Persistence.saveTemplate(name, this.store.state);
+    if (saved) {
+      if (input) input.value = '';
+      this.renderSavedTemplatesList();
+      A11yManager.announce(`Template "${saved.name}" salvo com sucesso!`);
+    }
+  }
+
+  loadSavedTemplate(id) {
+    const templates = Persistence.getTemplates();
+    const found = templates.find(t => t.id === id);
+    if (!found || !found.state) return;
+
+    Object.keys(found.state).forEach(key => {
+      this.store.state[key] = found.state[key];
+    });
+
+    this.syncUI();
+    if (found.state.imgSrc) {
+      this.loadImage(found.state.imgSrc, () => this.renderer.requestRender());
+    } else {
+      this.renderer.requestRender();
+    }
+    A11yManager.announce(`Template "${found.name}" carregado com sucesso!`);
+  }
+
+  deleteSavedTemplate(id) {
+    Persistence.deleteTemplate(id);
+    this.renderSavedTemplatesList();
+    A11yManager.announce('Template excluído com sucesso.');
+  }
+
+  exportTemplatesJSON() {
+    const jsonStr = Persistence.exportTemplatesJSON();
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = `pedaco-do-ceu-templates-${new Date().toISOString().slice(0, 10)}.json`;
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(() => {
+      if (link.parentNode) link.parentNode.removeChild(link);
+      URL.revokeObjectURL(url);
+    }, 1000);
+    A11yManager.announce('Arquivo JSON de templates exportado!');
+  }
+
+  importTemplatesJSON(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const result = Persistence.importTemplatesJSON(e.target.result);
+        if (result) {
+          this.renderSavedTemplatesList();
+          A11yManager.announce(`${result.length} templates carregados com sucesso!`);
+        } else {
+          alert('Erro ao importar arquivo JSON de templates. Formato inválido.');
+        }
+      } catch (err) {
+        alert('Erro ao ler arquivo: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  resetToDefaults() {
+    const shouldReset = typeof confirm !== 'undefined' ? confirm('Deseja redefinir o estúdio para a configuração inicial padrão? Suas alterações não salvas como template serão perdidas.') : true;
+    if (shouldReset) {
+      Persistence.clear();
+      Object.keys(INITIAL_STATE).forEach(k => {
+        this.store.state[k] = INITIAL_STATE[k];
+      });
+      this.syncUI();
+      this.loadImage(INITIAL_STATE.imgSrc, () => this.renderer.requestRender());
+      A11yManager.announce('Estúdio redefinido para configuração padrão.');
+    }
   }
 
   updateUndoRedoButtons() {
@@ -1144,25 +1290,94 @@ export class PedacoDoCeuStudio {
     const btnRedo = document.getElementById('btnRedo');
     if (btnRedo) btnRedo.addEventListener('click', () => { this.store.redo(); this.syncUI(); });
 
-    // Exportar
+    // Gerenciador de Templates Salvos
+    const btnSaveCustom = document.getElementById('btnSaveCustomTemplate');
+    if (btnSaveCustom) {
+      btnSaveCustom.addEventListener('click', () => this.saveCurrentTemplate());
+    }
+
+    const btnSaveQuick = document.getElementById('btnSaveTemplateQuick');
+    if (btnSaveQuick) {
+      btnSaveQuick.addEventListener('click', () => {
+        const title = this.store.state.title ? this.store.state.title.slice(0, 24) : 'Arte';
+        const name = typeof prompt !== 'undefined' ? prompt('Digite o nome para salvar este template:', `Template ${title}`) : `Template ${title}`;
+        if (name) this.saveCurrentTemplate(name);
+      });
+    }
+
+    const inputTplName = document.getElementById('templateNameInput');
+    if (inputTplName) {
+      inputTplName.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          this.saveCurrentTemplate();
+        }
+      });
+    }
+
+    const btnExportTplJson = document.getElementById('btnExportTemplatesJson');
+    if (btnExportTplJson) {
+      btnExportTplJson.addEventListener('click', () => this.exportTemplatesJSON());
+    }
+
+    const btnImportTplJson = document.getElementById('btnImportTemplatesJson');
+    const importFileInput = document.getElementById('importTemplatesFileInput');
+    if (btnImportTplJson && importFileInput) {
+      btnImportTplJson.addEventListener('click', () => importFileInput.click());
+      importFileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          this.importTemplatesJSON(e.target.files[0]);
+          importFileInput.value = '';
+        }
+      });
+    }
+
+    const btnReset = document.getElementById('btnResetStudio');
+    if (btnReset) {
+      btnReset.addEventListener('click', () => this.resetToDefaults());
+    }
+
+    // Exportar PNG em Alta Resolução (2K Ultra-HD / 4K)
     const btnExport = document.getElementById('btnExport');
     if (btnExport) {
-      btnExport.addEventListener('click', () => {
+      btnExport.addEventListener('click', async () => {
         const cleanTitle = (this.store.state.title || 'post')
           .toLowerCase()
           .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
           .replace(/[^a-z0-9]/g, '-');
-        this.renderer.exportImage(`pedaco-do-ceu-${this.store.state.format}-${cleanTitle}.png`);
-        A11yManager.announce('Exportação PNG concluída com sucesso!');
+
+        const exportResSelect = document.getElementById('exportResolutionSelect');
+        const scale = exportResSelect ? parseInt(exportResSelect.value, 10) : 2;
+        const resLabel = scale === 4 ? '4k' : (scale === 1 ? '1k' : '2k');
+
+        btnExport.disabled = true;
+        const origContent = btnExport.innerHTML;
+        btnExport.innerHTML = `<span>⏳</span> Gerando ${resLabel.toUpperCase()}...`;
+
+        try {
+          await this.renderer.exportHighResImage(`pedaco-do-ceu-${this.store.state.format}-${cleanTitle}-${resLabel}.png`, scale);
+          A11yManager.announce(`Exportação PNG (${resLabel.toUpperCase()} Ultra-HD) concluída com sucesso!`);
+        } finally {
+          btnExport.disabled = false;
+          btnExport.innerHTML = origContent;
+        }
       });
     }
 
     // Exportar HTML
     const btnExportHtml = document.getElementById('btnExportHtml');
     if (btnExportHtml) {
-      btnExportHtml.addEventListener('click', () => {
-        this.exportHTML();
-        A11yManager.announce('Exportação HTML concluída com sucesso!');
+      btnExportHtml.addEventListener('click', async () => {
+        btnExportHtml.disabled = true;
+        const origContent = btnExportHtml.innerHTML;
+        btnExportHtml.innerHTML = '<span>⏳</span> Exportando...';
+        try {
+          await this.exportHTML();
+          A11yManager.announce('Exportação HTML concluída com sucesso!');
+        } finally {
+          btnExportHtml.disabled = false;
+          btnExportHtml.innerHTML = origContent;
+        }
       });
     }
   }
@@ -1311,7 +1526,7 @@ export class PedacoDoCeuStudio {
     this.updateGradientLivePreview();
   }
 
-  exportHTML(filename) {
+  async exportHTML(filename) {
     const s = this.store.state;
     const cleanTitle = (s.title || 'post')
       .toLowerCase()
@@ -1319,8 +1534,14 @@ export class PedacoDoCeuStudio {
       .replace(/[^a-z0-9]/g, '-');
     const actualFilename = filename || `pedaco-do-ceu-${s.format}-${cleanTitle}.html`;
     
-    // Obtém imagem em alta resolução
-    const imgDataUrl = this.renderer.highDPICanvas.getExportDataURL('image/png', 1.0);
+    // Obtém imagem em super resolução 2K Ultra-HD para o HTML
+    let imgDataUrl = '';
+    try {
+      const offscreen = await this.renderer.renderHighRes(2);
+      imgDataUrl = offscreen ? offscreen.toDataURL('image/png', 1.0) : this.renderer.highDPICanvas.getExportDataURL('image/png', 1.0);
+    } catch (e) {
+      imgDataUrl = this.renderer.highDPICanvas.getExportDataURL('image/png', 1.0);
+    }
     
     const htmlContent = `<!DOCTYPE html>
 <html lang="pt-BR">

@@ -43,12 +43,26 @@
   // design-system/js/state/persistence.js
   var Persistence = class {
     static STORAGE_KEY = "pedaco-do-ceu-studio-state-v2";
+    static TEMPLATES_KEY = "pedaco-do-ceu-saved-templates-v2";
+    static getCleanState(state) {
+      const s = { ...state };
+      delete s.imgObj;
+      delete s.bgImageObj;
+      return s;
+    }
     static save(state) {
       try {
-        const serializableState = { ...state };
-        delete serializableState.imgObj;
-        delete serializableState.bgImageObj;
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(serializableState));
+        const serializableState = this.getCleanState(state);
+        try {
+          localStorage.setItem(this.STORAGE_KEY, JSON.stringify(serializableState));
+        } catch (quotaErr) {
+          if (serializableState.imgSrc && serializableState.imgSrc.startsWith("data:")) {
+            const fallbackState = { ...serializableState, imgSrc: "assets/images/foto1.jpg" };
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(fallbackState));
+          } else {
+            throw quotaErr;
+          }
+        }
       } catch (e) {
         console.warn("Falha ao salvar no localStorage (limite excedido ou modo an\xF4nimo):", e);
       }
@@ -67,6 +81,83 @@
         localStorage.removeItem(this.STORAGE_KEY);
       } catch (e) {
         console.warn("Falha ao limpar localStorage:", e);
+      }
+    }
+    // --- Gerenciamento de Meus Templates Salvos ---
+    static getTemplates() {
+      try {
+        const raw = localStorage.getItem(this.TEMPLATES_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        console.warn("Falha ao obter templates salvos:", e);
+        return [];
+      }
+    }
+    static saveTemplate(name, state) {
+      try {
+        const templates = this.getTemplates();
+        const clean = this.getCleanState(state);
+        const templateId = "tpl_" + Date.now();
+        const templateName = name && name.trim() ? name.trim() : `Template ${clean.title || "M\xEDstico"} (${clean.format || "1:1"})`;
+        const newTemplate = {
+          id: templateId,
+          name: templateName,
+          createdAt: (/* @__PURE__ */ new Date()).toISOString(),
+          format: clean.format || "1:1",
+          title: clean.title || "Sem t\xEDtulo",
+          categoryTag: clean.categoryTag || "",
+          state: clean
+        };
+        templates.unshift(newTemplate);
+        localStorage.setItem(this.TEMPLATES_KEY, JSON.stringify(templates));
+        return newTemplate;
+      } catch (e) {
+        console.error("Erro ao salvar template personalizado:", e);
+        return null;
+      }
+    }
+    static deleteTemplate(id) {
+      try {
+        const templates = this.getTemplates().filter((t) => t.id !== id);
+        localStorage.setItem(this.TEMPLATES_KEY, JSON.stringify(templates));
+        return true;
+      } catch (e) {
+        console.error("Erro ao excluir template:", e);
+        return false;
+      }
+    }
+    static exportTemplatesJSON() {
+      try {
+        const templates = this.getTemplates();
+        return JSON.stringify(templates, null, 2);
+      } catch (e) {
+        console.error("Erro ao exportar templates para JSON:", e);
+        return "[]";
+      }
+    }
+    static importTemplatesJSON(jsonStr) {
+      try {
+        const imported = JSON.parse(jsonStr);
+        if (!Array.isArray(imported)) throw new Error("O arquivo JSON deve conter uma lista de templates.");
+        const current = this.getTemplates();
+        const currentIds = new Set(current.map((t) => t.id));
+        const merged = [...current];
+        for (const t of imported) {
+          if (t && t.name && t.state) {
+            if (!t.id || currentIds.has(t.id)) {
+              t.id = "tpl_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
+            }
+            currentIds.add(t.id);
+            merged.push(t);
+          }
+        }
+        localStorage.setItem(this.TEMPLATES_KEY, JSON.stringify(merged));
+        return merged;
+      } catch (e) {
+        console.error("Erro ao importar JSON de templates:", e);
+        return null;
       }
     }
   };
@@ -1878,9 +1969,72 @@
     getTextLayer() {
       return this.layers.find((l) => l.name === "text");
     }
-    exportImage(filename = "pedaco-do-ceu-post.png") {
-      const dataUrl = this.highDPICanvas.getExportDataURL("image/png", 1);
-      if (!dataUrl) return;
+    async renderHighRes(scale = 2) {
+      if (typeof document !== "undefined" && document.fonts && document.fonts.ready) {
+        try {
+          await document.fonts.ready;
+        } catch (e) {
+          console.warn("Erro ao aguardar carregamento de fontes:", e);
+        }
+      }
+      const baseW = this.store.state.width || 1080;
+      const baseH = this.store.state.height || 1080;
+      const exportScale = Math.max(scale, 2);
+      const targetW = Math.round(baseW * exportScale);
+      const targetH = Math.round(baseH * exportScale);
+      const offscreen = document.createElement("canvas");
+      offscreen.width = targetW;
+      offscreen.height = targetH;
+      const ctx = offscreen.getContext("2d", {
+        alpha: false,
+        desynchronized: false
+      });
+      if (!ctx) return null;
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.save();
+      ctx.scale(exportScale, exportScale);
+      const state = this.store.state;
+      for (const layer of this.layers) {
+        layer.render(ctx, baseW, baseH, state);
+      }
+      ctx.restore();
+      return offscreen;
+    }
+    async exportHighResImage(filename = "pedaco-do-ceu-post-2k.png", scale = 2) {
+      try {
+        const offscreen = await this.renderHighRes(scale);
+        if (!offscreen) {
+          return this.exportLegacyImage(filename);
+        }
+        if (offscreen.toBlob) {
+          offscreen.toBlob((blob) => {
+            if (!blob) {
+              const dataUrl = offscreen.toDataURL("image/png", 1);
+              this.downloadDataUrl(dataUrl, filename);
+              return;
+            }
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.download = filename;
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+            setTimeout(() => {
+              if (link.parentNode) link.parentNode.removeChild(link);
+              URL.revokeObjectURL(url);
+            }, 1e3);
+          }, "image/png", 1);
+        } else {
+          const dataUrl = offscreen.toDataURL("image/png", 1);
+          this.downloadDataUrl(dataUrl, filename);
+        }
+      } catch (err) {
+        console.warn("Fallback para exporta\xE7\xE3o padr\xE3o:", err);
+        this.exportLegacyImage(filename);
+      }
+    }
+    downloadDataUrl(dataUrl, filename) {
       const link = document.createElement("a");
       link.download = filename;
       link.href = dataUrl;
@@ -1888,7 +2042,15 @@
       link.click();
       setTimeout(() => {
         if (link.parentNode) link.parentNode.removeChild(link);
-      }, 100);
+      }, 150);
+    }
+    exportLegacyImage(filename = "pedaco-do-ceu-post.png") {
+      const dataUrl = this.highDPICanvas.getExportDataURL("image/png", 1);
+      if (!dataUrl) return;
+      this.downloadDataUrl(dataUrl, filename);
+    }
+    exportImage(filename = "pedaco-do-ceu-post.png", scale = 2) {
+      return this.exportHighResImage(filename, scale);
     }
   };
 
@@ -2845,7 +3007,9 @@
   };
   var PedacoDoCeuStudio = class {
     constructor() {
-      this.store = new Store(INITIAL_STATE);
+      const saved = Persistence.load();
+      const activeState = saved ? { ...INITIAL_STATE, ...saved } : INITIAL_STATE;
+      this.store = new Store(activeState);
       this.canvasEl = document.getElementById("renderCanvas");
       this.renderer = new Renderer(this.canvasEl, this.store);
       this.dragDrop = new CanvasDragDrop(this.canvasEl, this.renderer, this.store);
@@ -2855,6 +3019,7 @@
     }
     init() {
       this.initPhotoGallery();
+      this.initSavedTemplates();
       this.bindEvents();
       this.syncUI();
       this.loadImage(this.store.state.imgSrc, () => {
@@ -2863,6 +3028,129 @@
       this.store.subscribe(() => {
         this.updateUndoRedoButtons();
       });
+    }
+    initSavedTemplates() {
+      this.renderSavedTemplatesList();
+    }
+    renderSavedTemplatesList() {
+      const listEl = document.getElementById("savedTemplatesList");
+      if (!listEl) return;
+      const templates = Persistence.getTemplates();
+      listEl.innerHTML = "";
+      if (templates.length === 0) {
+        listEl.innerHTML = `
+        <div style="font-size: 11px; color: var(--color-sacred-gold-light); opacity: 0.75; text-align: center; padding: 12px 6px; border: 1px dashed rgba(212, 175, 55, 0.25); border-radius: 4px;">
+          \u2726 Nenhum template salvo ainda.<br>Digite um nome acima e clique em <b>Salvar</b>!
+        </div>
+      `;
+        return;
+      }
+      templates.forEach((tpl) => {
+        const card = document.createElement("div");
+        card.className = "saved-template-card";
+        const dateStr = tpl.createdAt ? new Date(tpl.createdAt).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "";
+        card.innerHTML = `
+        <div class="template-info">
+          <span class="template-title" title="${tpl.name}">${tpl.name}</span>
+          <div class="template-meta">
+            <span class="template-badge-fmt">${tpl.format || "1:1"}</span>
+            <span>${dateStr}</span>
+          </div>
+        </div>
+        <div class="template-actions">
+          <button type="button" class="btn-tpl-load" title="Carregar este template" data-id="${tpl.id}">Carregar</button>
+          <button type="button" class="btn-tpl-delete" title="Excluir template" data-id="${tpl.id}">\u2715</button>
+        </div>
+      `;
+        const btnLoad = card.querySelector(".btn-tpl-load");
+        if (btnLoad) {
+          btnLoad.addEventListener("click", () => this.loadSavedTemplate(tpl.id));
+        }
+        const btnDel = card.querySelector(".btn-tpl-delete");
+        if (btnDel) {
+          btnDel.addEventListener("click", () => {
+            if (typeof confirm !== "undefined" ? confirm(`Deseja realmente excluir o template "${tpl.name}"?`) : true) {
+              this.deleteSavedTemplate(tpl.id);
+            }
+          });
+        }
+        listEl.appendChild(card);
+      });
+    }
+    saveCurrentTemplate(customName) {
+      const input = document.getElementById("templateNameInput");
+      const name = customName && customName.trim() ? customName.trim() : (input ? input.value.trim() : "") || `Template ${this.store.state.title || "M\xEDstico"}`;
+      const saved = Persistence.saveTemplate(name, this.store.state);
+      if (saved) {
+        if (input) input.value = "";
+        this.renderSavedTemplatesList();
+        A11yManager.announce(`Template "${saved.name}" salvo com sucesso!`);
+      }
+    }
+    loadSavedTemplate(id) {
+      const templates = Persistence.getTemplates();
+      const found = templates.find((t) => t.id === id);
+      if (!found || !found.state) return;
+      Object.keys(found.state).forEach((key) => {
+        this.store.state[key] = found.state[key];
+      });
+      this.syncUI();
+      if (found.state.imgSrc) {
+        this.loadImage(found.state.imgSrc, () => this.renderer.requestRender());
+      } else {
+        this.renderer.requestRender();
+      }
+      A11yManager.announce(`Template "${found.name}" carregado com sucesso!`);
+    }
+    deleteSavedTemplate(id) {
+      Persistence.deleteTemplate(id);
+      this.renderSavedTemplatesList();
+      A11yManager.announce("Template exclu\xEDdo com sucesso.");
+    }
+    exportTemplatesJSON() {
+      const jsonStr = Persistence.exportTemplatesJSON();
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.download = `pedaco-do-ceu-templates-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.json`;
+      link.href = url;
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        if (link.parentNode) link.parentNode.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 1e3);
+      A11yManager.announce("Arquivo JSON de templates exportado!");
+    }
+    importTemplatesJSON(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const result = Persistence.importTemplatesJSON(e.target.result);
+          if (result) {
+            this.renderSavedTemplatesList();
+            A11yManager.announce(`${result.length} templates carregados com sucesso!`);
+          } else {
+            alert("Erro ao importar arquivo JSON de templates. Formato inv\xE1lido.");
+          }
+        } catch (err) {
+          alert("Erro ao ler arquivo: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+    resetToDefaults() {
+      const shouldReset = typeof confirm !== "undefined" ? confirm("Deseja redefinir o est\xFAdio para a configura\xE7\xE3o inicial padr\xE3o? Suas altera\xE7\xF5es n\xE3o salvas como template ser\xE3o perdidas.") : true;
+      if (shouldReset) {
+        Persistence.clear();
+        Object.keys(INITIAL_STATE).forEach((k) => {
+          this.store.state[k] = INITIAL_STATE[k];
+        });
+        this.syncUI();
+        this.loadImage(INITIAL_STATE.imgSrc, () => this.renderer.requestRender());
+        A11yManager.announce("Est\xFAdio redefinido para configura\xE7\xE3o padr\xE3o.");
+      }
     }
     updateUndoRedoButtons() {
       const btnUndo = document.getElementById("btnUndo");
@@ -3243,19 +3531,78 @@
         this.store.redo();
         this.syncUI();
       });
+      const btnSaveCustom = document.getElementById("btnSaveCustomTemplate");
+      if (btnSaveCustom) {
+        btnSaveCustom.addEventListener("click", () => this.saveCurrentTemplate());
+      }
+      const btnSaveQuick = document.getElementById("btnSaveTemplateQuick");
+      if (btnSaveQuick) {
+        btnSaveQuick.addEventListener("click", () => {
+          const title = this.store.state.title ? this.store.state.title.slice(0, 24) : "Arte";
+          const name = typeof prompt !== "undefined" ? prompt("Digite o nome para salvar este template:", `Template ${title}`) : `Template ${title}`;
+          if (name) this.saveCurrentTemplate(name);
+        });
+      }
+      const inputTplName = document.getElementById("templateNameInput");
+      if (inputTplName) {
+        inputTplName.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            this.saveCurrentTemplate();
+          }
+        });
+      }
+      const btnExportTplJson = document.getElementById("btnExportTemplatesJson");
+      if (btnExportTplJson) {
+        btnExportTplJson.addEventListener("click", () => this.exportTemplatesJSON());
+      }
+      const btnImportTplJson = document.getElementById("btnImportTemplatesJson");
+      const importFileInput = document.getElementById("importTemplatesFileInput");
+      if (btnImportTplJson && importFileInput) {
+        btnImportTplJson.addEventListener("click", () => importFileInput.click());
+        importFileInput.addEventListener("change", (e) => {
+          if (e.target.files && e.target.files[0]) {
+            this.importTemplatesJSON(e.target.files[0]);
+            importFileInput.value = "";
+          }
+        });
+      }
+      const btnReset = document.getElementById("btnResetStudio");
+      if (btnReset) {
+        btnReset.addEventListener("click", () => this.resetToDefaults());
+      }
       const btnExport = document.getElementById("btnExport");
       if (btnExport) {
-        btnExport.addEventListener("click", () => {
+        btnExport.addEventListener("click", async () => {
           const cleanTitle = (this.store.state.title || "post").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "-");
-          this.renderer.exportImage(`pedaco-do-ceu-${this.store.state.format}-${cleanTitle}.png`);
-          A11yManager.announce("Exporta\xE7\xE3o PNG conclu\xEDda com sucesso!");
+          const exportResSelect = document.getElementById("exportResolutionSelect");
+          const scale = exportResSelect ? parseInt(exportResSelect.value, 10) : 2;
+          const resLabel = scale === 4 ? "4k" : scale === 1 ? "1k" : "2k";
+          btnExport.disabled = true;
+          const origContent = btnExport.innerHTML;
+          btnExport.innerHTML = `<span>\u23F3</span> Gerando ${resLabel.toUpperCase()}...`;
+          try {
+            await this.renderer.exportHighResImage(`pedaco-do-ceu-${this.store.state.format}-${cleanTitle}-${resLabel}.png`, scale);
+            A11yManager.announce(`Exporta\xE7\xE3o PNG (${resLabel.toUpperCase()} Ultra-HD) conclu\xEDda com sucesso!`);
+          } finally {
+            btnExport.disabled = false;
+            btnExport.innerHTML = origContent;
+          }
         });
       }
       const btnExportHtml = document.getElementById("btnExportHtml");
       if (btnExportHtml) {
-        btnExportHtml.addEventListener("click", () => {
-          this.exportHTML();
-          A11yManager.announce("Exporta\xE7\xE3o HTML conclu\xEDda com sucesso!");
+        btnExportHtml.addEventListener("click", async () => {
+          btnExportHtml.disabled = true;
+          const origContent = btnExportHtml.innerHTML;
+          btnExportHtml.innerHTML = "<span>\u23F3</span> Exportando...";
+          try {
+            await this.exportHTML();
+            A11yManager.announce("Exporta\xE7\xE3o HTML conclu\xEDda com sucesso!");
+          } finally {
+            btnExportHtml.disabled = false;
+            btnExportHtml.innerHTML = origContent;
+          }
         });
       }
     }
@@ -3376,11 +3723,17 @@
       setCheck("imgFlipVCheck", s.imgFlipV);
       this.updateGradientLivePreview();
     }
-    exportHTML(filename) {
+    async exportHTML(filename) {
       const s = this.store.state;
       const cleanTitle = (s.title || "post").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "-");
       const actualFilename = filename || `pedaco-do-ceu-${s.format}-${cleanTitle}.html`;
-      const imgDataUrl = this.renderer.highDPICanvas.getExportDataURL("image/png", 1);
+      let imgDataUrl = "";
+      try {
+        const offscreen = await this.renderer.renderHighRes(2);
+        imgDataUrl = offscreen ? offscreen.toDataURL("image/png", 1) : this.renderer.highDPICanvas.getExportDataURL("image/png", 1);
+      } catch (e) {
+        imgDataUrl = this.renderer.highDPICanvas.getExportDataURL("image/png", 1);
+      }
       const htmlContent = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>

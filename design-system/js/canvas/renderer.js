@@ -145,9 +145,85 @@ export class Renderer {
     return this.layers.find(l => l.name === 'text');
   }
 
-  exportImage(filename = 'pedaco-do-ceu-post.png') {
-    const dataUrl = this.highDPICanvas.getExportDataURL('image/png', 1.0);
-    if (!dataUrl) return;
+  async renderHighRes(scale = 2) {
+    if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
+      try {
+        await document.fonts.ready;
+      } catch (e) {
+        console.warn('Erro ao aguardar carregamento de fontes:', e);
+      }
+    }
+
+    const baseW = this.store.state.width || 1080;
+    const baseH = this.store.state.height || 1080;
+    const exportScale = Math.max(scale, 2); // Garante no mínimo 2x (2K Ultra-HD)
+    const targetW = Math.round(baseW * exportScale);
+    const targetH = Math.round(baseH * exportScale);
+
+    const offscreen = document.createElement('canvas');
+    offscreen.width = targetW;
+    offscreen.height = targetH;
+
+    const ctx = offscreen.getContext('2d', {
+      alpha: false,
+      desynchronized: false
+    });
+
+    if (!ctx) return null;
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    ctx.save();
+    // Escala todas as coordenadas virtuais perfeitamente para 2K/4K nativo
+    ctx.scale(exportScale, exportScale);
+
+    const state = this.store.state;
+    for (const layer of this.layers) {
+      layer.render(ctx, baseW, baseH, state);
+    }
+
+    ctx.restore();
+    return offscreen;
+  }
+
+  async exportHighResImage(filename = 'pedaco-do-ceu-post-2k.png', scale = 2) {
+    try {
+      const offscreen = await this.renderHighRes(scale);
+      if (!offscreen) {
+        return this.exportLegacyImage(filename);
+      }
+
+      // Tenta exportação via Blob (qualidade máxima sem limite de URL)
+      if (offscreen.toBlob) {
+        offscreen.toBlob((blob) => {
+          if (!blob) {
+            const dataUrl = offscreen.toDataURL('image/png', 1.0);
+            this.downloadDataUrl(dataUrl, filename);
+            return;
+          }
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = filename;
+          link.href = url;
+          document.body.appendChild(link);
+          link.click();
+          setTimeout(() => {
+            if (link.parentNode) link.parentNode.removeChild(link);
+            URL.revokeObjectURL(url);
+          }, 1000);
+        }, 'image/png', 1.0);
+      } else {
+        const dataUrl = offscreen.toDataURL('image/png', 1.0);
+        this.downloadDataUrl(dataUrl, filename);
+      }
+    } catch (err) {
+      console.warn('Fallback para exportação padrão:', err);
+      this.exportLegacyImage(filename);
+    }
+  }
+
+  downloadDataUrl(dataUrl, filename) {
     const link = document.createElement('a');
     link.download = filename;
     link.href = dataUrl;
@@ -155,6 +231,16 @@ export class Renderer {
     link.click();
     setTimeout(() => {
       if (link.parentNode) link.parentNode.removeChild(link);
-    }, 100);
+    }, 150);
+  }
+
+  exportLegacyImage(filename = 'pedaco-do-ceu-post.png') {
+    const dataUrl = this.highDPICanvas.getExportDataURL('image/png', 1.0);
+    if (!dataUrl) return;
+    this.downloadDataUrl(dataUrl, filename);
+  }
+
+  exportImage(filename = 'pedaco-do-ceu-post.png', scale = 2) {
+    return this.exportHighResImage(filename, scale);
   }
 }
