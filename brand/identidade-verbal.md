@@ -2,53 +2,52 @@
 
 ## 1. Princípios da Comunicação Verbal
 
-A comunicação verbal da **Pedaço do Céu** é um convite à contemplação, ao autoconhecimento e à reconexão interior. Ela não busca convencer pela urgência, mas acolher pela beleza, verdade e profundidade.
+A comunicação da **Pedaço do Céu** é um convite acolhedor ao bem-estar, à cultura das pedras e à beleza das tradições espirituais. O tom é inclusivo, sereno, poético e acessível, refletindo a riqueza de um acervo com mais de mil itens para o cotidiano.
 
-*   **Tom de Voz:** Sereno, acolhedor, sábio, poético e reverente ao sagrado.
-*   **Voz Ativa e Direta:** Clareza conceitual combinada com lirismo místico, sem termos corporativos ou jargões vazios de marketing.
-*   **Pontuação Harmoniosa:** Frases ritmadas, respiração pausada e parágrafos curtos. Uso de vírgulas, pontos e parênteses. **É estritamente proibido o uso de travessão.**
-*   **Símbolos Sutis:** Uso refinado de elementos decorativos tipográficos (✦, ॐ, 🌿, ✨, 🌸, 🔮, 🕊️).
+*   **Tom de Voz:** Acolhedor, sereno, respeitoso, cultural, poético e próximo.
+*   **Abordagem Abrangente:** Evitar limitar a marca a itens ou origens isoladas. A comunicação fala sobre o universo amplo do holístico, da perfumaria botânica, da arte sacra de múltiplas fés, das pedras naturais e das lembrancinhas do dia a dia.
+*   **Pontuação Harmoniosa:** Fluidez no texto com frases claras, vírgulas, pontos e parênteses. **É estritamente proibido o uso de travessão.**
+*   **Símbolos Sutis:** Uso delicado de elementos visuais tipográficos (✦, 🌿, ✨, 🌸, 🕊️, 💫, 🕯️).
 
 ---
 
-## 2. Léxico Sagrado (Vocabulário da Marca)
+## 2. Léxico da Marca (Vocabulário Inspirador)
 
 ### Termos Recomendados e Celebrados
-*   **Para Cristais:** Matriz mineral, cristalização, ressonância, frequência sutil, transmutação, pureza da terra, lapidação, drusa natural, vórtice de luz.
-*   **Para Terapias Sonoras e Tibete:** Vibração em 432Hz, harmônicos primordiais, ressonância celular, silêncio interior, ondas alfa e teta, liga milenar dos 7 metais.
-*   **Para Aromaterapia e Defumação:** Fumaça sagrada, botânica pura, resinas nobres, atmosfera áurica, elevação de pensamentos, alquimia vegetal.
-*   **Para Espaço Físico:** Nosso refúgio em São Luís, espaço sagrado, casa de acolhimento, santuário de bem-estar, experiência sensorial.
-*   **Para Ação do Cliente:** Conectar, acolher, vivenciar, sintonizar, permitir-se sentir, despertar, harmonizar.
+*   **Para a Cultura das Pedras:** Formação da natureza, beleza mineral, pedras brutas e roladas, harmonia de cores, energia da terra, toque natural, coleção de pedras.
+*   **Para o Dia a Dia Holístico:** Pequenas pausas diárias, autocuidado, cantinho de paz no lar, momentos de respiração, equilíbrio da rotina, bem-estar simples.
+*   **Para Imagens e Religiosidade:** Tradições de fé, devoção, respeito à diversidade espiritual, santos, orixás, anjos, mestres da sabedoria, arte sacra e ancestral.
+*   **Para Perfumaria e Aromas:** Perfumaria botânica, aromas naturais, incensos nobres, resinas puras, difusores, banhos de ervas, frescor e aconchego.
+*   **Para a Casa e Lembrancinhas:** Apetrechos decorativos, presentes com significado, lembranças afetivas, mimos especiais, amuletos, cantinhos de aconchego.
+*   **Para a Experiência Presencial:** Nosso espaço em São Luís, casa de bem-estar, refúgio de aromas e pedras, atendimento com carinho, venha nos visitar.
 
 ### Termos Estritamente Proibidos
-*   **Comerciais:** "Compre já", "promoção", "oferta", "desconto", "frete grátis", "liquidação", "parcelamos em 10x", "preço imperdível", "barato".
-*   **Clichês de Marketing Digital:** "Descubra o segredo", "fórmula mágica", "destrave sua vida", "hack", "método definitivo".
-*   **Alegações Médicas Ilícitas:** "Cura de doenças", "substitui remédios", "elimina depressão", "cura câncer", "tratamento infalível".
+*   **Comerciais Agressivos:** "Compre já", "promoção imperdível", "queima de estoque", "desconto", "preço baixo", "oferta relâmpago".
+*   **Jargões e Fórmulas de Marketing:** "Destrave sua vida", "método milagroso", "segredo revelado", "fórmula mágica".
+*   **Promessas Médicas ou Físicas:** "Cura de doenças", "elimina ansiedade instantaneamente", "substitui tratamentos médicos".
 
 ---
 
-## 3. Matriz de Conformidade Terapêutica (Ética & ANVISA)
+## 3. Matriz de Linguagem Ética e Bem-Estar
 
-Para garantir integridade jurídica e respeito ao cliente:
-
-| Proibido Afirmar | Forma Ética e Sagrada de Comunicar |
+| Evitar Afirmar | Forma Acolhedora e Cultural de Comunicar |
 | :--- | :--- |
-| "A ametista cura insônia crônica e ansiedade." | "A ametista emana uma vibração serena que favorece o relaxamento mental e noites de sono mais tranquilas." |
-| "O quartzo rosa resolve todos os traumas do passado." | "O quartzo rosa atua no acolhimento emocional, convidando ao autocuidado e à abertura amorosa do coração." |
-| "O som da taça tibetana elimina problemas de saúde física." | "A frequência harmônica da taça tibetana induz estados de relaxamento profundo, auxiliando no alívio de tensões diárias." |
-| "A sálvia branca extermina energias negativas para sempre." | "A defumação com sálvia branca renova a atmosfera do ambiente, proporcionando sensação de leveza e clareza." |
+| "Esta pedra cura a sua insônia e tira toda ansiedade." | "A presença de pedras naturais e aromas suaves no quarto cria uma atmosfera serena que favorece o descanso e noites mais tranquilas." |
+| "Este amuleto resolve todos os seus problemas financeiros." | "O brilho e a cor das pedras naturais nos lembram diariamente da nossa capacidade de focar na prosperidade e no trabalho com alegria." |
+| "A queima deste incenso limpa qualquer doença da casa." | "O aroma das ervas e resinas naturais renova o ar e traz uma agradável sensação de frescor e aconchego para o lar." |
+| "Nossa loja vende apenas artigos exclusivos do oriente." | "Nosso espaço reúne uma imensa variedade de pedras, imagens de diversas fés, aromas naturais, apetrechos e presentes para o seu dia a dia." |
 
 ---
 
-## 4. Estrutura de Ganchos (Hooks) e Redação de Postagens
+## 4. Fórmulas de Ganchos e Chamadas para o Espaço Físico
 
-### Ganchos de Abertura (High-Impact Místico)
-1. **Contemplativo:** *"✦ Quando o silêncio da mente se encontra com a vibração da Terra, a alma encontra descanso."*
-2. **Ancestral:** *"ॐ O som que atravessa séculos para lembrar o seu coração da sua verdadeira essência."*
-3. **Botânico:** *"🌿 A fumaça sagrada das resinas antigas elevando as intenções do seu santuário pessoal."*
-4. **Angelical:** *"🔮 Na firmeza da Chama Azul, encontramos a certeza de que estamos sempre guardados e amparados."*
+### Ganchos de Abertura Abrangentes
+1. **Cultura Mineral:** *"✦ A natureza levou milhões de anos para desenhar as cores e formas das pedras que hoje decoram o nosso lar."*
+2. **Aconchego do Lar:** *"🌿 Um aroma gostoso e uma pequena pausa podem transformar o ritmo de todo o seu dia."*
+3. **Presentes e Afeto:** *"✨ Um presente com significado é aquele que carrega um desejo sincero de paz e proteção para quem a gente ama."*
+4. **Diversidade Espiritual:** *"🕊️ A fé e a beleza se manifestam de muitas formas, acolhendo cada coração em seu próprio caminho."*
 
 ### Chamadas para Ação (CTAs) em São Luís (MA)
-*   *"Venha vivenciar essa atmosfera de perto. Nosso refúgio em São Luís está de portas abertas para acolher a sua caminhada."*
-*   *"Permita-se sentir a ressonância das pedras naturais e o aroma das resinas puras em nossa loja física em São Luís."*
-*   *"Esperamos por você em nosso espaço sagrado para escolher com calma a peça que melhor sintoniza com o seu momento."*
+*   *"Venha conhecer nosso refúgio de paz em São Luís. Nosso espaço reúne mais de mil opções de pedras, aromas, imagens e presentes para o seu dia a dia."*
+*   *"Dê uma pausa na rotina e venha sentir os aromas da nossa casa em São Luís. Será uma alegria acolher você."*
+*   *"Visite nossa loja em São Luís para escolher com calma as pedras, aromas e lembrancinhas que mais combinam com o seu lar."*

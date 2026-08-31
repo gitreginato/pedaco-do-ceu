@@ -20,7 +20,7 @@ export class ImageLayer extends BaseLayer {
       return;
     }
 
-    const zones = calculateZones(width, height, state.layout);
+    const zones = calculateZones(width, height, state.layout, state);
     if (!zones.img) return;
 
     switch (state.layout) {
@@ -39,7 +39,8 @@ export class ImageLayer extends BaseLayer {
   }
 
   drawSplit(ctx, W, H, state, isLeft) {
-    const splitX = Math.round(W * 0.60);
+    const splitX = Math.round(W * (state.splitRatio !== undefined ? state.splitRatio : 0.60));
+    const radius = state.cardRadius !== undefined ? state.cardRadius : 18;
 
     if (state.fitMode === 'portal') {
       const frameX = isLeft ? W - splitX + 10 : 35;
@@ -53,11 +54,11 @@ export class ImageLayer extends BaseLayer {
       ctx.shadowOffsetY = 8;
       
       ctx.fillStyle = '#020904';
-      this.roundRect(ctx, frameX, frameY, frameW, frameH, 18, true, false);
+      this.roundRect(ctx, frameX, frameY, frameW, frameH, radius, true, false);
       ctx.shadowColor = 'transparent';
 
       ctx.save();
-      this.roundRect(ctx, frameX, frameY, frameW, frameH, 18, false, false);
+      this.roundRect(ctx, frameX, frameY, frameW, frameH, radius, false, false);
       ctx.clip();
       this.drawImageCover(ctx, state.imgObj, frameX, frameY, frameW, frameH, state);
       ctx.restore();
@@ -65,11 +66,11 @@ export class ImageLayer extends BaseLayer {
       // Borda dupla em ouro líquido
       ctx.strokeStyle = state.colorCorners;
       ctx.lineWidth = 2.5;
-      this.roundRect(ctx, frameX, frameY, frameW, frameH, 18, false, true);
+      this.roundRect(ctx, frameX, frameY, frameW, frameH, radius, false, true);
       
       ctx.strokeStyle = hexToRgba(state.colorCorners, 0.4);
       ctx.lineWidth = 1;
-      this.roundRect(ctx, frameX + 6, frameY + 6, frameW - 12, frameH - 12, 14, false, true);
+      this.roundRect(ctx, frameX + 6, frameY + 6, frameW - 12, frameH - 12, Math.max(radius - 4, 4), false, true);
       ctx.restore();
 
     } else if (state.fitMode === 'fusion') {

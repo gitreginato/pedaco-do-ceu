@@ -179,6 +179,49 @@ async function suiteLayoutEsquerdoSDD_TDD_ODD(page, results) {
   results.push(suite);
 }
 
+async function suiteLayoutRefinementPlaywright(page, results) {
+  const suite = { name: 'Refino de Layout & Enquadramento Fotográfico (Playwright)', tests: [], passed: 0, failed: 0 };
+  function assert(name, condition) {
+    if (condition) { suite.passed++; suite.tests.push({ name, pass: true }); }
+    else { suite.failed++; suite.tests.push({ name, pass: false }); }
+  }
+
+  await page.click('button[data-target="tab-formato"]');
+  await page.waitForTimeout(100);
+
+  // 1. Sliders de Refino
+  await page.$eval('#splitRatioRange', el => { el.value = '65'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.$eval('#textZoneHeightRange', el => { el.value = '50'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.$eval('#cardRadiusRange', el => { el.value = '22'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.waitForTimeout(100);
+
+  const sRatio = await page.evaluate(() => window.pedacoStudio.store.state.splitRatio);
+  const tzHeight = await page.evaluate(() => window.pedacoStudio.store.state.textZoneHeight);
+  const cRadius = await page.evaluate(() => window.pedacoStudio.store.state.cardRadius);
+
+  assert('Refino: splitRatio atualizado no State (0.65)', sRatio === 0.65);
+  assert('Refino: textZoneHeight atualizado no State (0.50)', tzHeight === 0.50);
+  assert('Refino: cardRadius atualizado no State (22px)', cRadius === 22);
+
+  // 2. Enquadramento e Zoom na Aba Formato
+  await page.click('.segmented-btn[data-fit="fusion"]');
+  await page.$eval('#imgZoomRange', el => { el.value = '120'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.waitForTimeout(100);
+
+  const fitMode = await page.evaluate(() => window.pedacoStudio.store.state.fitMode);
+  const zoom = await page.evaluate(() => window.pedacoStudio.store.state.imgZoom);
+  assert('Enquadramento: fitMode "fusion" na Aba Formato', fitMode === 'fusion');
+  assert('Enquadramento: imgZoom (1.2x) na Aba Formato', zoom === 1.2);
+
+  // 3. Estilos de Fundo
+  await page.click('.segmented-btn[data-text-card-style="glass"]');
+  await page.waitForTimeout(100);
+  const cardStyle = await page.evaluate(() => window.pedacoStudio.store.state.textCardStyle);
+  assert('Fundo de Texto: Estilo "glass" (Vidro Sagrado) ativado', cardStyle === 'glass');
+
+  results.push(suite);
+}
+
 // =========================================================
 // RUNNER MESTRE CONSOLIDADO
 // =========================================================
@@ -248,6 +291,7 @@ async function suiteLayoutEsquerdoSDD_TDD_ODD(page, results) {
   await suiteWYSIWYG(page, uiResults);
   await suiteExport(page, uiResults);
   await suiteLayoutEsquerdoSDD_TDD_ODD(page, uiResults);
+  await suiteLayoutRefinementPlaywright(page, uiResults);
   for (const s of uiResults) {
     allSuites.push(s);
   }

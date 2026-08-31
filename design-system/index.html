@@ -123,57 +123,14 @@
           </div>
 
           <div class="control-section">
-            <div class="section-title"><span class="icon">🔍</span> Enquadramento da Imagem</div>
+            <div class="section-title"><span class="icon">📁</span> Foto Própria do Computador</div>
             <div class="form-group">
-              <label>Zoom da Foto</label>
-              <div class="slider-group">
-                <input type="range" id="imgZoomRange" min="80" max="250" value="100">
-                <span id="imgZoomVal" class="slider-val">1.0x</span>
-              </div>
-            </div>
-            <div class="inner-grid-2">
-              <div class="form-group">
-                <label>Posição Horizontal (X)</label>
-                <div class="slider-group">
-                  <input type="range" id="imgPanXRange" min="-400" max="400" value="0">
-                  <span id="imgPanXVal" class="slider-val">0px</span>
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Posição Vertical (Y)</label>
-                <div class="slider-group">
-                  <input type="range" id="imgPanYRange" min="-400" max="400" value="0">
-                  <span id="imgPanYVal" class="slider-val">0px</span>
-                </div>
-              </div>
-            </div>
-            <div class="form-group" style="margin-top: 10px;">
-              <label>Estilo de Enquadramento da Foto</label>
-              <div class="segmented-control">
-                <div class="segmented-btn active" data-fit="portal">Portal de Ouro</div>
-                <div class="segmented-btn" data-fit="fusion">Fusão Imersiva</div>
-                <div class="segmented-btn" data-fit="cover">Preenchimento</div>
-              </div>
-            </div>
-
-            <div class="form-group" style="margin-top: 10px;">
-              <label>Espelhamento / Inversão da Foto</label>
-              <div style="display: flex; gap: 14px; margin-top: 6px;">
-                <label class="checkbox-label" style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-parchment); cursor: pointer;">
-                  <input type="checkbox" id="imgFlipHCheck">
-                  <span>Inverter Horizontal (⇄)</span>
-                </label>
-                <label class="checkbox-label" style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-parchment); cursor: pointer;">
-                  <input type="checkbox" id="imgFlipVCheck">
-                  <span>Inverter Vertical (⇅)</span>
-                </label>
-              </div>
-            </div>
-
-            <div class="form-group" style="margin-top: 8px;">
-              <label>Carregar outra foto local:</label>
+              <label>Carregar imagem local do seu dispositivo:</label>
               <input type="file" id="imageUploadInput" accept="image/*" class="form-control file-input">
             </div>
+            <p class="section-desc" style="margin-top: 4px; font-size: 11px;">
+              Carregue qualquer foto ou mockup de joia em alta definição. O enquadramento e proporções podem ser ajustados na aba <strong>Formato & Layout</strong>.
+            </p>
           </div>
 
         </div>
@@ -188,35 +145,6 @@
               <div class="segmented-btn" data-align="left">Esquerda</div>
               <div class="segmented-btn active" data-align="center">Centro</div>
               <div class="segmented-btn" data-align="right">Direita</div>
-            </div>
-          </div>
-
-          <!-- Espaçamento Global das Caixas -->
-          <div class="control-section">
-            <div class="section-title"><span class="icon">📐</span> Espaçamento Global das Caixas</div>
-            <div class="inner-grid-2">
-              <div class="slider-group compact">
-                <label>Margem Top:</label>
-                <input type="range" id="paddingTopRange" min="20" max="220" value="90">
-                <span id="paddingTopVal" class="slider-val">90px</span>
-              </div>
-              <div class="slider-group compact">
-                <label>Gap Blocos:</label>
-                <input type="range" id="blockGapRange" min="6" max="60" value="20">
-                <span id="blockGapVal" class="slider-val">20px</span>
-              </div>
-            </div>
-            <div class="inner-grid-2">
-              <div class="slider-group compact">
-                <label>Margem Lateral:</label>
-                <input type="range" id="paddingSideRange" min="14" max="120" value="60">
-                <span id="paddingSideVal" class="slider-val">60px</span>
-              </div>
-              <div class="slider-group compact">
-                <label>Entrelinha Global:</label>
-                <input type="range" id="globalLineGapRange" min="4" max="30" value="12">
-                <span id="globalLineGapVal" class="slider-val">12px</span>
-              </div>
             </div>
           </div>
 
@@ -760,6 +688,7 @@
         <!-- ABA 4: Formato & Layout -->
         <div id="tab-formato" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-tab-formato">
           
+          <!-- 1. Proporção da Publicação -->
           <div class="control-section">
             <div class="section-title"><span class="icon">📐</span> Proporção da Publicação</div>
             <div class="segmented-control">
@@ -770,6 +699,7 @@
             </div>
           </div>
 
+          <!-- 2. Estrutura do Layout -->
           <div class="control-section">
             <div class="section-title"><span class="icon">🏛️</span> Estrutura do Layout</div>
             <div class="segmented-control">
@@ -781,7 +711,60 @@
             </div>
           </div>
 
-          <!-- Estilo do Fundo de Texto (Layouts: Rodapé, Topo, Centro) -->
+          <!-- 3. Enquadramento da Foto -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">🔍</span> Enquadramento da Foto</div>
+            
+            <div class="form-group">
+              <label>Estilo de Enquadramento da Imagem</label>
+              <div class="segmented-control">
+                <div class="segmented-btn active" data-fit="portal">Portal de Ouro</div>
+                <div class="segmented-btn" data-fit="fusion">Fusão Imersiva</div>
+                <div class="segmented-btn" data-fit="cover">Preenchimento</div>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 10px;">
+              <label>Zoom da Foto</label>
+              <div class="slider-group">
+                <input type="range" id="imgZoomRange" min="80" max="250" value="100">
+                <span id="imgZoomVal" class="slider-val">1.0x</span>
+              </div>
+            </div>
+
+            <div class="inner-grid-2">
+              <div class="form-group">
+                <label>Posição Horizontal (X)</label>
+                <div class="slider-group">
+                  <input type="range" id="imgPanXRange" min="-400" max="400" value="0">
+                  <span id="imgPanXVal" class="slider-val">0px</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Posição Vertical (Y)</label>
+                <div class="slider-group">
+                  <input type="range" id="imgPanYRange" min="-400" max="400" value="0">
+                  <span id="imgPanYVal" class="slider-val">0px</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 8px;">
+              <label>Espelhamento / Inversão da Foto</label>
+              <div style="display: flex; gap: 14px; margin-top: 6px;">
+                <label class="checkbox-label" style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-parchment); cursor: pointer;">
+                  <input type="checkbox" id="imgFlipHCheck">
+                  <span>Inverter Horizontal (⇄)</span>
+                </label>
+                <label class="checkbox-label" style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--color-parchment); cursor: pointer;">
+                  <input type="checkbox" id="imgFlipVCheck">
+                  <span>Inverter Vertical (⇅)</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Estilo do Fundo de Texto (Layouts: Rodapé, Topo, Centro) -->
           <div class="control-section" id="textCardStyleSection">
             <div class="section-title"><span class="icon">✨</span> Estilo do Fundo de Texto</div>
             <div class="segmented-control" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;">
@@ -797,7 +780,57 @@
             </p>
           </div>
 
-          <!-- Guias Visuais de Safe Area -->
+          <!-- 5. Refino de Proporções & Dimensões do Layout -->
+          <div class="control-section">
+            <div class="section-title"><span class="icon">🎛️</span> Refino de Proporções & Dimensões</div>
+            
+            <div class="inner-grid-2">
+              <div class="slider-group compact">
+                <label>Divisão Lateral (Foto %):</label>
+                <input type="range" id="splitRatioRange" min="35" max="75" value="60">
+                <span id="splitRatioVal" class="slider-val">60%</span>
+              </div>
+              <div class="slider-group compact">
+                <label>Altura Texto (Topo/Rodapé):</label>
+                <input type="range" id="textZoneHeightRange" min="25" max="65" value="44">
+                <span id="textZoneHeightVal" class="slider-val">44%</span>
+              </div>
+            </div>
+
+            <div class="inner-grid-2" style="margin-top: 6px;">
+              <div class="slider-group compact">
+                <label>Arredondamento Bordas:</label>
+                <input type="range" id="cardRadiusRange" min="0" max="36" value="18">
+                <span id="cardRadiusVal" class="slider-val">18px</span>
+              </div>
+              <div class="slider-group compact">
+                <label>Margem Lateral (Pad X):</label>
+                <input type="range" id="paddingSideRange" min="10" max="120" value="60">
+                <span id="paddingSideVal" class="slider-val">60px</span>
+              </div>
+            </div>
+
+            <div class="inner-grid-2" style="margin-top: 6px;">
+              <div class="slider-group compact">
+                <label>Margem Top (Pad Y):</label>
+                <input type="range" id="paddingTopRange" min="20" max="220" value="90">
+                <span id="paddingTopVal" class="slider-val">90px</span>
+              </div>
+              <div class="slider-group compact">
+                <label>Gap Entre Blocos:</label>
+                <input type="range" id="blockGapRange" min="4" max="50" value="20">
+                <span id="blockGapVal" class="slider-val">20px</span>
+              </div>
+            </div>
+
+            <div class="slider-group compact" style="margin-top: 6px;">
+              <label>Entrelinha Global:</label>
+              <input type="range" id="globalLineGapRange" min="0" max="30" value="12">
+              <span id="globalLineGapVal" class="slider-val">12px</span>
+            </div>
+          </div>
+
+          <!-- 6. Guias Visuais de Safe Area -->
           <div class="control-section">
             <div class="section-title"><span class="icon">👁️</span> Guias Visuais & Safe Areas</div>
             <label class="checkbox-label">

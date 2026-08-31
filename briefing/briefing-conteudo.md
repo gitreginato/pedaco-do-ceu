@@ -2,55 +2,49 @@
 
 ## 1. Objetivos da Estratégia de Conteúdo
 
-A esteira de conteúdo da **Pedaço do Céu** foi concebida para alimentar as redes sociais com publicações de altíssimo valor estético, cultural e espiritual. A intenção primária é inspirar, educar e convidar à vivência física na loja em São Luís (MA).
+A esteira de conteúdo da **Pedaço do Céu** foi desenhada para inspirar o público com conhecimento cultural, dicas simples de bem-estar para o dia a dia e celebração da beleza do artesanato e das pedras naturais.
+
+A comunicação digital serve como uma janela convidativa para o universo amplo de mais de mil itens disponíveis no espaço físico em São Luís (MA).
 
 ---
 
-## 2. Linhas Editoriais & Pilares de Conteúdo
+## 2. Pilares de Conteúdo Amplos e Culturais
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
 │                        6 PILARES DE CONTEÚDO                           │
 ├────────────────────┬───────────────────────────────────────────────────┤
-│ Pilar Editorial    │ Temas Centrais e Abordagem                        │
+│ Pilar Editorial    │ Temas e Abordagens                                │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ 1. Litoterapia     │ Drusas, pontas e chakras; métodos de limpeza;     │
-│    e Cristais      │ propriedades energéticas e ancoragem no lar.      │
+│ 1. Cultura das     │ História e geologia das pedras; cores, formatos e │
+│    Pedras          │ curiosidades; cuidados simples e arranjos no lar. │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ 2. Cura Sonora     │ Taças tibetanas dos 7 metais em 432Hz; sinos      │
-│    e 432Hz         │ tingsha; relaxamento celular e meditação.         │
+│ 2. Perfumaria      │ Aromas botânicos, incensos artesanais e resinas;  │
+│    Natural         │ como trazer frescor, aconchego e perfume à casa.  │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ 3. Botânica        │ Incensos nobres, sálvia branca, palo santo;       │
-│    e Aromas        │ rituais de defumação e purificação de ambientes.  │
+│ 3. Diversidade     │ Estatuária sacra de várias tradições; respeito à  │
+│    Religiosa       │ fé de cada pessoa; história de santos, orixás e   │
+│                    │ mestres da sabedoria universal.                   │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ 4. Ciclos da Lua   │ Fases lunares (Nova, Crescente, Cheia, Minguante);│
-│    e Marés         │ marés de São Luís e sincronicidade astral.        │
+│ 4. Dia a Dia       │ Rituais simples de pausa e respiração; velas,     │
+│    Holístico       │ banhos com sabonetes de ervas e autocuidado leve. │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ 5. Arte Sacra      │ Estatuetas nobres, Linha Arcanjo Miguel e         │
-│    e Altar         │ montagem de espaços de recolhimento em casa.      │
+│ 5. Casa e          │ Decoração com fontes de água, sinos de vento,     │
+│    Apetrechos      │ incensários e bandejas para cantos de paz no lar. │
 ├────────────────────┼───────────────────────────────────────────────────┤
-│ 6. Ancestralidade  │ Linha NOA, forças da natureza (águas, matas,      │
-│    e Natureza      │ ventos) e respeito às raízes sagradas.            │
+│ 6. Presentes e     │ Ideias de mimos afetivos, pulseiras, chaveiros e  │
+│    Lembrancinhas   │ lembranças de São Luís com carinho e significado. │
 └────────────────────┴───────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 3. Sincronicidade com o Calendário Lunar e São Luís
+## 3. Formatos e Esteira Automatizada de Criação
 
-*   **Lua Nova (Semeadura e Intenção):** Foco em defumação com sálvia branca, cristais de quartzo transparente e novos começos.
-*   **Lua Crescente (Expansão e Ação):** Foco em pirita para prosperidade, citrino e taças tibetanas para elevação de frequência.
-*   **Lua Cheia (Plenitude e Cristalização):** Banhos de lua para quartzo rosa e ametistas, celebração de harmonia e meditações sonoras.
-*   **Lua Minguante (Purificação e Banimento de Tensões):** Turmalina negra, obsidianas, resina de mirra e corte de amarras energéticas com o Arcanjo Miguel.
+O Studio e a esteira de automação (`scripts/generate_posts.mjs`) foram construídos para gerar criativos flexíveis e modulares:
 
----
-
-## 4. Esteira de Geração em Lote (`scripts/generate_posts.mjs`)
-
-O processo automatizado gera 5 arquivos essenciais para cada item do catálogo:
-
-1. `arte_feed.png`: Renderização High-DPI 2x em proporção quadrada (1:1) ou retrato (4:5).
-2. `arte_story.png`: Renderização High-DPI 2x vertical (9:16) com safe areas preservadas para Instagram Stories e TikTok.
-3. `legenda.txt`: Texto poético formatado com gancho, propriedades da peça, convite para a loja em São Luís e hashtags selecionadas.
-4. `alt_text.txt`: Descrição detalhada da imagem para acessibilidade e conformidade com leitores de tela.
-5. `metadados.json`: Registro completo de data, cores aplicadas, fontes, layout e identificador único da peça.
+1. `arte_feed.png`: Renderização 2x de alta resolução em proporção quadrada (1:1) ou retrato (4:5) com cantoneiras clássicas e molduras elegantes.
+2. `arte_story.png`: Versão vertical (9:16) otimizada para Instagram Stories e TikTok com safe areas garantidas.
+3. `legenda.txt`: Texto com gancho poético, curiosidade cultural sobre a peça, convite afetuoso para visitar a loja em São Luís e hashtags selecionadas.
+4. `alt_text.txt`: Descrição detalhada da imagem para acessibilidade completa.
+5. `metadados.json`: Registro dos parâmetros de renderização, fontes e paleta cromática aplicada.

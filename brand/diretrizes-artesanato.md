@@ -1,46 +1,37 @@
-# ✦ Diretrizes de Artesanato & Matérias-Primas: Pedaço do Céu
+# ✦ Diretrizes de Curadoria, Artesanato & Produtos: Pedaço do Céu
 
-## 1. O Manifesto do Feito à Mão e da Matéria Nobre
+## 1. Princípios da Curadoria e do Cuidado Manual
 
-Na **Pedaço do Céu**, o artesanato não é apenas uma técnica de produção: é uma ponte entre o mundo invisível das intenções e a forma física tangível. Cada objeto carrega a vibração de quem o esculpiu, forjou ou colheu.
-
-Honramos a arte lenta, o cuidado manual e a autenticidade das matérias-primas como princípios sagrados inegociáveis.
+A curadoria da **Pedaço do Céu** valoriza a autenticidade das matérias-primas, a beleza do artesanato e o carinho dedicado a cada detalhe. O acervo vivo da loja conta com mais de mil itens pensados para enriquecer a rotina, embelezar o lar e presentear com afeto.
 
 ---
 
-## 2. Padrões de Qualidade por Categoria de Artesanato
+## 2. Categorias Amplas do Acervo (+1.000 Itens)
 
-### 1. Minerais e Litoterapia Genuína
-*   **Origem Natural Estrita:** Apenas cristais autênticos extraídos de jazidas éticas. Proibição absoluta de resinas plásticas tingidas, vidros simulados ou minerais sintéticos.
-*   **Preservação das Formações Naturais:** Valorização de drusas brutas, pontas naturais, inclusões de rutilo, arco-íris internos e geodos, celebrando a singularidade que a natureza levou milhões de anos para compor.
-*   **Polimento e Lapidação Artesanal:** Peças roladas e esferas esculpidas à mão com polimento à base de água, sem vernizes químicos que interfiram na matriz mineral.
+### 1. Pedras Naturais e Cultura Mineral
+*   **Variedade Geológica:** Drusas, geodos, pontas brutas, pedras roladas, esferas e pirâmides de minerais diversos (quartzo, ametista, citrino, turmalina, selenita, pirita, ágata, jaspe, sodalita e muitos outros).
+*   **Autenticidade:** Valorização de pedras 100% naturais, preservando suas formas orgânicas, tonalidades e texturas únicas lapidadas pela própria Terra.
 
-### 2. Taças e Sinos Tibetanos dos 7 Metais Sagrados
-*   **A Liga Cósmica Milenar:** Cada taça deve respeitar a composição tradicional de 7 metais sagrados associados aos astros:
-    1. *Ouro:* Sol (Consciência e Vitalidade)
-    2. *Prata:* Lua (Intuição e Ritmos Emocionais)
-    3. *Mercúrio:* Mercúrio (Comunicação e Fluidez)
-    4. *Cobre:* Vênus (Amor e Harmonia)
-    5. *Ferro:* Marte (Força e Proteção)
-    6. *Estanho:* Júpiter (Sabedoria e Expansão)
-    7. *Chumbo:* Saturno (Estrutura e Aterramento)
-*   **Forja Manual:** Martelação manual sobre bigorna, gerando harmônicos múltiplos e sustentação sonoro prolongada na frequência de 432Hz.
-*   **Baquetas Artesanais:** Confeccionadas em madeira de lei e revestidas com camurça macia para atrito suave.
+### 2. Perfumaria Natural, Aromas e Defumação
+*   **Incensos e Resinas:** Incensos artesanais botânicos, varetas de queima limpa, cones, resinas puras (olíbano, mirra, breu, benjoim) e madeiras nobres como o palo santo de origem sustentável.
+*   **Aromas para o Lar:** Sprays de ambientes, difusores de varetas, óleos aromáticos e sabonetes fitoenergéticos artesanais para momentos de banho e relaxamento.
 
-### 3. Aromaterapia, Incensos Naturais e Defumadores
-*   **Pureza Botânica:** Varetas e pirâmides defumadoras compostas por biomassa vegetal, farinha de madeira nobre e gomas naturais.
-*   **Resinas Puríssimas:** Olíbano (frankincense), mirra da Somália, breu branco da Amazônia, benjoim de Sumatra e palo santo de coleta sustentável com certificação de madeira caída naturalmente.
-*   **Zero Derivados de Petróleo:** Isenção total de pólvora, carvão sintético, ftalatos ou fragrâncias artificiais de fixação rápida.
+### 3. Imagens e Estatuária de Múltiplas Tradições
+*   **Diversidade Espiritual:** Representações artísticas de santos, anjos e arcanjos, divindades hindus, budistas, orixás e guias da tradição afro-brasileira, além de mestres da sabedoria universal.
+*   **Acabamento Manual:** Peças em resina nobre, cerâmica artística, madeira e gesso resinado com pinturas manuais e detalhes clássicos.
 
-### 4. Estatuária Sacra, Cerâmicas e Peças da Linha NOA
-*   **Escultura e Modelagem:** Estátuas em resina nobre de alta densidade e cerâmicas queimadas em alta temperatura com detalhes pintados à mão por artistas sacros.
-*   **Cuidado Simbólico:** Proporções iconográficas respeitosas de santos, arcanjos, divindades hindus, budistas e orixás, honrando os mitos e atributos de cada linhagem.
-*   **Acabamentos Nobres:** Aplicação de folha de ouro, pátinas barrocas e detalhes em pedras naturais.
+### 4. Apetrechos e Decoração para a Casa
+*   **Cantos de Aconchego:** Fontes de água com som relaxante, sinos de vento, porta-velas, incensários em cerâmica e metal, castiçais e pratos decorativos para compor pequenos refúgios de tranquilidade no lar.
+*   **Ambientes Vivos:** Peças que unem utilidade e beleza, trazendo calor, luz e frescor para a sala, quarto ou espaço de trabalho.
+
+### 5. Lembrancinhas, Mimos e Presentes com Significado
+*   **Amuletos e Bijuterias:** Pulseiras com pedras naturais, pingentes, colares, chaveiros, filtros dos sonhos, garrafinhas de pedras e pequenos mimos para abençoar o dia a dia de quem amamos.
+*   **Presentes Especiais:** Kits de presentes com arranjos harmoniosos de pedras, aromas e cartões inspiradores para datas comemorativas e lembranças de São Luís.
 
 ---
 
-## 3. Cuidados Energéticos e Acolhimento na Loja
+## 3. Atmosfera de Acolhimento na Loja
 
-1. **Purificação Prévia:** Todas as peças que chegam à loja passam por uma harmonização sutil com fumaça de resinas nobres ou sobre leito de selenita branca.
-2. **Ambiente em Frequência Elevada:** O espaço físico em São Luís mantém constante sonorização em 432Hz, iluminação suave e aroma natural de sálvia e lavanda.
-3. **Respeito à Escolha do Cliente:** O cliente é encorajado a segurar a peça, sentir seu peso térmico e vibracional, e escolher aquela com a qual estabelece afinidade espontânea.
+1. **Espaço Confortável:** A loja física em São Luís é mantida com aromas botânicos suaves, iluminação indireta e sonorização serena para que a visita seja um momento agradável de pausa.
+2. **Liberdade de Escolha:** O cliente é convidado a tocar nas pedras, sentir os aromas dos incensos e escolher no seu próprio ritmo o que mais lhe agrada.
+3. **Orientação Simples e Prática:** Orientações claras e descomplicadas sobre cuidados simples com as pedras, uso seguro de incensários e conservação dos apetrechos.

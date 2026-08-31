@@ -1,7 +1,7 @@
 {
-  "date": "2026-08-31T20:26:23.344Z",
-  "totalDurationSeconds": 79.82,
-  "totalPassed": 138,
+  "date": "2026-08-31T20:52:54.535Z",
+  "totalDurationSeconds": 81.72,
+  "totalPassed": 144,
   "totalFailed": 0,
   "suites": [
     {
@@ -494,15 +494,15 @@
           "pass": true
         },
         {
-          "name": "Performance sob stress: média de 12.65ms por mutação/render (< 50ms CPU mode)",
+          "name": "Performance sob stress: média de 12.44ms por mutação/render (< 50ms CPU mode)",
           "pass": true
         },
         {
-          "name": "Frame Budget: tempo médio de renderização = 12.16ms (< 60ms modo CPU software)",
+          "name": "Frame Budget: tempo médio de renderização = 12.25ms (< 60ms modo CPU software)",
           "pass": true
         },
         {
-          "name": "Frame Budget: latência p95 = 14.20ms (< 120ms)",
+          "name": "Frame Budget: latência p95 = 16.70ms (< 120ms)",
           "pass": true
         },
         {
@@ -617,6 +617,37 @@
         }
       ],
       "passed": 2,
+      "failed": 0
+    },
+    {
+      "name": "Refino de Layout & Enquadramento Fotográfico (Playwright)",
+      "tests": [
+        {
+          "name": "Refino: splitRatio atualizado no State (0.65)",
+          "pass": true
+        },
+        {
+          "name": "Refino: textZoneHeight atualizado no State (0.50)",
+          "pass": true
+        },
+        {
+          "name": "Refino: cardRadius atualizado no State (22px)",
+          "pass": true
+        },
+        {
+          "name": "Enquadramento: fitMode \"fusion\" na Aba Formato",
+          "pass": true
+        },
+        {
+          "name": "Enquadramento: imgZoom (1.2x) na Aba Formato",
+          "pass": true
+        },
+        {
+          "name": "Fundo de Texto: Estilo \"glass\" (Vidro Sagrado) ativado",
+          "pass": true
+        }
+      ],
+      "passed": 6,
       "failed": 0
     }
   ],

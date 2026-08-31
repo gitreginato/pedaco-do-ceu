@@ -148,11 +148,29 @@ const FILE_URL = `file://${path.resolve(__dirname, '../index.html')}`;
   if (v !== 0.8) { console.error(`❌ [ERROR] bgImageOpacity - Expected 0.8, got ${v}`); failed++; }
   else { console.log(`✅ [OK] bgImageOpacity -> ${v}`); }
 
-  await page.$eval('#lineHeightDescRange', el => el.value = '16');
+   await page.$eval('#lineHeightDescRange', el => el.value = '16');
   await page.evaluate(() => document.querySelector('#lineHeightDescRange').dispatchEvent(new Event('input')));
   v = await page.evaluate(`window.pedacoStudio.store.state.lineHeightDesc`);
   if (v !== 1.6) { console.error(`❌ [ERROR] lineHeightDesc - Expected 1.6, got ${v}`); failed++; }
   else { console.log(`✅ [OK] lineHeightDesc -> ${v}`); }
+
+  await page.$eval('#splitRatioRange', el => el.value = '65');
+  await page.evaluate(() => document.querySelector('#splitRatioRange').dispatchEvent(new Event('input')));
+  v = await page.evaluate(`window.pedacoStudio.store.state.splitRatio`);
+  if (v !== 0.65) { console.error(`❌ [ERROR] splitRatio - Expected 0.65, got ${v}`); failed++; }
+  else { console.log(`✅ [OK] splitRatio -> ${v}`); }
+
+  await page.$eval('#textZoneHeightRange', el => el.value = '50');
+  await page.evaluate(() => document.querySelector('#textZoneHeightRange').dispatchEvent(new Event('input')));
+  v = await page.evaluate(`window.pedacoStudio.store.state.textZoneHeight`);
+  if (v !== 0.50) { console.error(`❌ [ERROR] textZoneHeight - Expected 0.50, got ${v}`); failed++; }
+  else { console.log(`✅ [OK] textZoneHeight -> ${v}`); }
+
+  await page.$eval('#cardRadiusRange', el => el.value = '24');
+  await page.evaluate(() => document.querySelector('#cardRadiusRange').dispatchEvent(new Event('input')));
+  v = await page.evaluate(`window.pedacoStudio.store.state.cardRadius`);
+  if (v !== 24) { console.error(`❌ [ERROR] cardRadius - Expected 24, got ${v}`); failed++; }
+  else { console.log(`✅ [OK] cardRadius -> ${v}`); }
 
   console.log('\n--- SELECTS - TODOS OS 8 SLOTS ---');
   if (!await testSelect('#fontTitleSelect', "'Cinzel', serif", 'fontTitle')) failed++;

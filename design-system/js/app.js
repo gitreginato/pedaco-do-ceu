@@ -437,7 +437,7 @@ export const PHOTO_CATALOG = [
     id: 'tib_homenagem1',
     category: 'tibete',
     categoryLabel: '🕊️ Prece do Tibete (Lâmpada de Sal)',
-    src: '../Fotos/TIbate/Tratadas/IMG_20260828_171759729.jpg',
+    src: '../Fotos/tibete/Tratadas/IMG_20260828_171759729.jpg',
     title: 'ORAÇÃO PELO TIBETE & NEPAL',
     subtitle: 'Em profunda reverência e união espiritual',
     description: 'Nossos corações e orações se voltam para os povos do Tibete e do Nepal, tocados pela recente tragédia nas montanhas sagradas. Que o poder de Karuna e a luz de Chenrezig abracem cada família, trazendo serenidade e força na reconstrução de seus lares.',
@@ -477,7 +477,7 @@ export const PHOTO_CATALOG = [
     id: 'tib_homenagem2',
     category: 'tibete',
     categoryLabel: '🕊️ Prece do Tibete (Buda Solar)',
-    src: '../Fotos/TIbate/Tratadas/IMG_20260828_172652877_HDR.jpg',
+    src: '../Fotos/tibete/Tratadas/IMG_20260828_172652877_HDR.jpg',
     title: 'LUZ DE CHENREZIG',
     subtitle: 'Compaixão Infinita e Amparo Divino',
     description: 'Que o sopro sagrado das bandeiras de oração espalhe paz pelos vales e eleve as almas que partiram em direção à luz divina. Em união espiritual por todas as famílias dos Himalaias.',
@@ -517,7 +517,7 @@ export const PHOTO_CATALOG = [
     id: 'tib_homenagem3',
     category: 'tibete',
     categoryLabel: '🕊️ Prece do Tibete (Pirâmide de Sal)',
-    src: '../Fotos/TIbate/Tratadas/IMG_20260828_165849966.jpg',
+    src: '../Fotos/tibete/Tratadas/IMG_20260828_165849966.jpg',
     title: 'RECONSTRUÇÃO & FÉ',
     subtitle: 'A Força Imutável das Montanhas Sagradas',
     description: 'Que o poder de Chenrezig abrace cada coração ferido. Que a serenidade dos mosteiros e a força das rochas sagradas sustentem a reconstrução de lares e vidas com coragem e esperança.',
@@ -557,7 +557,7 @@ export const PHOTO_CATALOG = [
     id: 'tib4_tacas',
     category: 'tibete',
     categoryLabel: '🧘 Tibete & Taças Sagradas',
-    src: '../Fotos/TIbate/Tratadas/IMG_20260828_172439605_HDR.jpg',
+    src: '../Fotos/tibete/Tratadas/IMG_20260828_172439605_HDR.jpg',
     title: 'TAÇAS TIBETANAS',
     subtitle: 'A Cura Vibracional dos 7 Metais Sagrados',
     description: 'Forjadas à mão sob rituais ancestrais. As ondas sonoras em harmonia produzem frequências Alfa e Teta, alinhando os 7 chakras e dissipando bloqueios etéricos profundos.',
@@ -698,6 +698,10 @@ const INITIAL_STATE = {
   showSafeAreaGuide: false,
 
   textCardStyle: 'card', // 'card', 'gradient', 'separated', 'glass', 'transparent', 'framed'
+
+  splitRatio: 0.60,
+  textZoneHeight: 0.44,
+  cardRadius: 18,
 
   paddingTop: 90,
   blockGap: 20,
@@ -1220,6 +1224,9 @@ export class PedacoDoCeuStudio {
     bindRangeHelper('imgZoomRange', 'imgZoom', v => v / 100, 'imgZoomVal', 'x');
     bindRangeHelper('imgPanXRange', 'imgPanX', v => v, 'imgPanXVal', 'px');
     bindRangeHelper('imgPanYRange', 'imgPanY', v => v, 'imgPanYVal', 'px');
+    bindRangeHelper('splitRatioRange', 'splitRatio', v => v / 100, 'splitRatioVal', '%');
+    bindRangeHelper('textZoneHeightRange', 'textZoneHeight', v => v / 100, 'textZoneHeightVal', '%');
+    bindRangeHelper('cardRadiusRange', 'cardRadius', v => v, 'cardRadiusVal', 'px');
     bindRangeHelper('patternOpacityRange', 'patternOpacity', v => v / 100, 'patternOpacityVal', '%');
     bindRangeHelper('boxOpacityRange', 'boxOpacity', v => v / 100, 'boxOpacityVal', '%');
     bindRangeHelper('gradientIntensityRange', 'gradientIntensity', v => v / 100, 'gradientIntensityVal', '%');
@@ -1515,6 +1522,18 @@ export class PedacoDoCeuStudio {
     setVal('imgPanYRange', s.imgPanY || 0);
     const panYVal = document.getElementById('imgPanYVal');
     if (panYVal) panYVal.textContent = (s.imgPanY || 0) + 'px';
+
+    setVal('splitRatioRange', Math.round((s.splitRatio !== undefined ? s.splitRatio : 0.60) * 100));
+    const srVal = document.getElementById('splitRatioVal');
+    if (srVal) srVal.textContent = Math.round((s.splitRatio !== undefined ? s.splitRatio : 0.60) * 100) + '%';
+
+    setVal('textZoneHeightRange', Math.round((s.textZoneHeight !== undefined ? s.textZoneHeight : 0.44) * 100));
+    const tzhVal = document.getElementById('textZoneHeightVal');
+    if (tzhVal) tzhVal.textContent = Math.round((s.textZoneHeight !== undefined ? s.textZoneHeight : 0.44) * 100) + '%';
+
+    setVal('cardRadiusRange', s.cardRadius !== undefined ? s.cardRadius : 18);
+    const crVal = document.getElementById('cardRadiusVal');
+    if (crVal) crVal.textContent = (s.cardRadius !== undefined ? s.cardRadius : 18) + 'px';
 
     setVal('patternOpacityRange', (s.patternOpacity || 0.15) * 100);
     const poVal = document.getElementById('patternOpacityVal');

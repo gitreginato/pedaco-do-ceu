@@ -11,7 +11,7 @@ export class OverlayLayer extends BaseLayer {
     const config = LAYOUT_CONFIG[state.layout];
     if (!config || !config.gradientOverlay) return;
 
-    const zones = calculateZones(width, height, state.layout);
+    const zones = calculateZones(width, height, state.layout, state);
     renderGradientOverlay(ctx, zones, config, state, width, height);
   }
 }

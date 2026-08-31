@@ -1,51 +1,64 @@
-# ✦ Matriz do Acervo & Mapeamento de Produtos: Pedaço do Céu
+# ✦ Matriz do Acervo & Grandes Eixos de Produtos: Pedaço do Céu
 
 ## 1. Visão Geral da Matriz
 
-O acervo da **Pedaço do Céu** está estruturado em 6 grandes pilares que unem arte sacra, litoterapia, botânica nobre e frequências sonoras. Cada item catalogado possui atributos visuais, holísticos e editoriais bem definidos.
+Com mais de mil itens disponíveis no espaço físico em São Luís, a matriz do acervo da **Pedaço do Céu** organiza a imensa variedade da loja em 6 grandes eixos culturais e práticos. As imagens e fotos catalogadas no sistema representam apenas uma pequena amostragem dessa rica tapeçaria de produtos.
 
 ---
 
-## 2. Detalhamento dos 6 Pilares do Acervo
+## 2. Os 6 Grandes Eixos do Acervo (+1.000 Itens)
 
-### Pilar 1: Cristais, Litoterapia & Bem-Estar
-*   **Conceito:** A sabedoria mineral da Terra cristalizada em frequências puras para harmonização dos chakras e espaços.
-*   **Peças Principais:** Drusas de Ametista, Quartzo Rosa Bruto, Bastões de Selenita Branca, Turmalina Negra, Esferas de Quartzo Verde, Pontas de Citrino Natural, Pirita da Prosperidade.
-*   **Símbolo de Layout:** Flor da Vida (`flowerOfLife`).
-*   **Paleta Sugerida:** Violeta Transmutação (`#2b0042` a `#581c87`), Rosa Cardíaco (`#3f0022` a `#831843`), Esmeralda Místico (`#00381c` a `#008542`).
-*   **Cuidados e Limpeza:** Defumação suave com sálvia, placa de selenita ou luz da Lua Cheia (evitar água com sal em pedras porosas).
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        6 GRANDES EIXOS DO ACERVO                       │
+├────────────────────┬───────────────────────────────────────────────────┤
+│ Eixo de Produtos   │ Variedade e Exemplos de Peças                     │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ 1. Cultura das     │ Drusas, geodos, pontas brutas, pedras roladas de  │
+│    Pedras          │ bolso, esferas, pirâmides e pedras colecionáveis. │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ 2. Perfumaria      │ Incensos naturais, resinas em grãos, óleos        │
+│    Natural         │ aromáticos, difusores, sabonetes de ervas e sprays│
+├────────────────────┼───────────────────────────────────────────────────┤
+│ 3. Imagens de      │ Estátuas de santos, orixás, anjos, mestres        │
+│    Múltiplas Fés   │ orientais e símbolos de diversas tradições.       │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ 4. Dia a Dia       │ Velas aromáticas, banhos de ervas, incensários    │
+│    Holístico       │ práticos e itens para momentos de pausa diária.   │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ 5. Casa e          │ Fontes de água, sinos de vento, mandalas de       │
+│    Apetrechos      │ parede, bandejas e cerâmicas para cantos de paz.  │
+├────────────────────┼───────────────────────────────────────────────────┤
+│ 6. Lembrancinhas   │ Pulseiras de pedras, pingentes, chaveiros, mimos  │
+│    e Presentes     │ com significado e kits especiais de presentes.    │
+└────────────────────┴───────────────────────────────────────────────────┘
+```
 
-### Pilar 2: Angiologia & Proteção Espiritual (Arcanjo Miguel)
-*   **Conceito:** A irradiação do Primeiro Raio Cósmico e a força da espada de luz azul que corta desarmonias e ancora fé e segurança no lar.
-*   **Peças Principais:** Estátuas do Arcanjo Miguel em resina nobre com pátina dourada, Medalhas de Proteção, Velas da Chama Azul, Espadas simbólicas consagradas.
-*   **Símbolo de Layout:** Cubo de Metatron (`metatronCube`).
-*   **Paleta Sugerida:** Púrpura Celestial & Azul Cobalto (`#1a052b` a `#3d125e`), Dourado Solar (`#d4af37`).
-*   **Cuidados e Limpeza:** Consagração com orações solenes e incenso de olíbano puro.
+---
 
-### Pilar 3: Astrologia, Cosmologia & Zodíaco
-*   **Conceito:** A sincronicidade entre os movimentos planetários, as quatro forças elementais (Fogo, Terra, Ar e Água) e os doze signos astrais.
-*   **Peças Principais:** Joias e pingentes com símbolos do zodíaco, Mapas astrais gravados, Kits minerais dos 4 elementos, Mandalas do zodíaco.
-*   **Símbolo de Layout:** Mandala Lunar (`lunarMandala`).
-*   **Paleta Sugerida:** Azul Meia-Noite Cósmico (`#0a0e27` a `#1c2758`), Dourado Estelar (`#ffd700`).
-*   **Cuidados e Limpeza:** Harmonização sob o céu noturno e energização na passagem dos solstícios e equinócios.
+## 3. Detalhamento por Eixo Cultural
 
-### Pilar 4: Aromaterapia & Botânica Sagrada (Linha Kailash & Defumação)
-*   **Conceito:** A fumaça aromática e as resinas vegetais milenares como canais de purificação do ar e elevação dos pensamentos.
-*   **Peças Principais:** Varetas de Incenso de Sálvia Branca, Resinas puras de Olíbano e Mirra, Bastões de Palo Santo certificado, Incensários artesanais em cerâmica e metal.
-*   **Símbolo de Layout:** Flor da Vida (`flowerOfLife`).
-*   **Paleta Sugerida:** Verde Botânico Sagrado (`#002914` a `#006332`), Âmbar Nobre (`#2a1700` a `#5c3800`).
-*   **Cuidados e Limpeza:** Armazenar em local seco e acender com fósforos de madeira em suporte seguro.
+### Eixo 1: Cultura das Pedras e Minerais da Terra
+*   **Conceito:** A riqueza natural dos minerais em múltiplos formatos e tonalidades, apreciada tanto pela beleza geológica quanto pela sensação de harmonia que traz aos ambientes.
+*   **Variedade:** Centenas de espécies minerais em formas brutas, seixos rolados para carregar consigo, drusas para mesas de centro e lapidações decorativas.
+*   **Cores e Estilos:** Do violeta suave das ametistas e o rosa suave do quartzo ao verde das matas, o dourado das piritas e os tons terrosos dos jaspes.
 
-### Pilar 5: Ancestralidade, Axé & Forças da Natureza (Linha NOA Orixás)
-*   **Conceito:** O respeito profundo às forças vivas da terra, das matas, dos rios e oceanos, honrando as raízes afro-brasileiras e a sabedoria ancestral.
-*   **Peças Principais:** Esculturas sacras da Linha NOA com acabamento artesanal refinado, Amuletos das águas e das matas, Cerâmicas decoradas à mão.
-*   **Símbolo de Layout:** Símbolo Sagrado da Marca (`brandSacredSymbol`) ou Sri Yantra (`sriYantra`).
-*   **Paleta Sugerida:** Azul Mar Profundo (`#061a33`), Verde Floresta Matas (`#1b2e15`), Branco Puro Paz (`#f8f9fa`).
-*   **Cuidados e Limpeza:** Banhos de ervas doces e oferendas simbólicas de luz e perfume.
+### Eixo 2: Perfumaria Natural e Botânica Aromática
+*   **Conceito:** Aromas botânicos preparados para acolher, trazer frescor e transformar o clima de qualquer cômodo da casa.
+*   **Variedade:** Dezenas de fragrâncias de incensos artesanais em varetas e cones, resinas puras da natureza, óleos concentrados para difusores elétricos ou de cerâmica e sabonetes artesanais com extratos de plantas.
 
-### Pilar 6: Sabedoria Oriental, Terapias Vibracionais & Budismo (Tibete & Índia)
-*   **Conceito:** Instrumentos acústicos ancestrais forjados para induzir estados meditativos profundos e restabelecer o equilíbrio bioenergético em 432Hz.
-*   **Peças Principais:** Taças Tibetanas forjadas na liga dos 7 metais sagrados, Sinos Tingsha, Almofadas de meditação brocadas à mão, Vajras de bronze, Esculturas de Buda em meditação.
-*   **Símbolo de Layout:** Mandala Lunar (`lunarMandala`).
-*   **Paleta Sugerida:** Bronze Nobre & Ouro Queimado (`#2a1700` a `#5c3800`), Açafrão & Terracota (`#803300`).
-*   **Cuidados e Limpeza:** Toque contínuo com baqueta de camurça para manutenção do brilho sonoro e defumação com incenso tibetano.
+### Eixo 3: Imagens e Estatuária Multirreligiosa
+*   **Conceito:** Celebração da fé e da arte sacra em todas as suas manifestações, proporcionando respeito e representatividade para a devoção pessoal de cada cliente.
+*   **Variedade:** Estatuária em diferentes portes e materiais (resina, cerâmica, gesso especial e madeira), contemplando o catolicismo, as religiões de matriz africana, o espiritismo, o budismo, o hinduísmo e a espiritualidade universal.
+
+### Eixo 4: Itens para o Dia a Dia e Rituais Simples
+*   **Conceito:** Instrumentos simples que tornam a rotina mais leve e aconchegante.
+*   **Variedade:** Velas com aromas suaves, suportes práticos para queima de incensos sem sujeira, sais e banhos aromáticos prontos para uso, além de apetrechos para momentos de estudo, leitura e relaxamento.
+
+### Eixo 5: Apetrechos e Decoração Aconchegante para o Lar
+*   **Conceito:** Objetos que unem utilidade e beleza, transformando casas e escritórios em espaços de refúgio e serenidade.
+*   **Variedade:** Fontes de água com fluxo contínuo para refrescar o ambiente e trazer o som relaxante das águas, mensageiros dos ventos, mandalas decorativas, castiçais e pratos de apoio.
+
+### Eixo 6: Lembrancinhas, Mimos e Presentes com Significado
+*   **Conceito:** Pequenos gestos de afeto que carregam votos de carinho, proteção e alegria para amigos, colegas e familiares.
+*   **Variedade:** Pulseiras e bijuterias finas com pedras naturais, chaveiros com símbolos protetores, garrafinhas com minerais coloridos e lembranças exclusivas da cultura de São Luís.

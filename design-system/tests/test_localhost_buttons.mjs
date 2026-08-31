@@ -161,6 +161,38 @@ import { chromium } from 'playwright';
     }
   }
 
+  // 8.2 Testa Estilos de Enquadramento da Foto na Aba Formato
+  console.log('\n--- 8.2 TESTANDO ENQUADRAMENTO DA FOTO NA ABA FORMATO ---');
+  const fitModes = ['portal', 'fusion', 'cover'];
+  for (const fm of fitModes) {
+    await page.click(`.segmented-btn[data-fit="${fm}"]`);
+    const cur = await page.evaluate(() => window.pedacoStudio.store.state.fitMode);
+    if (cur === fm) {
+      console.log(`✅ [OK] Enquadramento "${fm}" ativado na aba Formato`);
+      passed++;
+    } else {
+      console.error(`❌ [ERROR] Enquadramento "${fm}" falhou`);
+      failed++;
+    }
+  }
+
+  // 8.3 Testa Sliders de Refino do Layout
+  console.log('\n--- 8.3 TESTANDO SLIDERS DE REFINO DO LAYOUT ---');
+  await page.$eval('#splitRatioRange', el => { el.value = '65'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.$eval('#textZoneHeightRange', el => { el.value = '50'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.$eval('#cardRadiusRange', el => { el.value = '24'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.waitForTimeout(100);
+  const sRatio = await page.evaluate(() => window.pedacoStudio.store.state.splitRatio);
+  const tzHeight = await page.evaluate(() => window.pedacoStudio.store.state.textZoneHeight);
+  const cRadius = await page.evaluate(() => window.pedacoStudio.store.state.cardRadius);
+  if (sRatio === 0.65 && tzHeight === 0.50 && cRadius === 24) {
+    console.log('✅ [OK] Sliders de refino (splitRatio: 65%, textZoneHeight: 50%, cardRadius: 24px) sincronizados');
+    passed++;
+  } else {
+    console.error('❌ [ERROR] Sliders de refino falharam');
+    failed++;
+  }
+
   // 9. Testa View Modes
   console.log('\n--- 9. TESTANDO VIEW MODES (CANVAS) ---');
   await page.click('.view-mode-btn[data-view-mode="split"]');

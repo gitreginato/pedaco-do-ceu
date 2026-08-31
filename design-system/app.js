@@ -646,11 +646,12 @@
     "9:16-story": { top: 100, bottom: 120, left: 70, right: 70 },
     "9:16-tiktok": { top: 120, bottom: 140, left: 70, right: 70 }
   };
-  function calculateZones(canvasW, canvasH, layoutKey) {
+  function calculateZones(canvasW, canvasH, layoutKey, state) {
     const config = LAYOUT_CONFIG[layoutKey] || LAYOUT_CONFIG.right;
     const zones = {};
     if (config.type === "split") {
-      const splitX = Math.round(canvasW * config.imgWidthPercent);
+      const splitRatio = state && state.splitRatio !== void 0 ? state.splitRatio : config.imgWidthPercent || 0.6;
+      const splitX = Math.round(canvasW * splitRatio);
       if (config.imgAnchor === "right") {
         zones.text = { x: 0, y: 0, w: canvasW - splitX, h: canvasH };
         zones.img = { x: canvasW - splitX, y: 0, w: splitX, h: canvasH };
@@ -659,19 +660,20 @@
         zones.text = { x: splitX, y: 0, w: canvasW - splitX, h: canvasH };
       }
     } else if (config.type === "stack") {
+      const textHPercent = state && state.textZoneHeight !== void 0 ? state.textZoneHeight : config.textHeightPercent || 0.44;
       if (config.imgAnchor === "top") {
-        const imgH = Math.round(canvasH * config.imgHeightPercent);
+        const imgH = Math.round(canvasH * (1 - textHPercent));
         zones.img = { x: 0, y: 0, w: canvasW, h: imgH };
         zones.text = { x: 0, y: imgH, w: canvasW, h: canvasH - imgH };
       } else {
-        const textH = Math.round(canvasH * config.textHeightPercent);
+        const textH = Math.round(canvasH * textHPercent);
         zones.text = { x: 0, y: 0, w: canvasW, h: textH };
         zones.img = { x: 0, y: textH, w: canvasW, h: canvasH - textH };
       }
     } else if (config.type === "overlay") {
       zones.img = { x: 0, y: 0, w: canvasW, h: canvasH };
-      const cardW = Math.min(canvasW * 0.88, 760);
-      const cardH = Math.min(canvasH * 0.76, 960);
+      const cardW = Math.min(canvasW * 0.88, 860);
+      const cardH = Math.min(canvasH * 0.78, 1060);
       zones.text = {
         x: (canvasW - cardW) / 2,
         y: (canvasH - cardH) / 2,
@@ -908,7 +910,7 @@
         this.drawSplit(ctx, width, height, state, true);
         return;
       }
-      const zones = calculateZones(width, height, state.layout);
+      const zones = calculateZones(width, height, state.layout, state);
       if (!zones.img) return;
       switch (state.layout) {
         case "bottom":
@@ -925,7 +927,8 @@
       }
     }
     drawSplit(ctx, W, H, state, isLeft) {
-      const splitX = Math.round(W * 0.6);
+      const splitX = Math.round(W * (state.splitRatio !== void 0 ? state.splitRatio : 0.6));
+      const radius = state.cardRadius !== void 0 ? state.cardRadius : 18;
       if (state.fitMode === "portal") {
         const frameX = isLeft ? W - splitX + 10 : 35;
         const frameY = 40;
@@ -936,19 +939,19 @@
         ctx.shadowBlur = 25;
         ctx.shadowOffsetY = 8;
         ctx.fillStyle = "#020904";
-        this.roundRect(ctx, frameX, frameY, frameW, frameH, 18, true, false);
+        this.roundRect(ctx, frameX, frameY, frameW, frameH, radius, true, false);
         ctx.shadowColor = "transparent";
         ctx.save();
-        this.roundRect(ctx, frameX, frameY, frameW, frameH, 18, false, false);
+        this.roundRect(ctx, frameX, frameY, frameW, frameH, radius, false, false);
         ctx.clip();
         this.drawImageCover(ctx, state.imgObj, frameX, frameY, frameW, frameH, state);
         ctx.restore();
         ctx.strokeStyle = state.colorCorners;
         ctx.lineWidth = 2.5;
-        this.roundRect(ctx, frameX, frameY, frameW, frameH, 18, false, true);
+        this.roundRect(ctx, frameX, frameY, frameW, frameH, radius, false, true);
         ctx.strokeStyle = hexToRgba(state.colorCorners, 0.4);
         ctx.lineWidth = 1;
-        this.roundRect(ctx, frameX + 6, frameY + 6, frameW - 12, frameH - 12, 14, false, true);
+        this.roundRect(ctx, frameX + 6, frameY + 6, frameW - 12, frameH - 12, Math.max(radius - 4, 4), false, true);
         ctx.restore();
       } else if (state.fitMode === "fusion") {
         ctx.save();
@@ -1475,7 +1478,7 @@
     draw(ctx, width, height, state) {
       const config = LAYOUT_CONFIG[state.layout];
       if (!config || !config.gradientOverlay) return;
-      const zones = calculateZones(width, height, state.layout);
+      const zones = calculateZones(width, height, state.layout, state);
       renderGradientOverlay(ctx, zones, config, state, width, height);
     }
   };
@@ -1492,7 +1495,7 @@
         this.drawSplitLayout(ctx, width, height, state, state.layout === "left");
         return;
       }
-      const zones = calculateZones(width, height, state.layout);
+      const zones = calculateZones(width, height, state.layout, state);
       if (!zones.text) return;
       const cardStyle = state.textCardStyle || "card";
       if (cardStyle !== "transparent" && cardStyle !== "separated") {
@@ -1529,7 +1532,7 @@
       this.renderCalibratedBlocks(ctx, blocks, state);
     }
     drawSplitLayout(ctx, W, H, state, isLeft) {
-      const imgW = Math.round(W * 0.6);
+      const imgW = Math.round(W * (state.splitRatio !== void 0 ? state.splitRatio : 0.6));
       const textW = W - imgW;
       const colX = isLeft ? state.paddingSide || 20 : imgW + (state.paddingSide || 20);
       const innerW = textW - (state.paddingSide || 20) * 2;
@@ -1620,6 +1623,8 @@
     }
     drawBottomCardBackground(ctx, zone, state) {
       const opacity = state.boxOpacity !== void 0 ? state.boxOpacity : 0.95;
+      const radius = state.cardRadius !== void 0 ? state.cardRadius : 16;
+      const padX = state.paddingSide !== void 0 ? Math.min(state.paddingSide, 80) : 28;
       ctx.save();
       ctx.shadowColor = "rgba(0,0,0,0.6)";
       ctx.shadowBlur = 25;
@@ -1627,15 +1632,17 @@
       cardGrad.addColorStop(0, hexToRgba(state.gradientPrimary || "#00381c", opacity));
       cardGrad.addColorStop(1, hexToRgba(state.gradientDarkness || "#050c07", Math.min(opacity + 0.03, 1)));
       ctx.fillStyle = cardGrad;
-      this.roundRect(ctx, zone.x + 28, zone.y + 10, zone.w - 56, zone.h - 38, 16, true, false);
+      this.roundRect(ctx, zone.x + padX, zone.y + 10, zone.w - padX * 2, zone.h - 38, radius, true, false);
       ctx.shadowColor = "transparent";
       ctx.strokeStyle = hexToRgba(state.colorCorners || "#d4af37", 0.5);
       ctx.lineWidth = 1.2;
-      this.roundRect(ctx, zone.x + 28, zone.y + 10, zone.w - 56, zone.h - 38, 16, false, true);
+      this.roundRect(ctx, zone.x + padX, zone.y + 10, zone.w - padX * 2, zone.h - 38, radius, false, true);
       ctx.restore();
     }
     drawTopCardBackground(ctx, zone, state) {
       const opacity = state.boxOpacity !== void 0 ? state.boxOpacity : 0.95;
+      const radius = state.cardRadius !== void 0 ? state.cardRadius : 16;
+      const padX = state.paddingSide !== void 0 ? Math.min(state.paddingSide, 80) : 28;
       ctx.save();
       ctx.shadowColor = "rgba(0,0,0,0.6)";
       ctx.shadowBlur = 25;
@@ -1643,15 +1650,17 @@
       cardGrad.addColorStop(0, hexToRgba(state.gradientDarkness || "#050c07", Math.min(opacity + 0.03, 1)));
       cardGrad.addColorStop(1, hexToRgba(state.gradientPrimary || "#00381c", opacity));
       ctx.fillStyle = cardGrad;
-      this.roundRect(ctx, zone.x + 28, zone.y + 28, zone.w - 56, zone.h - 38, 16, true, false);
+      this.roundRect(ctx, zone.x + padX, zone.y + 28, zone.w - padX * 2, zone.h - 38, radius, true, false);
       ctx.shadowColor = "transparent";
       ctx.strokeStyle = hexToRgba(state.colorCorners || "#d4af37", 0.5);
       ctx.lineWidth = 1.2;
-      this.roundRect(ctx, zone.x + 28, zone.y + 28, zone.w - 56, zone.h - 38, 16, false, true);
+      this.roundRect(ctx, zone.x + padX, zone.y + 28, zone.w - padX * 2, zone.h - 38, radius, false, true);
       ctx.restore();
     }
     drawCenterCardBackground(ctx, zone, state) {
       const opacity = state.boxOpacity !== void 0 ? state.boxOpacity : 0.95;
+      const radius = state.cardRadius !== void 0 ? state.cardRadius : 20;
+      const padX = state.paddingSide !== void 0 ? Math.min(state.paddingSide, 60) : 0;
       ctx.save();
       ctx.shadowColor = "rgba(0,0,0,0.7)";
       ctx.shadowBlur = 35;
@@ -1660,14 +1669,14 @@
       grad.addColorStop(0.5, hexToRgba(state.gradientSecondary || "#008542", Math.min(opacity + 0.01, 1)));
       grad.addColorStop(1, hexToRgba(state.gradientDarkness || "#050c07", Math.min(opacity + 0.03, 1)));
       ctx.fillStyle = grad;
-      this.roundRect(ctx, zone.x, zone.y, zone.w, zone.h, 20, true, false);
+      this.roundRect(ctx, zone.x + padX, zone.y, zone.w - padX * 2, zone.h, radius, true, false);
       ctx.shadowColor = "transparent";
       ctx.strokeStyle = hexToRgba(state.colorCorners || "#d4af37", 0.6);
       ctx.lineWidth = 1.5;
-      this.roundRect(ctx, zone.x, zone.y, zone.w, zone.h, 20, false, true);
+      this.roundRect(ctx, zone.x + padX, zone.y, zone.w - padX * 2, zone.h, radius, false, true);
       ctx.strokeStyle = hexToRgba(state.colorCorners || "#d4af37", 0.25);
       ctx.lineWidth = 0.8;
-      this.roundRect(ctx, zone.x + 6, zone.y + 6, zone.w - 12, zone.h - 12, 16, false, true);
+      this.roundRect(ctx, zone.x + padX + 6, zone.y + 6, zone.w - padX * 2 - 12, zone.h - 12, Math.max(radius - 4, 4), false, true);
       ctx.restore();
     }
     drawGradientFadeBackground(ctx, W, H, zone, state) {
@@ -1706,6 +1715,10 @@
     }
     drawGlassCardBackground(ctx, zone, state) {
       const opacity = (state.boxOpacity !== void 0 ? state.boxOpacity : 0.95) * 0.45;
+      const radius = state.cardRadius !== void 0 ? state.cardRadius : 18;
+      const pad = state.layout === "center" ? state.paddingSide !== void 0 ? Math.min(state.paddingSide, 60) : 0 : state.paddingSide !== void 0 ? Math.min(state.paddingSide, 80) : 28;
+      const rY = state.layout === "top" ? zone.y + 28 : zone.y + 10;
+      const rH = state.layout === "center" ? zone.h : zone.h - 38;
       ctx.save();
       ctx.shadowColor = "rgba(0, 0, 0, 0.45)";
       ctx.shadowBlur = 35;
@@ -1713,29 +1726,27 @@
       grad.addColorStop(0, hexToRgba(state.gradientPrimary || "#00381c", opacity));
       grad.addColorStop(1, hexToRgba(state.gradientDarkness || "#050c07", Math.min(opacity + 0.2, 0.85)));
       ctx.fillStyle = grad;
-      const pad = state.layout === "center" ? 0 : 28;
-      const rY = state.layout === "top" ? zone.y + 28 : zone.y + 10;
-      const rH = state.layout === "center" ? zone.h : zone.h - 38;
-      this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, 18, true, false);
+      this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, radius, true, false);
       ctx.shadowColor = "transparent";
       ctx.strokeStyle = hexToRgba(state.colorCorners || "#d4af37", 0.45);
       ctx.lineWidth = 1.2;
-      this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, 18, false, true);
+      this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, radius, false, true);
       ctx.restore();
     }
     drawFramedCardBackground(ctx, zone, state) {
-      ctx.save();
-      const pad = state.layout === "center" ? 0 : 28;
+      const radius = state.cardRadius !== void 0 ? state.cardRadius : 16;
+      const pad = state.layout === "center" ? state.paddingSide !== void 0 ? Math.min(state.paddingSide, 60) : 0 : state.paddingSide !== void 0 ? Math.min(state.paddingSide, 80) : 28;
       const rY = state.layout === "top" ? zone.y + 28 : zone.y + 10;
       const rH = state.layout === "center" ? zone.h : zone.h - 38;
+      ctx.save();
       ctx.fillStyle = "rgba(2, 9, 4, 0.28)";
-      this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, 18, true, false);
+      this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, radius, true, false);
       ctx.strokeStyle = hexToRgba(state.colorCorners || "#d4af37", 0.7);
       ctx.lineWidth = 1.6;
-      this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, 18, false, true);
+      this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, radius, false, true);
       ctx.strokeStyle = hexToRgba(state.colorCorners || "#d4af37", 0.25);
       ctx.lineWidth = 0.8;
-      this.roundRect(ctx, zone.x + pad + 6, rY + 6, zone.w - pad * 2 - 12, rH - 12, 14, false, true);
+      this.roundRect(ctx, zone.x + pad + 6, rY + 6, zone.w - pad * 2 - 12, rH - 12, Math.max(radius - 4, 4), false, true);
       ctx.restore();
     }
     renderCalibratedBlocks(ctx, blocks, state) {
@@ -2969,7 +2980,7 @@
       id: "tib_homenagem1",
       category: "tibete",
       categoryLabel: "\u{1F54A}\uFE0F Prece do Tibete (L\xE2mpada de Sal)",
-      src: "../Fotos/TIbate/Tratadas/IMG_20260828_171759729.jpg",
+      src: "../Fotos/tibete/Tratadas/IMG_20260828_171759729.jpg",
       title: "ORA\xC7\xC3O PELO TIBETE & NEPAL",
       subtitle: "Em profunda rever\xEAncia e uni\xE3o espiritual",
       description: "Nossos cora\xE7\xF5es e ora\xE7\xF5es se voltam para os povos do Tibete e do Nepal, tocados pela recente trag\xE9dia nas montanhas sagradas. Que o poder de Karuna e a luz de Chenrezig abracem cada fam\xEDlia, trazendo serenidade e for\xE7a na reconstru\xE7\xE3o de seus lares.",
@@ -3009,7 +3020,7 @@
       id: "tib_homenagem2",
       category: "tibete",
       categoryLabel: "\u{1F54A}\uFE0F Prece do Tibete (Buda Solar)",
-      src: "../Fotos/TIbate/Tratadas/IMG_20260828_172652877_HDR.jpg",
+      src: "../Fotos/tibete/Tratadas/IMG_20260828_172652877_HDR.jpg",
       title: "LUZ DE CHENREZIG",
       subtitle: "Compaix\xE3o Infinita e Amparo Divino",
       description: "Que o sopro sagrado das bandeiras de ora\xE7\xE3o espalhe paz pelos vales e eleve as almas que partiram em dire\xE7\xE3o \xE0 luz divina. Em uni\xE3o espiritual por todas as fam\xEDlias dos Himalaias.",
@@ -3049,7 +3060,7 @@
       id: "tib_homenagem3",
       category: "tibete",
       categoryLabel: "\u{1F54A}\uFE0F Prece do Tibete (Pir\xE2mide de Sal)",
-      src: "../Fotos/TIbate/Tratadas/IMG_20260828_165849966.jpg",
+      src: "../Fotos/tibete/Tratadas/IMG_20260828_165849966.jpg",
       title: "RECONSTRU\xC7\xC3O & F\xC9",
       subtitle: "A For\xE7a Imut\xE1vel das Montanhas Sagradas",
       description: "Que o poder de Chenrezig abrace cada cora\xE7\xE3o ferido. Que a serenidade dos mosteiros e a for\xE7a das rochas sagradas sustentem a reconstru\xE7\xE3o de lares e vidas com coragem e esperan\xE7a.",
@@ -3089,7 +3100,7 @@
       id: "tib4_tacas",
       category: "tibete",
       categoryLabel: "\u{1F9D8} Tibete & Ta\xE7as Sagradas",
-      src: "../Fotos/TIbate/Tratadas/IMG_20260828_172439605_HDR.jpg",
+      src: "../Fotos/tibete/Tratadas/IMG_20260828_172439605_HDR.jpg",
       title: "TA\xC7AS TIBETANAS",
       subtitle: "A Cura Vibracional dos 7 Metais Sagrados",
       description: "Forjadas \xE0 m\xE3o sob rituais ancestrais. As ondas sonoras em harmonia produzem frequ\xEAncias Alfa e Teta, alinhando os 7 chakras e dissipando bloqueios et\xE9ricos profundos.",
@@ -3213,6 +3224,9 @@
     showSafeAreaGuide: false,
     textCardStyle: "card",
     // 'card', 'gradient', 'separated', 'glass', 'transparent', 'framed'
+    splitRatio: 0.6,
+    textZoneHeight: 0.44,
+    cardRadius: 18,
     paddingTop: 90,
     blockGap: 20,
     paddingSide: 60,
@@ -3677,6 +3691,9 @@
       bindRangeHelper("imgZoomRange", "imgZoom", (v) => v / 100, "imgZoomVal", "x");
       bindRangeHelper("imgPanXRange", "imgPanX", (v) => v, "imgPanXVal", "px");
       bindRangeHelper("imgPanYRange", "imgPanY", (v) => v, "imgPanYVal", "px");
+      bindRangeHelper("splitRatioRange", "splitRatio", (v) => v / 100, "splitRatioVal", "%");
+      bindRangeHelper("textZoneHeightRange", "textZoneHeight", (v) => v / 100, "textZoneHeightVal", "%");
+      bindRangeHelper("cardRadiusRange", "cardRadius", (v) => v, "cardRadiusVal", "px");
       bindRangeHelper("patternOpacityRange", "patternOpacity", (v) => v / 100, "patternOpacityVal", "%");
       bindRangeHelper("boxOpacityRange", "boxOpacity", (v) => v / 100, "boxOpacityVal", "%");
       bindRangeHelper("gradientIntensityRange", "gradientIntensity", (v) => v / 100, "gradientIntensityVal", "%");
@@ -3926,6 +3943,15 @@
       setVal("imgPanYRange", s.imgPanY || 0);
       const panYVal = document.getElementById("imgPanYVal");
       if (panYVal) panYVal.textContent = (s.imgPanY || 0) + "px";
+      setVal("splitRatioRange", Math.round((s.splitRatio !== void 0 ? s.splitRatio : 0.6) * 100));
+      const srVal = document.getElementById("splitRatioVal");
+      if (srVal) srVal.textContent = Math.round((s.splitRatio !== void 0 ? s.splitRatio : 0.6) * 100) + "%";
+      setVal("textZoneHeightRange", Math.round((s.textZoneHeight !== void 0 ? s.textZoneHeight : 0.44) * 100));
+      const tzhVal = document.getElementById("textZoneHeightVal");
+      if (tzhVal) tzhVal.textContent = Math.round((s.textZoneHeight !== void 0 ? s.textZoneHeight : 0.44) * 100) + "%";
+      setVal("cardRadiusRange", s.cardRadius !== void 0 ? s.cardRadius : 18);
+      const crVal = document.getElementById("cardRadiusVal");
+      if (crVal) crVal.textContent = (s.cardRadius !== void 0 ? s.cardRadius : 18) + "px";
       setVal("patternOpacityRange", (s.patternOpacity || 0.15) * 100);
       const poVal = document.getElementById("patternOpacityVal");
       if (poVal) poVal.textContent = Math.round((s.patternOpacity || 0.15) * 100) + "%";

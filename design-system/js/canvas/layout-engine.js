@@ -62,12 +62,13 @@ export const SAFE_AREAS = {
   '9:16-tiktok': { top: 120, bottom: 140, left: 70, right: 70 }
 };
 
-export function calculateZones(canvasW, canvasH, layoutKey) {
+export function calculateZones(canvasW, canvasH, layoutKey, state) {
   const config = LAYOUT_CONFIG[layoutKey] || LAYOUT_CONFIG.right;
   const zones = {};
 
   if (config.type === 'split') {
-    const splitX = Math.round(canvasW * config.imgWidthPercent);
+    const splitRatio = state && state.splitRatio !== undefined ? state.splitRatio : (config.imgWidthPercent || 0.60);
+    const splitX = Math.round(canvasW * splitRatio);
     if (config.imgAnchor === 'right') {
       zones.text = { x: 0, y: 0, w: canvasW - splitX, h: canvasH };
       zones.img = { x: canvasW - splitX, y: 0, w: splitX, h: canvasH };
@@ -76,19 +77,20 @@ export function calculateZones(canvasW, canvasH, layoutKey) {
       zones.text = { x: splitX, y: 0, w: canvasW - splitX, h: canvasH };
     }
   } else if (config.type === 'stack') {
+    const textHPercent = state && state.textZoneHeight !== undefined ? state.textZoneHeight : (config.textHeightPercent || 0.44);
     if (config.imgAnchor === 'top') {
-      const imgH = Math.round(canvasH * config.imgHeightPercent);
+      const imgH = Math.round(canvasH * (1 - textHPercent));
       zones.img = { x: 0, y: 0, w: canvasW, h: imgH };
       zones.text = { x: 0, y: imgH, w: canvasW, h: canvasH - imgH };
     } else {
-      const textH = Math.round(canvasH * config.textHeightPercent);
+      const textH = Math.round(canvasH * textHPercent);
       zones.text = { x: 0, y: 0, w: canvasW, h: textH };
       zones.img = { x: 0, y: textH, w: canvasW, h: canvasH - textH };
     }
   } else if (config.type === 'overlay') {
     zones.img = { x: 0, y: 0, w: canvasW, h: canvasH };
-    const cardW = Math.min(canvasW * 0.88, 760);
-    const cardH = Math.min(canvasH * 0.76, 960);
+    const cardW = Math.min(canvasW * 0.88, 860);
+    const cardH = Math.min(canvasH * 0.78, 1060);
     zones.text = {
       x: (canvasW - cardW) / 2,
       y: (canvasH - cardH) / 2,

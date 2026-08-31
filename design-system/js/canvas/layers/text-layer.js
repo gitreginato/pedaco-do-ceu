@@ -19,7 +19,7 @@ export class TextLayer extends BaseLayer {
     }
 
     // Layouts Calibrados (Bottom, Top, Center)
-    const zones = calculateZones(width, height, state.layout);
+    const zones = calculateZones(width, height, state.layout, state);
     if (!zones.text) return;
 
     const cardStyle = state.textCardStyle || 'card';
@@ -65,7 +65,7 @@ export class TextLayer extends BaseLayer {
   }
 
   drawSplitLayout(ctx, W, H, state, isLeft) {
-    const imgW = Math.round(W * 0.60);
+    const imgW = Math.round(W * (state.splitRatio !== undefined ? state.splitRatio : 0.60));
     const textW = W - imgW;
     const colX = isLeft ? (state.paddingSide || 20) : imgW + (state.paddingSide || 20);
     const innerW = textW - (state.paddingSide || 20) * 2;
@@ -172,6 +172,8 @@ export class TextLayer extends BaseLayer {
 
   drawBottomCardBackground(ctx, zone, state) {
     const opacity = state.boxOpacity !== undefined ? state.boxOpacity : 0.95;
+    const radius = state.cardRadius !== undefined ? state.cardRadius : 16;
+    const padX = state.paddingSide !== undefined ? Math.min(state.paddingSide, 80) : 28;
     ctx.save();
     ctx.shadowColor = 'rgba(0,0,0,0.6)';
     ctx.shadowBlur = 25;
@@ -179,17 +181,19 @@ export class TextLayer extends BaseLayer {
     cardGrad.addColorStop(0, hexToRgba(state.gradientPrimary || '#00381c', opacity));
     cardGrad.addColorStop(1, hexToRgba(state.gradientDarkness || '#050c07', Math.min(opacity + 0.03, 1)));
     ctx.fillStyle = cardGrad;
-    this.roundRect(ctx, zone.x + 28, zone.y + 10, zone.w - 56, zone.h - 38, 16, true, false);
+    this.roundRect(ctx, zone.x + padX, zone.y + 10, zone.w - padX * 2, zone.h - 38, radius, true, false);
     ctx.shadowColor = 'transparent';
 
     ctx.strokeStyle = hexToRgba(state.colorCorners || '#d4af37', 0.5);
     ctx.lineWidth = 1.2;
-    this.roundRect(ctx, zone.x + 28, zone.y + 10, zone.w - 56, zone.h - 38, 16, false, true);
+    this.roundRect(ctx, zone.x + padX, zone.y + 10, zone.w - padX * 2, zone.h - 38, radius, false, true);
     ctx.restore();
   }
 
   drawTopCardBackground(ctx, zone, state) {
     const opacity = state.boxOpacity !== undefined ? state.boxOpacity : 0.95;
+    const radius = state.cardRadius !== undefined ? state.cardRadius : 16;
+    const padX = state.paddingSide !== undefined ? Math.min(state.paddingSide, 80) : 28;
     ctx.save();
     ctx.shadowColor = 'rgba(0,0,0,0.6)';
     ctx.shadowBlur = 25;
@@ -197,17 +201,19 @@ export class TextLayer extends BaseLayer {
     cardGrad.addColorStop(0, hexToRgba(state.gradientDarkness || '#050c07', Math.min(opacity + 0.03, 1)));
     cardGrad.addColorStop(1, hexToRgba(state.gradientPrimary || '#00381c', opacity));
     ctx.fillStyle = cardGrad;
-    this.roundRect(ctx, zone.x + 28, zone.y + 28, zone.w - 56, zone.h - 38, 16, true, false);
+    this.roundRect(ctx, zone.x + padX, zone.y + 28, zone.w - padX * 2, zone.h - 38, radius, true, false);
     ctx.shadowColor = 'transparent';
 
     ctx.strokeStyle = hexToRgba(state.colorCorners || '#d4af37', 0.5);
     ctx.lineWidth = 1.2;
-    this.roundRect(ctx, zone.x + 28, zone.y + 28, zone.w - 56, zone.h - 38, 16, false, true);
+    this.roundRect(ctx, zone.x + padX, zone.y + 28, zone.w - padX * 2, zone.h - 38, radius, false, true);
     ctx.restore();
   }
 
   drawCenterCardBackground(ctx, zone, state) {
     const opacity = state.boxOpacity !== undefined ? state.boxOpacity : 0.95;
+    const radius = state.cardRadius !== undefined ? state.cardRadius : 20;
+    const padX = state.paddingSide !== undefined ? Math.min(state.paddingSide, 60) : 0;
     ctx.save();
     ctx.shadowColor = 'rgba(0,0,0,0.7)';
     ctx.shadowBlur = 35;
@@ -216,16 +222,16 @@ export class TextLayer extends BaseLayer {
     grad.addColorStop(0.5, hexToRgba(state.gradientSecondary || '#008542', Math.min(opacity + 0.01, 1)));
     grad.addColorStop(1, hexToRgba(state.gradientDarkness || '#050c07', Math.min(opacity + 0.03, 1)));
     ctx.fillStyle = grad;
-    this.roundRect(ctx, zone.x, zone.y, zone.w, zone.h, 20, true, false);
+    this.roundRect(ctx, zone.x + padX, zone.y, zone.w - padX * 2, zone.h, radius, true, false);
     ctx.shadowColor = 'transparent';
 
     ctx.strokeStyle = hexToRgba(state.colorCorners || '#d4af37', 0.6);
     ctx.lineWidth = 1.5;
-    this.roundRect(ctx, zone.x, zone.y, zone.w, zone.h, 20, false, true);
+    this.roundRect(ctx, zone.x + padX, zone.y, zone.w - padX * 2, zone.h, radius, false, true);
 
     ctx.strokeStyle = hexToRgba(state.colorCorners || '#d4af37', 0.25);
     ctx.lineWidth = 0.8;
-    this.roundRect(ctx, zone.x + 6, zone.y + 6, zone.w - 12, zone.h - 12, 16, false, true);
+    this.roundRect(ctx, zone.x + padX + 6, zone.y + 6, zone.w - padX * 2 - 12, zone.h - 12, Math.max(radius - 4, 4), false, true);
     ctx.restore();
   }
 
@@ -266,6 +272,11 @@ export class TextLayer extends BaseLayer {
 
   drawGlassCardBackground(ctx, zone, state) {
     const opacity = (state.boxOpacity !== undefined ? state.boxOpacity : 0.95) * 0.45;
+    const radius = state.cardRadius !== undefined ? state.cardRadius : 18;
+    const pad = state.layout === 'center' ? (state.paddingSide !== undefined ? Math.min(state.paddingSide, 60) : 0) : (state.paddingSide !== undefined ? Math.min(state.paddingSide, 80) : 28);
+    const rY = state.layout === 'top' ? zone.y + 28 : zone.y + 10;
+    const rH = state.layout === 'center' ? zone.h : zone.h - 38;
+
     ctx.save();
     ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
     ctx.shadowBlur = 35;
@@ -274,37 +285,34 @@ export class TextLayer extends BaseLayer {
     grad.addColorStop(1, hexToRgba(state.gradientDarkness || '#050c07', Math.min(opacity + 0.2, 0.85)));
     ctx.fillStyle = grad;
 
-    const pad = state.layout === 'center' ? 0 : 28;
-    const rY = state.layout === 'top' ? zone.y + 28 : zone.y + 10;
-    const rH = state.layout === 'center' ? zone.h : zone.h - 38;
-
-    this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, 18, true, false);
+    this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, radius, true, false);
     ctx.shadowColor = 'transparent';
 
     ctx.strokeStyle = hexToRgba(state.colorCorners || '#d4af37', 0.45);
     ctx.lineWidth = 1.2;
-    this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, 18, false, true);
+    this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, radius, false, true);
     ctx.restore();
   }
 
   drawFramedCardBackground(ctx, zone, state) {
-    ctx.save();
-    const pad = state.layout === 'center' ? 0 : 28;
+    const radius = state.cardRadius !== undefined ? state.cardRadius : 16;
+    const pad = state.layout === 'center' ? (state.paddingSide !== undefined ? Math.min(state.paddingSide, 60) : 0) : (state.paddingSide !== undefined ? Math.min(state.paddingSide, 80) : 28);
     const rY = state.layout === 'top' ? zone.y + 28 : zone.y + 10;
     const rH = state.layout === 'center' ? zone.h : zone.h - 38;
 
+    ctx.save();
     // Fundo translúcido sutil para contraste
     ctx.fillStyle = 'rgba(2, 9, 4, 0.28)';
-    this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, 18, true, false);
+    this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, radius, true, false);
 
     // Moldura dupla fina dourada
     ctx.strokeStyle = hexToRgba(state.colorCorners || '#d4af37', 0.7);
     ctx.lineWidth = 1.6;
-    this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, 18, false, true);
+    this.roundRect(ctx, zone.x + pad, rY, zone.w - pad * 2, rH, radius, false, true);
 
     ctx.strokeStyle = hexToRgba(state.colorCorners || '#d4af37', 0.25);
     ctx.lineWidth = 0.8;
-    this.roundRect(ctx, zone.x + pad + 6, rY + 6, zone.w - pad * 2 - 12, rH - 12, 14, false, true);
+    this.roundRect(ctx, zone.x + pad + 6, rY + 6, zone.w - pad * 2 - 12, rH - 12, Math.max(radius - 4, 4), false, true);
     ctx.restore();
   }
 
